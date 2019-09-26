@@ -2,37 +2,37 @@ const express = require("express");
 const router = express.Router();
 
 /* INDEX GET /posts */
-router.get("/", (req, res) => {
+router.get("/", (req, res, next) => {
   res.send("Post INDEX");
 });
 
 // NEW /posts/new
-router.get("/new", (req, res) => {
+router.get("/new", (req, res, next) => {
   res.send("Post NEW");
 });
 
 // SHOW GET /posts/:id
-router.get("/:id", (req, res) => {
+router.get("/:id", (req, res, next) => {
   res.send("Post SHOW");
 });
 
 // CREATE POST /posts
-router.post("/", (req, res) => {
+router.post("/", (req, res, next) => {
   res.send("Post CREATE");
 });
 
 // EDIT GET /posts/:id/edit
-router.get("/:id/edit", (req, res) => {
+router.get("/:id/edit", (req, res, next) => {
   res.send("Post EDIT");
 });
 
 // UPDATE PUT /posts/:id
-router.put("/:id", (req, res) => {
+router.put("/:id", (req, res, next) => {
   res.send("Post UPDATE");
 });
 
 // DESTROY DELETE /posts/:id
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req, res, next) => {
   res.send("Post DESTROY");
 });
 

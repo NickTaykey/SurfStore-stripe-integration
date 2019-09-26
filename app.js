@@ -1,25 +1,65 @@
+// PACKAGES
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const passport = require("passport");
+const session = require("express-session");
+const app = express();
+const mongoose = require("mongoose");
 
+// MODELS
+const User = require("./models/user");
+
+// CONNECT TO THE DATABASE
+mongoose.connect("mongodb://localhost:27017/surf-store", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+});
+
+// TEST THE CONNECTION
+// variabile che rappresenta la connessione con il DB
+const db = mongoose.connection;
+// se ci sono stati degli errori durate la connessione li stampa
+db.on("error", console.error.bind(console, "connection error:"));
+// se tutto è andato bene e la connessione è stata aperta con successo stampa il messaggio
+// "successfully connected to the DB!"
+db.once("open", () => console.log("successfully connected to the DB!"));
+
+// ROUTES
 const indexRouter = require("./routes/index");
 const postRouter = require("./routes/post");
 const reviewRouter = require("./routes/reviews");
 
-const app = express();
+// GENERAL CONFIGS
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+// express session config
+app.use(
+  session({
+    secret: "hang five mate!",
+    resave: false,
+    saveUninitialized: true
+  })
+);
+
+// passport config
+
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// RUOTES
 app.use("/", indexRouter);
 app.use("/posts", postRouter);
 app.use("/posts/:id/reviews", reviewRouter);
