@@ -70,6 +70,16 @@ app.use((req, res, next) => {
 });
 
 // error handler
+
+/* 
+  MIDDLEWARE PER LA GESTIONE DEGLI ERRORI, che possiamo chiamare da ogni controller quando vogliamo gestire
+  un errore.
+  TROVA INFORMAZIONI SUL ERRORE (x esempio lo status code della richiesta il messaggio di errore, e se in
+  ambiente di sviluppo anche il messaggio di errore vero proprio, quello che ci dice l'errore e la linea dove
+  è avvenuto) e renderizza una view error.ejs con le informazioni del errore che verranno quindi visualizate
+  nel browser
+*/
+
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;

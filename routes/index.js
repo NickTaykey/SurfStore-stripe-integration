@@ -5,6 +5,9 @@ const router = express.Router();
 // CONTROLLERS
 const { postRegister } = require("../controllers");
 
+// MIDDLEWARE
+const { errorHandler } = require("../middleware");
+
 /* GET home page. */
 router.get("/", (req, res, next) => {
   res.render("index", { title: "Surf Shop - Home" });
@@ -15,7 +18,10 @@ router.get("/register", (req, res, next) => {
   res.send("GET register");
 });
 // POST register /register
-router.post("/register", postRegister);
+
+// la callback che passiamo è quella ritornata da errorHandler che esegue il codice e in caso di errori
+// esegue il middleware di express
+router.post("/register", errorHandler(postRegister));
 // GET login /login
 router.get("/login", (req, res, next) => {
   res.send("GET login");
