@@ -37,6 +37,15 @@ router.post(
     failureRedirect: "/login"
   })
 );
+
+// GET logout /logout
+router.get("/logout", (req, res, next) => {
+  // facciamo il logout del utente
+  req.logout();
+  // reindirizziamo l'utente alla home page
+  res.redirect("/");
+});
+
 // GET profile /profile
 router.get("/profile", (req, res, next) => {
   res.send("GET profile");
