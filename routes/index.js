@@ -1,6 +1,7 @@
 // PACKAGES
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 
 // CONTROLLERS
 const { postRegister } = require("../controllers");
@@ -27,9 +28,15 @@ router.get("/login", (req, res, next) => {
   res.send("GET login");
 });
 // POST login /login
-router.post("/login", (req, res, next) => {
-  res.send("POST login");
-});
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    // se l'utente si logga con successo vogliamo che venga reindirizzato alla home
+    successRedirect: "/",
+    // altrimenti lo reindirizziamo al form di login
+    failureRedirect: "/login"
+  })
+);
 // GET profile /profile
 router.get("/profile", (req, res, next) => {
   res.send("GET profile");
