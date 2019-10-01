@@ -11,7 +11,7 @@ const { errorHandler } = require("../middleware");
 router.get("/", errorHandler(getPosts));
 
 // NEW GET /posts/new
-router.get("/new", errorHandler(newPost));
+router.get("/new", newPost);
 
 // SHOW GET /posts/:id
 router.get("/:id", (req, res, next) => {
