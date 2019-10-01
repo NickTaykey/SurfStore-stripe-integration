@@ -9,5 +9,9 @@ module.exports = {
         IL FILE INDEX.EJS DI QUELLA CARTELLA 
     */
     res.render("posts", { posts });
+  },
+  // RENDERIZZA IL FORM PER CREARE UN NUOVO POST
+  newPost(req, res, next) {
+    res.render("posts/new");
   }
 };
