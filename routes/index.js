@@ -1,10 +1,9 @@
 // PACKAGES
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
 
 // CONTROLLERS
-const { postRegister } = require("../controllers");
+const { postRegister, postLogin, getLogout } = require("../controllers");
 
 // MIDDLEWARE
 const { errorHandler } = require("../middleware");
@@ -28,23 +27,10 @@ router.get("/login", (req, res, next) => {
   res.send("GET login");
 });
 // POST login /login
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    // se l'utente si logga con successo vogliamo che venga reindirizzato alla home
-    successRedirect: "/",
-    // altrimenti lo reindirizziamo al form di login
-    failureRedirect: "/login"
-  })
-);
+router.post("/login", postLogin);
 
 // GET logout /logout
-router.get("/logout", (req, res, next) => {
-  // facciamo il logout del utente
-  req.logout();
-  // reindirizziamo l'utente alla home page
-  res.redirect("/");
-});
+router.get("/logout", getLogout);
 
 // GET profile /profile
 router.get("/profile", (req, res, next) => {
