@@ -8,7 +8,8 @@ const {
   postCreate,
   postShow,
   postEdit,
-  postUpdate
+  postUpdate,
+  postDestroy
 } = require("../controllers/posts");
 
 // MIDDLEWARES
@@ -33,8 +34,6 @@ router.get("/:id/edit", asyncErrorHandler(postEdit));
 router.put("/:id", asyncErrorHandler(postUpdate));
 
 // DESTROY DELETE /posts/:id
-router.delete("/:id", (req, res, next) => {
-  res.send("Post DESTROY");
-});
+router.delete("/:id", asyncErrorHandler(postDestroy));
 
 module.exports = router;
