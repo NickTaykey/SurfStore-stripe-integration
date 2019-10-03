@@ -1,0 +1,40 @@
+<h1>Edit Post!</h1>
+
+<form action="/posts/<%= post.id %>?_method=PUT" method="POST">
+  <div>
+    <input
+      type="text"
+      placeholder="Title"
+      name="post[title]"
+      value="<%= post.title %>"
+    />
+  </div>
+  <div>
+    <input
+      type="text"
+      placeholder="Price"
+      name="post[price]"
+      value="<%= post.price %>"
+    />
+  </div>
+  <div>
+    <textarea
+      name="post[description]"
+      placeholder="Description"
+      id=""
+      cols="30"
+      rows="10"
+    >
+<%= post.description %></textarea
+    >
+  </div>
+  <div>
+    <input
+      type="text"
+      placeholder="Location"
+      name="post[location]"
+      value="<%= post.location %>"
+    />
+  </div>
+  <input type="submit" value="submit" />
+</form>

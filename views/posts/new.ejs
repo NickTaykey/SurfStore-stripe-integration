@@ -1,15 +1,15 @@
-<h1>Make a new Post!</h1>
+<h1>New Post!</h1>
 
 <form action="/posts" method="POST">
   <div>
-    <input type="text" placeholder="Title" name="title" />
+    <input type="text" placeholder="Title" name="post[title]" />
   </div>
   <div>
-    <input type="text" placeholder="Price" name="price" />
+    <input type="text" placeholder="Price" name="post[price]" />
   </div>
   <div>
     <textarea
-      name="description"
+      name="post[description]"
       placeholder="Description"
       id=""
       cols="30"
@@ -17,7 +17,7 @@
     ></textarea>
   </div>
   <div>
-    <input type="text" placeholder="Location" name="location" />
+    <input type="text" placeholder="Location" name="post[location]" />
   </div>
   <input type="submit" value="submit" />
 </form>

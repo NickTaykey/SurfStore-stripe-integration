@@ -8,6 +8,8 @@ const passport = require("passport");
 const session = require("express-session");
 const app = express();
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
+const bodyParser = require("body-parser");
 
 // MODELS
 const User = require("./models/user");
@@ -16,7 +18,8 @@ const User = require("./models/user");
 mongoose.connect("mongodb://localhost:27017/surf-store", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useFindAndModify: false
 });
 
 // TEST THE CONNECTION
@@ -30,7 +33,7 @@ db.once("open", () => console.log("successfully connected to the DB!"));
 
 // ROUTES
 const indexRouter = require("./routes/index");
-const postRouter = require("./routes/post");
+const postRouter = require("./routes/posts");
 const reviewRouter = require("./routes/reviews");
 
 // GENERAL CONFIGS
@@ -38,11 +41,13 @@ const reviewRouter = require("./routes/reviews");
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(methodOverride("_method"));
 
 // express session config
 app.use(

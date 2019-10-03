@@ -6,7 +6,7 @@ const router = express.Router();
 const { postRegister, postLogin, getLogout } = require("../controllers");
 
 // MIDDLEWARE
-const { errorHandler } = require("../middleware");
+const { asyncErrorHandler } = require("../middleware");
 
 /* GET home page. */
 router.get("/", (req, res, next) => {
@@ -19,9 +19,9 @@ router.get("/register", (req, res, next) => {
 });
 // POST register /register
 
-// la callback che passiamo è quella ritornata da errorHandler che esegue il codice e in caso di errori
+// la callback che passiamo è quella ritornata da asyncErrorHandler che esegue il codice e in caso di errori
 // esegue il middleware di express
-router.post("/register", errorHandler(postRegister));
+router.post("/register", asyncErrorHandler(postRegister));
 // GET login /login
 router.get("/login", (req, res, next) => {
   res.send("GET login");

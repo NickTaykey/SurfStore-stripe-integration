@@ -14,6 +14,6 @@ module.exports = {
     per la gestione degli errori, non mettiamo nessun then in quanto se la promessa è completata con successo non
     vogliamo fare niente, in questo caso il codice è stato completato con successo e tutto è andato bene.
   */
-  errorHandler: fn => (req, res, next) =>
+  asyncErrorHandler: fn => (req, res, next) =>
     Promise.resolve(fn(req, res, next)).catch(next)
 };
