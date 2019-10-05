@@ -10,6 +10,7 @@ const app = express();
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
+const dotEnv = require("dotenv");
 
 // MODELS
 const User = require("./models/user");
@@ -48,6 +49,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(methodOverride("_method"));
+dotEnv.config();
 
 // express session config
 app.use(
