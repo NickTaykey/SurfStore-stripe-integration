@@ -45,7 +45,12 @@ router.get("/:id", asyncErrorHandler(postShow));
     quindi utilizziamo un middleware che ci permette di uploadare multiple immagini da un campo del form,
     questo è upload.array() e prende come parametri il nome del campo file del form con cui sono stati selezionati
     i file da uploadare e il numero massimo di file che possiamo uploadare (STIAMO USANDO L'OGGETTO upload CHE 
-    AVEVAMO CREATO QUANDO AVEVAMO CONFIGURATO MULTER PER ACCEDERE AI METODI DEL UPLOAD)  
+    AVEVAMO CREATO QUANDO AVEVAMO CONFIGURATO MULTER PER ACCEDERE AI METODI DEL UPLOAD), QUESTO MIDDLEWARE GESTISCE L'UPLOAD
+    DEI FILE E CI METTE A DISPOSIZIONE NEL CODICE DEL CONTROLLER UNA PROPRIETA' DI REQ CHE E' req.files CHE E' UN
+    ARRAY CHE CONTIENE TANTI OGGETTI QUANTI FILE SONO STATI UPLOADATI ED OGNI OGGETTO RAPPRESENTA UN FILE, E HA VARIE
+    PROPRIETA' CON INFO SUL FILE, PER ESEMPIO, IL PATH IL NOME, ECC
+    (PRIMA VIENE ESEGUITO QUESTO MIDDLEWARE E I FILE VENGONO CARICATI NELLA CARTELLA UPLOADS E SOLO DOPO IL CONTROLLER
+    VIENE ESEGUITO E POSSIAMO ACCEDERE AL ARRAY DI FILE DA ESSO USANDO req.files)
 */
 router.post("/", upload.array("images", 4), asyncErrorHandler(postCreate));
 

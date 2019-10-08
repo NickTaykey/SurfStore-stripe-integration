@@ -1,3 +1,10 @@
+/* 
+  INCLUDIAMO E CONFIGURIAMO IL PACKAGE PER GESTIRE LE VARIABILI DI AMBIENTE PERCHE' DATO CHE LE USEREMO
+  IN MOLTI PUNTI DEL APP ALLORA VOGLIAMO AVERLE SUBITO PRIMA DI TUTTO IN MODO DA NON AVERE NESSUN TIPO DI
+  PROBLEMA LEGATO AL FATTO CHE LE STIAMO USANDO DA QUALCHE PARTE PRIMA DI AVERLE IMPORTATE
+ */
+require("dotenv").config();
+
 // PACKAGES
 const createError = require("http-errors");
 const express = require("express");
@@ -10,7 +17,6 @@ const app = express();
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
-const dotEnv = require("dotenv");
 
 // MODELS
 const User = require("./models/user");
@@ -49,7 +55,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(methodOverride("_method"));
-dotEnv.config();
 
 // express session config
 app.use(

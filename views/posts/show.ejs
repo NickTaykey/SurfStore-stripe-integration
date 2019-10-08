@@ -1,6 +1,15 @@
 <h1><%= post.title %></h1>
 <div>Price: <%= post.price %></div>
 <div><%= post.description %></div>
+<div>
+  <!-- 
+    CON UN FOREACH ITERIAMO SU ARRAY DELLE IMMAGINI DEL POST E PASSIAMO CIASCUN URL AL TAG IMG IN MODO
+    DA VISUALIZZARE L'IMMAGINE.
+  -->
+  <% post.images.forEach(img=>{ %>
+  <img src="<%= img.url %>" alt="surf board image" width="200px" />
+  <% }) %>
+</div>
 <div><%= post.location %></div>
 <div>
   <a href="/posts/<%= post.id %>/edit">

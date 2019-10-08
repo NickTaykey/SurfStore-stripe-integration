@@ -27,7 +27,7 @@ cloudinary.config({
     PERSONA SE LA CONOSCE PUO' ACCEDERE AL ACCOUNT E USARE L'API QUINDI E' MEGLIO NON FARLA VEDERE TROPPO E CONSERVARLA
     COME VARIABILE DI ABIENTE, PER NON FARLA VEDERE AD OCCHI INDISCRETI.
   */
-  client_secret: process.env.CLOUDINARY_SECRET
+  api_secret: process.env.CLOUDINARY_SECRET
 });
 
 module.exports = {
@@ -42,6 +42,36 @@ module.exports = {
   },
   // POST CREATE
   async postCreate(req, res, next) {
+    /* 
+      FA L'UPLOAD DELLE IMMAGINI CHE L'UTENTE HA CARICATO, IL CUI UPLOAD E' STATO GESTITO DA MULTER E SONO IN
+      UPLODAS (possiamo accedere ai file uploadati usando req.files) SU CLOUDINARY.
+
+
+      CREIAMO UNA NUOVA PROPRIETA' NEL OGGETTO REQ.BODY.POST QUESTA SI CHIAMERA' IMAGES E SARA' UN ARRAY
+      CONTENENTE GLI OGGETTI RAPPRESENTANTI LE IMG UPLOADATE NEL CLOUD, CHE POI SALVEREMO NEL DB PER POI ACCEDERCI
+    */
+    req.body.post.images = [];
+    /* ITERIAMO SU TUTTI GLI OGGETTI FILE PRESENTI NEL ARRAY REQ.FILES */
+    for (const image of req.files) {
+      /* UPLOADIAMO OGNI IMMAGINE NEL CLOUD USANDO L'API DI CLOUDINARY PASSANDO AL METODO IL PATH DEL IMMAGINE  */
+      let img = await cloudinary.v2.uploader.upload(image.path);
+      /* UNA VOLTA COMPLETATO L'UPLOAD AGGIUNGIAMO L'IMMAGINE AL ARRAY SOTTO FORMA DI UN OGGETTO CON 2 PROPRIETA'
+         L'URL A CUI E' ACCESSIBILE SU CLOUDINARY E IL SUO ID SU CLOUDINARY (il primo per poter visualizare l'immagine
+         nelle views e il secondo per poi potere interagire con l'immagine in questione nel cloud per poterla eliminare
+         o manipolarla) SIA L'URL CHE L'ID DEL IMMAGINE SONO NEL OGGETTO CHE CLOUDINARY CI RITORNA QUANDO ABBIAMO
+         COMPLETATO L'UPLOAD
+      */
+      req.body.post.images.push({
+        url: img.secure_url,
+        public_id: img.public_id
+      });
+    }
+    /* 
+       CREIAMO IL POST, ABBIAMO MEMORIZZATO LE IMMAGINI UPLOADATE DIRETTAMENTE IN UN ARRAY IN REQ.BODY.POST
+       PERCHE' IL QUESTO MODO C'E' LE ABBIAMO DIRETTAMENTE NEL OGGETTO CHE VOGLIAMO SALVARE NEL DB, E NON DOBBIAMO
+       CREARE UN NUOVO ARRAY E ASSOCIARLO AL REQ.BODY.POST MA UNA VOLTA CHE ABBIAMO UPLOADATO LE IMGS E POPOLATO L'ARRAY
+       DOBBIAMO PASSARE SOLO REQ.BODY.POST AL METODO PER SALVARLO NEL DB.
+     */
     let post = await Post.create(req.body.post);
     res.redirect(`/posts/${post.id}`);
   },

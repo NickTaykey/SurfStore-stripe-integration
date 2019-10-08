@@ -1,8 +1,34 @@
 <h1>New Post!</h1>
-
-<form action="/posts" method="POST">
+<!-- 
+  PER UPLOADARE FILE O IMMAGINI IL FORM DEVE AVERE COME METODO POST E VALORE DI 
+  enctype "multipart/form-data", quest ultimo attributo ci serve per poter caricare i file nel server usando
+  il form, inoltre il metodo della richiesta deve essere POST perchè altrimenti non possiamo usare questo valore
+  di enctype e quindi non possiamo caricare files 
+-->
+<form action="/posts" method="POST" enctype="multipart/form-data">
   <div>
     <input type="text" placeholder="Title" name="post[title]" />
+  </div>
+  <div>
+    <!-- USIAMO IL TAG input CON type="file" PER CREARE UN CAMPO DEL FORM CHE PERMETTE AL UTENTE DI SCEGLIERE
+         E DI CARICARE DEI FILE
+
+         USIAMO L'ATTRIBUTO multiple PER POTER CARICARE PIU' FILE DALLO STESSO INPUT SELEZIONANDO TUTTI I FILE
+         DA CARICARE DALLA FINESTRA DEL FINDER
+
+         USIAMO L'ATTRIBUTO accept PER SPECIFICARE QUALI TIPI DI FILE L'UTENTE PUO' SELEZIONARE PER UPLOADARE,
+         PUO' ASSUMERE DIVERSI VALORI:
+
+          "image/*"  ->  SOLO FILE IMMAGINI
+          "video/*"  ->  SOLO FILE VIDEO
+          "audio/*"  ->  SOLO FILE AUDIO
+          ".est1, .est2" -> SOLO I FILE CON LE ESTENSIONI SPECIFICATE CON IL . DAVANTI E SEPARATE DA UNA ,
+                            SE E' SOLO 1 SCRIVIAMO SOLO .ESTENSIONE
+
+          "media_type" -> SOLO FILE MEDIA PER ESEMPIO, AUDIO, VIDEO O IMMAGINI.
+
+       -->
+    <input type="file" name="images" accept="image/*" multiple />
   </div>
   <div>
     <input type="text" placeholder="Price" name="post[price]" />
