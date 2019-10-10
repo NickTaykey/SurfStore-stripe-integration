@@ -1,6 +1,6 @@
 <h1>Edit Post!</h1>
 
-<form action="/posts/<%= post.id %>?_method=PUT" method="POST">
+<form action="/posts/<%= post.id %>?_method=PUT" method="POST" id="editForm">
   <div>
     <input
       type="text"
@@ -17,6 +17,29 @@
       value="<%= post.price %>"
     />
   </div>
+  <div>
+    <input
+      type="file"
+      name="images"
+      accept="image/*"
+      id="imageUpload"
+      multiple
+    />
+    <div>
+      <% post.images.forEach(function(img, i){ %>
+      <img src="<%= img.url %>" alt="SurfBoardImage" width="100px" />
+      <label for="image<%= i %>">Delete?</label>
+      <input
+        class="deleteImageCheckbox"
+        type="checkbox"
+        name="deleteImage"
+        id="image<%= i %>"
+        value="<%= img.public_id %>"
+      />
+      <% }) %>
+    </div>
+  </div>
+
   <div>
     <textarea
       name="post[description]"
@@ -38,3 +61,33 @@
   </div>
   <input type="submit" value="submit" />
 </form>
+<script>
+  // selezioniamo il form
+  let form = document.getElementById("editForm");
+  // settiamo un evento submit che scatta ogni volta che l'utente prova ad inviare il form
+  form.addEventListener("submit", function(event) {
+    // troviamo il numero di immagini che sta cercando di uploadare
+    let uploadImages = document.getElementById("imageUpload").files.length;
+    // troviamo il numero di immagini che vuole rimuovere
+    let deleteImages = document.querySelectorAll(".deleteImageCheckbox:checked")
+      .length;
+    // troviamo il numero di immagini che vuole terere delle originali
+    let existingImages = document.querySelectorAll(".deleteImageCheckbox")
+      .length;
+    /*  
+      troviamo il numero di immagini totali che sta cercando di postare
+      quelle che vuole uploadare - quelle che vuole eliminare + quelle che ci sono già
+    */
+    let newTot = uploadImages - deleteImages + existingImages;
+    // se sta cercando di uploadare più di 4 immagini
+    if (newTot > 4) {
+      // fermiamo l'inivio del form
+      event.preventDefault();
+      /* 
+        e mandiamo un messaggio di errore in cui diciamo che deve rimouvere le n immagini in eccesso
+        se è solo un immagine non aggiungiamo la "s" ad image altrimenti la mettiamo 
+      */
+      alert(`Please remove ${newTot - 4} image${newTot - 4 === 1 ? "" : "s"}`);
+    }
+  });
+</script>

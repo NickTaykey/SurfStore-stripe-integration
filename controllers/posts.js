@@ -87,6 +87,9 @@ module.exports = {
   },
   // UPDATE POST
   async postUpdate(req, res, next) {
+    // check if the user images in the cloud + new imgs uploaded <= 4
+    // handle imgs deletion
+    // handle updated imgs upload
     let post = await Post.findByIdAndUpdate(req.params.id, req.body.post);
     res.redirect(`/posts/${post.id}`);
   },
