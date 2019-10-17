@@ -87,10 +87,52 @@ module.exports = {
   },
   // UPDATE POST
   async postUpdate(req, res, next) {
-    // check if the user images in the cloud + new imgs uploaded <= 4
-    // handle imgs deletion
-    // handle updated imgs upload
-    let post = await Post.findByIdAndUpdate(req.params.id, req.body.post);
+    // selezioniamo il post per id
+    let post = await Post.findById(req.params.id);
+    // controlliamo se abbiamo delle immagini da cancellare
+    if (req.body.deleteImages) {
+      // per comodità assegnamo l'array delle immagini da eliminiare ad una variabile
+      const deleteImages = req.body.deleteImages;
+      // iteriamo sulle immagini da eliminare (usiamo il for of perchè stiamo usando ES6 e anche perchè ci
+      // permette di usare await direttamente al interno del ciclo senza dovere usare funzioni async)
+      for (const public_id of deleteImages) {
+        // cancelliamo l'immagine dal cloudinary
+        await cloudinary.v2.uploader.destroy(public_id);
+        // cancelliamo l'immagine dal array  DB
+        for (const image of post.images) {
+          // troviamo l'oggetto nel array che la rappresenta e che vogliamo eliminare
+          if (image.public_id === public_id) {
+            // troviamo l'indice del elemento da eliminare nel array
+            let index = post.images.indexOf(image);
+            // lo eliminiamo usando il suo indice
+            post.images.splice(index, 1);
+          }
+        }
+      }
+    }
+    // controlliamo se dobbiamo uploadare nuove immagini
+    // (se la lughezza del array è 0 dato che 0 è considerato
+    // come false allora il codice del if non verrà eseguito)
+    if (req.files.length) {
+      // iteriamo sull'array delle immagini da uploadare
+      for (const image of req.files) {
+        //uploadiamo l'immagine
+        let img = await cloudinary.v2.uploader.upload(image.path);
+        // aggiungiamo l'immagine al array in DB
+        post.images.push({
+          url: img.secure_url,
+          public_id: img.public_id
+        });
+      }
+    }
+    // aggiorniamo le altre proprietà del post
+    post.title = req.body.post.title;
+    post.price = req.body.post.price;
+    post.description = req.body.post.description;
+    post.location = req.body.post.location;
+    // salviamo le modifiche
+    post.save();
+    // reindirizziamo l'utente alla show page
     res.redirect(`/posts/${post.id}`);
   },
   // DESTROY POST

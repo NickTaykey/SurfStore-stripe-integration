@@ -58,7 +58,8 @@ router.post("/", upload.array("images", 4), asyncErrorHandler(postCreate));
 router.get("/:id/edit", asyncErrorHandler(postEdit));
 
 // UPDATE PUT /posts/:id
-router.put("/:id", asyncErrorHandler(postUpdate));
+// middleware upload.array per gestire l'upload di file multipli da un solo campo in un form
+router.put("/:id", upload.array("images", 4), asyncErrorHandler(postUpdate));
 
 // DESTROY DELETE /posts/:id
 router.delete("/:id", asyncErrorHandler(postDestroy));
