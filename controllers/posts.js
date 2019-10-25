@@ -137,7 +137,10 @@ module.exports = {
   },
   // DESTROY POST
   async postDestroy(req, res, next) {
-    await Post.findByIdAndRemove(req.params.id);
+    let post = await Post.findByIdAndRemove(req.params.id);
+    for (const image of post.images) {
+      await cloudinary.v2.uploader.destroy(image.public_id);
+    }
     res.redirect("/posts");
   }
 };
