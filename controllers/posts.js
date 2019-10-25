@@ -90,7 +90,7 @@ module.exports = {
     // selezioniamo il post per id
     let post = await Post.findById(req.params.id);
     // controlliamo se abbiamo delle immagini da cancellare
-    if (req.body.deleteImages) {
+    if (req.body.deleteImages && req.body.deleteImages.length) {
       // per comodità assegnamo l'array delle immagini da eliminiare ad una variabile
       const deleteImages = req.body.deleteImages;
       // iteriamo sulle immagini da eliminare (usiamo il for of perchè stiamo usando ES6 e anche perchè ci
