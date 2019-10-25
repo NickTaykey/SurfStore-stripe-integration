@@ -137,10 +137,13 @@ module.exports = {
   },
   // DESTROY POST
   async postDestroy(req, res, next) {
+    // salviamo il post eliminato in una variabile
     let post = await Post.findByIdAndRemove(req.params.id);
+    // iteriamo su tutte le immagini che il post aveva e LE ELIMINIAMO DA CLOUDINARY
     for (const image of post.images) {
       await cloudinary.v2.uploader.destroy(image.public_id);
     }
+    // reindirizziamo l'utente alla show page
     res.redirect("/posts");
   }
 };
