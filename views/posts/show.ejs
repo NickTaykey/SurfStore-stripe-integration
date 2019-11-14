@@ -1,16 +1,22 @@
+<!-- INCLUDIAMO IL JAVASCRIPT PER VISUALIZZARE LE MAPPE DALLA CDN DI MAPBOX -->
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+<!-- INCLUDIAMO IL CSS DELLE MAPPE (sempre con la CDN di mapbox) -->
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+<!-- INCLUDIAMO IL NOSTRO FILE CSS CUSTOM (per aggiustare la visualizzazione della mappa) -->
+<link rel="stylesheet" href="/stylesheets/show.css">
+
+
 <h1><%= post.title %></h1>
 <div>Price: <%= post.price %></div>
 <div><%= post.description %></div>
 <div>
-  <!-- 
-    CON UN FOREACH ITERIAMO SU ARRAY DELLE IMMAGINI DEL POST E PASSIAMO CIASCUN URL AL TAG IMG IN MODO
-    DA VISUALIZZARE L'IMMAGINE.
-  -->
   <% post.images.forEach(img=>{ %>
   <img src="<%= img.url %>" alt="surf board image" width="200px" />
   <% }) %>
 </div>
 <div><%= post.location %></div>
+<!-- LA MAPPA ANDRA' QUI (in un div con id MAP) -->
+<div id='map'></div>
 <div>
   <a href="/posts/<%= post.id %>/edit">
     <button>Edit</button>
@@ -21,3 +27,8 @@
     <input type="submit" value="Delete" />
   </form>
 </div>
+<!-- 
+  JAVASCRIPT CUSTOM PER VISUALIZZARE LA MAPPA (usando il codice di mapbox) E SETTARE I MARKER CON I RELATIVI
+  POPUP 
+-->
+<script src="/javascripts/showPostMap.js"></script>
