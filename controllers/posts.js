@@ -30,6 +30,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET
 });
 
+// package per usare le API di mapbox per la geolocalizzazione
+const mapbox = require("@mapbox/mapbox-sdk/services/geocoding");
+// mapbox account config
+const geoCodeClient = mapbox({ accessToken: process.env.MAPBOX_TOKEN })
+
+
 module.exports = {
   // POST INDEX
   async postIndex(req, res, next) {
@@ -66,6 +72,12 @@ module.exports = {
         public_id: img.public_id
       });
     }
+    /* UNA VOLTA UPLOADATE LE IMMAGINI TROVIAMO LE COORDINATE DEL LUOGO RELATIVO AL POST CON L'API DI MAPBOX */
+    let resonse = await geoCodeClient.forwardGeocode({ query: req.body.post.location, limit: 1 }).send();
+    // mettiamo le coordinate restituiteci dal api in un array in req.body.post in modo da salvarle nel DB passando 
+    // req.body.post a create
+    req.body.post.coordinates = resonse.body.features[0].geometry.coordinates;
+
     /* 
        CREIAMO IL POST, ABBIAMO MEMORIZZATO LE IMMAGINI UPLOADATE DIRETTAMENTE IN UN ARRAY IN REQ.BODY.POST
        PERCHE' IL QUESTO MODO C'E' LE ABBIAMO DIRETTAMENTE NEL OGGETTO CHE VOGLIAMO SALVARE NEL DB, E NON DOBBIAMO
