@@ -33,23 +33,6 @@
 -->
 <script>
   /*
-     dato che vogliamo mostrare il luogo del post nella mappa allora abbiamo bisogno di accedere al oggetto
-     che rappresenta il post, questo lo avevamo già insertito nel template come variabile ejs, ma adesso dobbiamo usarlo da dentro il javascript lato client quindi non possiamo usarlo da variabile EJS ma dobbiamo metterlo al interno di una variabile JS, per fare questo dichiariamo la variabile post in cui
-     metteremo l'oggetto in questione, ed usiamo i tag EJS per stampare il valore di quella variabile EJS in modo da usarlo come valore di inizializzazione della variabile javascript, (usiamo il tag con - al posto che quello con = PERCHE' NON VOGLIAMO CHE L'OUTPUT VENGA ESCAPATO E NON VENGA CONSIDERATO PIU' COME CODICE JS VALIDO), inoltre dato che l'oggetto che vogliamo stampare NON E' UNA STRINGA allora lo vogliamo convertire in una stringa che lo rappresenti IN QUESTO MODO POSSIAMO STAMPARLO.
-  
-     FACENDO IN QUESTO MODO QUANDO IL TEMPLATE VERRA' COMPILATO IN VERO HTML E JS ALLORA QUESTA IL VALORE CHE
-     E' STATO STAMPATO DA EJS SARA' ASSOCIATO ALLA VARIABILE POST, E QUINDI ESSA CONTERRA' IL VERO E PROPRIO
-     OGGETTO CHE RAPPRESENTA IL POST IN QUESTIONE
-  
-     piccola hack per poter usare gli oggetti che sono variabile ejs al interno del javascript lato client memorizzati come variabili javascript.
-  
-   */
-  const post = <%- JSON.stringify(post) %>;
-</script>
-<script src="/javascripts/showPostMap.js"></script>
-<!-- 
-<script>
-  /*
 	dato che vogliamo mostrare il luogo del post nella mappa allora abbiamo bisogno di accedere al oggetto
 	che rappresenta il post, questo lo avevamo già insertito nel template come variabile ejs, ma adesso dobbiamo usarlo da dentro il javascript lato client quindi non possiamo usarlo da variabile EJS ma dobbiamo metterlo al interno di una variabile JS, per fare questo dichiariamo la variabile post in cui
 	metteremo l'oggetto in questione, ed usiamo i tag EJS per stampare il valore di quella variabile EJS in modo da usarlo come valore di inizializzazione della variabile javascript, (usiamo il tag con - al posto che quello con = PERCHE' NON VOGLIAMO CHE L'OUTPUT VENGA ESCAPATO E NON VENGA CONSIDERATO PIU' COME CODICE JS VALIDO), inoltre dato che l'oggetto che vogliamo stampare NON E' UNA STRINGA allora lo vogliamo convertire in una stringa che lo rappresenti IN QUESTO MODO POSSIAMO STAMPARLO.
@@ -129,4 +112,4 @@
     .addTo(map);
 
 
-</script> -->
+</script>

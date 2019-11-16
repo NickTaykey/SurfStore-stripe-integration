@@ -137,11 +137,15 @@ module.exports = {
         });
       }
     }
+    if (req.body.post.location !== post.location) {
+      let response = await geoCodeClient.forwardGeocode({ query: req.body.post.location, limit: 1 }).send();
+      post.location = req.body.post.location;
+      post.coordinates = response.body.features[0].geometry.coordinates;
+    }
     // aggiorniamo le altre proprietà del post
     post.title = req.body.post.title;
     post.price = req.body.post.price;
     post.description = req.body.post.description;
-    post.location = req.body.post.location;
     // salviamo le modifiche
     post.save();
     // reindirizziamo l'utente alla show page
