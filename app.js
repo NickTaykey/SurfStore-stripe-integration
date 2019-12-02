@@ -8,6 +8,7 @@ require("dotenv").config();
 // PACKAGES
 const createError = require("http-errors");
 const express = require("express");
+const engine = require("ejs-mate");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -45,6 +46,8 @@ const reviewRouter = require("./routes/reviews");
 
 // GENERAL CONFIGS
 
+// dichiariamo ad express che vogliamo usare ejs-mate su tutti i template ejs (x gestire i template)
+app.engine("ejs", engine);
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -74,10 +77,19 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+/* TUTTI I MIDDLEWARE PRIMA DEL MONTAGGIO DELLE ROUTE VENGONO ESEGUITI PRIMA DEL CODICE DI OGNI ROUTE */
+// setta titolo di default per ogni view
+app.use((req, res, next) => {
+  res.locals.title = "Surf Shop";
+  next();
+});
+
 // RUOTES
 app.use("/", indexRouter);
 app.use("/posts", postRouter);
 app.use("/posts/:id/reviews", reviewRouter);
+
+/* TUTTI I MIDDLEWARE PRIMA DEL MONTAGGIO DELLE ROUTE VENGONO ESEGUITI DOPO DEL CODICE DI OGNI ROUTE */
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

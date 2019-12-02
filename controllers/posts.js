@@ -4,7 +4,7 @@ const Post = require("../models/post");
   e non sprecare spazio nel nostro server
 */
 const cloudinary = require("cloudinary");
-
+const fs = require("fs");
 /* 
    CONFIGURIAMO CLOUDINARY USANDO IL METODO CONFIG A CUI PASSIAMO UN OGGETTO DI OPZIONI, CHE AVRA' 3
    PROPRIETA' CHE CI SERVONO PER AUTENTICARCI CON IL NOSTRO ACCOUNT E QUINDI USARE LE API PER ACCEDERE
@@ -33,18 +33,17 @@ cloudinary.config({
 // package per usare le API di mapbox per la geolocalizzazione
 const mapbox = require("@mapbox/mapbox-sdk/services/geocoding");
 // mapbox account config
-const geoCodeClient = mapbox({ accessToken: process.env.MAPBOX_TOKEN })
-
+const geoCodeClient = mapbox({ accessToken: process.env.MAPBOX_TOKEN });
 
 module.exports = {
   // POST INDEX
   async postIndex(req, res, next) {
     let posts = await Post.find();
-    res.render("posts", { posts });
+    res.render("posts", { posts, title: "Surf Store - Index" });
   },
   // POST NEW
   postNew(req, res, next) {
-    res.render("posts/new");
+    res.render("posts/new", { title: "Surf Store - New Post" });
   },
   // POST CREATE
   async postCreate(req, res, next) {
@@ -71,10 +70,13 @@ module.exports = {
         url: img.secure_url,
         public_id: img.public_id
       });
+      fs.unlinkSync(image.path);
     }
     /* UNA VOLTA UPLOADATE LE IMMAGINI TROVIAMO LE COORDINATE DEL LUOGO RELATIVO AL POST CON L'API DI MAPBOX */
-    let resonse = await geoCodeClient.forwardGeocode({ query: req.body.post.location, limit: 1 }).send();
-    // mettiamo le coordinate restituiteci dal api in un array in req.body.post in modo da salvarle nel DB passando 
+    let resonse = await geoCodeClient
+      .forwardGeocode({ query: req.body.post.location, limit: 1 })
+      .send();
+    // mettiamo le coordinate restituiteci dal api in un array in req.body.post in modo da salvarle nel DB passando
     // req.body.post a create
     req.body.post.coordinates = resonse.body.features[0].geometry.coordinates;
 
@@ -90,12 +92,18 @@ module.exports = {
   // POST SHOW
   async postShow(req, res, next) {
     let post = await Post.findById(req.params.id);
-    res.render("posts/show", { post });
+    res.render("posts/show", {
+      post,
+      title: `Surf Store - Show ${post.title}`
+    });
   },
   // EDIT POST
   async postEdit(req, res, next) {
     let post = await Post.findById(req.params.id);
-    res.render("posts/edit", { post });
+    res.render("posts/edit", {
+      post,
+      title: `Surf Store - Edit ${post.title}`
+    });
   },
   // UPDATE POST
   async postUpdate(req, res, next) {
@@ -135,10 +143,13 @@ module.exports = {
           url: img.secure_url,
           public_id: img.public_id
         });
+        fs.unlinkSync(image.path);
       }
     }
     if (req.body.post.location !== post.location) {
-      let response = await geoCodeClient.forwardGeocode({ query: req.body.post.location, limit: 1 }).send();
+      let response = await geoCodeClient
+        .forwardGeocode({ query: req.body.post.location, limit: 1 })
+        .send();
       post.location = req.body.post.location;
       post.coordinates = response.body.features[0].geometry.coordinates;
     }
