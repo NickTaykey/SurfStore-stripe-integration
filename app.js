@@ -78,9 +78,17 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 /* TUTTI I MIDDLEWARE PRIMA DEL MONTAGGIO DELLE ROUTE VENGONO ESEGUITI PRIMA DEL CODICE DI OGNI ROUTE */
-// setta titolo di default per ogni view
+// setta titolo di default per ogni view E IMPLEMENTA FLASH MESSAGES
 app.use((req, res, next) => {
   res.locals.title = "Surf Shop";
+  // se ci sono messaggi di errore sulla sessione settiamo la variabile della view
+  res.locals.error = req.session.error || "";
+  // eliminiamo l'errore dalla sessione
+  delete req.session.error;
+  // se ci sono messaggi di successo sulla sessione settiamo la variabile della view
+  res.locals.success = req.session.success || "";
+  // eliminiamo l'errore dalla sessione
+  delete req.session.success;
   next();
 });
 
@@ -108,13 +116,19 @@ app.use((req, res, next) => {
 */
 
 app.use((err, req, res, next) => {
-  // set locals, only providing error in development
+  /* // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.render("error"); */
+  // settiamo la sessione
+  req.session.error = err.message;
+  // stampiamo l'errore nei log
+  console.log(err);
+  // reindirizziamo indietro
+  res.redirect("back");
 });
 
 module.exports = app;

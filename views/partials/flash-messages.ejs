@@ -1,0 +1,6 @@
+<!-- controlliamo se ci sono messaggi di errore o di successo e li mostriamo -->
+<% if(error && error.length){ %>
+<h1 style="color: red;"><%= error %></h1>
+<% } %> <% if(success && success.length){ %>
+<h1 style="color: green;"><%= success %></h1>
+<% } %>
