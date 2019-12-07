@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="/stylesheets/post-show.css" />
   </head>
   <body>
-    <% include ../partials/navbar %> <%- body -%>
+    <% include ../partials/navbar %> <% include ../partials/flash-messages %>
+    <%- body -%>
     <script>
       const post = <%- JSON.stringify(post) %>;
     </script>

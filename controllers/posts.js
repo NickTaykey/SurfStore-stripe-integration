@@ -87,10 +87,13 @@ module.exports = {
        DOBBIAMO PASSARE SOLO REQ.BODY.POST AL METODO PER SALVARLO NEL DB.
      */
     let post = await Post.create(req.body.post);
+    req.session.success = "Post successfully created!";
     res.redirect(`/posts/${post.id}`);
   },
   // POST SHOW
   async postShow(req, res, next) {
+    // x generare un errore
+    // throw new Error("huge error");
     let post = await Post.findById(req.params.id);
     res.render("posts/show", {
       post,
