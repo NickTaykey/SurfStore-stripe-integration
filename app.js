@@ -126,7 +126,7 @@ app.use((err, req, res, next) => {
   // settiamo la sessione
   req.session.error = err.message;
   // stampiamo l'errore nei log
-  console.log(err);
+  if (err.message !== "Not Found") console.log(err);
   // reindirizziamo indietro
   res.redirect("back");
 });
