@@ -94,7 +94,6 @@ module.exports = {
   async postShow(req, res, next) {
     // x generare un errore
     // throw new Error("huge error");
-<<<<<<< HEAD
     let post = await Post.findById(req.params.id).populate({
       path: "reviews",
       options: {
@@ -102,9 +101,6 @@ module.exports = {
         populate: { path: "author", model: "User" }
       }
     });
-=======
-    let post = await Post.findById(req.params.id);
->>>>>>> fe64d657b522208df1344e7d6f96392d9bd273d2
     res.render("posts/show", {
       post,
       title: `Surf Store - Show ${post.title}`

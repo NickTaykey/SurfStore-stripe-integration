@@ -16,3 +16,10 @@ new mapboxgl.Marker(el)
     )
   )
   .addTo(map);
+
+$(".edit-review-button").click(function() {
+  $(this).text() === "Edit" ? $(this).text("Cancel") : $(this).text("Edit");
+  $(this)
+    .siblings(".edit-review-form")
+    .toggle();
+});

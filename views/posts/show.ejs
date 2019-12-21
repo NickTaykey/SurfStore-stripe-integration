@@ -41,6 +41,27 @@
   <strong><%= review.author.username %></strong>
   <p><%= review.body %></p>
   <small><%= review.rating %> Stars</small>
+  <button class="edit-review-button">Edit</button>
+  <form
+    action="/posts/<%= post.id %>/reviews/<%= review.id %>?_method=PUT"
+    method="POST"
+    class="edit-review-form"
+  >
+    <textarea name="review[body]" id="" cols="30" rows="10" required>
+<%= review.body %></textarea
+    >
+    <input
+      type="number"
+      name="review[rating]"
+      min="1"
+      step="1"
+      max="5"
+      id=""
+      value="<%= review.rating %>"
+      required
+    />
+    <input type="submit" value="Update" />
+  </form>
 </div>
 <hr />
 <% }) %>
