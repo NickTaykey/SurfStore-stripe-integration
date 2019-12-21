@@ -96,7 +96,10 @@ module.exports = {
     // throw new Error("huge error");
     let post = await Post.findById(req.params.id).populate({
       path: "reviews",
-      options: { sort: { _id: -1 } }
+      options: {
+        sort: { _id: -1 },
+        populate: { path: "author", model: "User" }
+      }
     });
     res.render("posts/show", {
       post,

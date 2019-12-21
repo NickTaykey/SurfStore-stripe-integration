@@ -89,6 +89,14 @@ app.use((req, res, next) => {
   res.locals.success = req.session.success || "";
   // eliminiamo l'errore dalla sessione
   delete req.session.success;
+
+  // settiamo un utente sempre loggato
+  req.user = {
+    _id: "5dfe539e1d7c37040f815fb8",
+    username: "nick"
+  };
+  res.locals.currentUser = req.user;
+
   next();
 });
 
