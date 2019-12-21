@@ -12,7 +12,11 @@ module.exports = {
     res.redirect(`/posts/${post.id}`);
   },
   // UPDATE REVIEW
-  async reviewUpdate(req, res, next) {},
+  async reviewUpdate(req, res, next) {
+    await Review.findByIdAndUpdate(req.params.review_id, req.body.review);
+    req.session.success = "review successfully updated!";
+    res.redirect("back");
+  },
   // DESTROY REVIEW
   async reviewDestroy(req, res, next) {}
 };
