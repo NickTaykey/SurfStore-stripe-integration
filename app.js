@@ -89,7 +89,6 @@ app.use((req, res, next) => {
   res.locals.success = req.session.success || "";
   // eliminiamo l'errore dalla sessione
   delete req.session.success;
-<<<<<<< HEAD
 
   // settiamo un utente sempre loggato
   req.user = {
@@ -98,8 +97,6 @@ app.use((req, res, next) => {
   };
   res.locals.currentUser = req.user;
 
-=======
->>>>>>> fe64d657b522208df1344e7d6f96392d9bd273d2
   next();
 });
 
@@ -137,11 +134,8 @@ app.use((err, req, res, next) => {
   // settiamo la sessione
   req.session.error = err.message;
   // stampiamo l'errore nei log
-<<<<<<< HEAD
   if (err.message !== "Not Found") console.log(err);
-=======
   console.log(err);
->>>>>>> fe64d657b522208df1344e7d6f96392d9bd273d2
   // reindirizziamo indietro
   res.redirect("back");
 });
