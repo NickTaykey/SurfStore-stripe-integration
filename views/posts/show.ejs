@@ -41,6 +41,7 @@
   <strong><%= review.author.username %></strong>
   <p><%= review.body %></p>
   <small><%= review.rating %> Stars</small>
+  <% if(review.author.equals(currentUser._id)){ %>
   <button class="edit-review-button">Edit</button>
   <form
     action="/posts/<%= post.id %>/reviews/<%= review.id %>?_method=PUT"
@@ -62,6 +63,7 @@
     />
     <input type="submit" value="Update" />
   </form>
+  <% } %>
 </div>
 <hr />
 <% }) %>

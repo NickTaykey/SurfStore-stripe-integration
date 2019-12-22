@@ -1,3 +1,5 @@
+const Review = require("../models/review");
+
 // GENERAL PURPOSE MIDDLEWARES
 module.exports = {
   /*
@@ -14,6 +16,14 @@ module.exports = {
     per la gestione degli errori, non mettiamo nessun then in quanto se la promessa è completata con successo non
     vogliamo fare niente, in questo caso il codice è stato completato con successo e tutto è andato bene.
   */
-  asyncErrorHandler: fn => (req, res, next) =>
-    Promise.resolve(fn(req, res, next)).catch(next)
+  asyncErrorHandler(fn) {
+    return (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+  },
+  // controlla se l'utente loggato ha creato la review in questione
+  async checkReviewAuthor(req, res, next) {
+    let review = await Review.findById(req.params.review_id);
+    if (review.author.equals(req.user._id)) return next();
+    req.session.error = "You are not authorized to update that review";
+    res.redirect(`/posts/${req.params.id}/`);
+  }
 };
