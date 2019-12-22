@@ -3,7 +3,18 @@ const Post = require("../models/post"),
 module.exports = {
   // REVIEW CREATE
   async reviewCreate(req, res, next) {
-    let post = await Post.findById(req.params.id);
+    // popoliamo le review in quanto dobbiamo accedere al id del autore
+    let post = await Post.findById(req.params.id)
+      .populate("reviews")
+      .exec();
+    // filtriamo l'array delle review e selezioniamo solo quelle che sono state create dal utente loggato
+    let usersReview = post.reviews.filter(review =>
+      review.author._id.equals(req.user._id)
+    ).length;
+    if (usersReview) {
+      req.session.error = "You can only post one review";
+      return res.redirect("back");
+    }
     req.body.review.author = req.user._id;
     let review = await Review.create(req.body.review);
     post.reviews.push(review);

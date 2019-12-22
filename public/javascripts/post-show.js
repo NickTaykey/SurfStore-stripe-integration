@@ -23,3 +23,7 @@ $(".edit-review-button").click(function() {
     .siblings(".edit-review-form")
     .toggle();
 });
+
+$(".delete-review-form").submit(function(event) {
+  alert("are you sure you want to delete your review?");
+});

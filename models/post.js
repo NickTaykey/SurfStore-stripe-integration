@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Review = require("./review");
 
 const Schema = mongoose.Schema;
 
@@ -24,6 +25,13 @@ const PostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User"
   }
+});
+
+// prima di rimuover un post rimuovi tutte le reviews ad esso associate
+PostSchema.pre("remove", async function() {
+  await Review.remove({
+    _id: { $in: this.reviews }
+  });
 });
 
 module.exports = mongoose.model("Post", PostSchema);
