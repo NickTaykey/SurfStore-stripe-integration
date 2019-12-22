@@ -18,5 +18,14 @@ module.exports = {
     res.redirect("back");
   },
   // DESTROY REVIEW
-  async reviewDestroy(req, res, next) {}
+  async reviewDestroy(req, res, next) {
+    // eliminare review dal post
+    await Post.findByIdAndUpdate(req.params.id, {
+      $pull: { reviews: req.params.review_id }
+    });
+    // eliminare review
+    await Review.findByIdAndRemove(req.params.review_id);
+    req.session.success = "review successfully deleted!";
+    res.redirect("back");
+  }
 };
