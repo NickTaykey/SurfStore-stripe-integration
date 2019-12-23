@@ -22,25 +22,42 @@
 </div>
 <!-- REVIEWS -->
 <h2>Leave a review</h2>
-<form action="/posts/<%= post._id %>/reviews" method="post">
-  <textarea name="review[body]" id="" cols="30" rows="10" required></textarea>
-  <input
-    type="number"
-    name="review[rating]"
-    min="1"
-    step="1"
-    max="5"
-    id=""
-    required
-  />
+<form
+  action="/posts/<%= post._id %>/reviews"
+  method="post"
+  class="new-review-form"
+>
+  <textarea name="review[body]" cols="30" rows="10" required></textarea>
+  <fieldset class="starability-basic">
+    <legend>rating:</legend>
+    <input
+      type="radio"
+      id="no-rate"
+      class="input-no-rate"
+      name="review[rating]"
+      value="0"
+      checked
+      aria-label="No rating."
+    />
+    <input type="radio" id="rate1" name="review[rating]" value="1" />
+    <label for="rate1" title="Terrible">1 star</label>
+    <input type="radio" id="rate2" name="review[rating]" value="2" />
+    <label for="rate2" title="Not good">2 stars</label>
+    <input type="radio" id="rate3" name="review[rating]" value="3" />
+    <label for="rate3" title="Average">3 stars</label>
+    <input type="radio" id="rate4" name="review[rating]" value="4" />
+    <label for="rate4" title="Very good">4 stars</label>
+    <input type="radio" id="rate5" name="review[rating]" value="5" />
+    <label for="rate5" title="Amazing">5 stars</label>
+  </fieldset>
   <input type="submit" value="Submit" />
 </form>
 <h3>all the reviews</h3>
 <% post.reviews.forEach(function(review){ %>
 <div>
   <strong><%= review.author.username %></strong>
+  <p class="starability-result" data-rating="<%= review.rating %>"></p>
   <p><%= review.body %></p>
-  <small><%= review.rating %> Stars</small>
   <% if(review.author.equals(currentUser._id)){ %>
   <br />
   <button class="edit-review-button">Edit</button>
@@ -49,21 +66,37 @@
     method="POST"
     class="edit-review-form"
   >
-    <textarea name="review[body]" id="" cols="30" rows="10" required>
+    <textarea name="review[body]" cols="30" rows="10" required>
 <%= review.body %></textarea
     >
-    <input
-      type="number"
-      name="review[rating]"
-      min="1"
-      step="1"
-      max="5"
-      id=""
-      value="<%= review.rating %>"
-      required
-    />
+    <fieldset class="starability-basic">
+      <legend>Edit rating:</legend>
+      <input
+        type="radio"
+        id="edit-no-rate"
+        class="input-no-rate"
+        name="review[rating]"
+        value="0"
+        checked
+        aria-label="No rating."
+      />
+      <input type="radio" id="edit-rate1" name="review[rating]" value="1" />
+      <label for="edit-rate1" title="Terrible">1 star</label>
+      <input type="radio" id="edit-rate2" name="review[rating]" value="2" />
+      <label for="edit-rate2" title="Not good">2 stars</label>
+      <input type="radio" id="edit-rate3" name="review[rating]" value="3" />
+      <label for="edit-rate3" title="Average">3 stars</label>
+      <input type="radio" id="edit-rate4" name="review[rating]" value="4" />
+      <label for="edit-rate4" title="Very good">4 stars</label>
+      <input type="radio" id="edit-rate5" name="review[rating]" value="5" />
+      <label for="edit-rate5" title="Amazing">5 stars</label>
+    </fieldset>
     <input type="submit" value="Update" />
   </form>
+  <script>
+    $("#edit-rate<%= review.rating %>").prop("checked", true);
+  </script>
+
   <form
     action="/posts/<%= post._id %>/reviews/<%= review._id %>?_method=DELETE"
     method="post"
@@ -75,3 +108,12 @@
 </div>
 <hr />
 <% }) %>
+
+<script>
+  $(".new-review-form").submit(function(event) {
+    if (!$("input[type=radio]:not(#no-rate):checked").length) {
+      event.preventDefault();
+      alert("please, give a valid rating");
+    }
+  });
+</script>
