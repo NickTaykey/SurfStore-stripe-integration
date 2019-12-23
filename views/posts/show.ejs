@@ -30,6 +30,7 @@
   <textarea name="review[body]" cols="30" rows="10" required></textarea>
   <fieldset class="starability-basic">
     <legend>rating:</legend>
+    <button class="clear-rating-btn" type="button">Clear rating</button>
     <input
       type="radio"
       id="no-rate"
@@ -71,6 +72,7 @@
     >
     <fieldset class="starability-basic">
       <legend>Edit rating:</legend>
+      <button class="clear-rating-btn" type="button">Clear rating</button>
       <input
         type="radio"
         id="edit-no-rate"
@@ -92,10 +94,10 @@
       <label for="edit-rate5" title="Amazing">5 stars</label>
     </fieldset>
     <input type="submit" value="Update" />
+    <script>
+      $("#edit-rate<%= review.rating %>").attr("checked", true);
+    </script>
   </form>
-  <script>
-    $("#edit-rate<%= review.rating %>").prop("checked", true);
-  </script>
 
   <form
     action="/posts/<%= post._id %>/reviews/<%= review._id %>?_method=DELETE"
@@ -108,12 +110,3 @@
 </div>
 <hr />
 <% }) %>
-
-<script>
-  $(".new-review-form").submit(function(event) {
-    if (!$("input[type=radio]:not(#no-rate):checked").length) {
-      event.preventDefault();
-      alert("please, give a valid rating");
-    }
-  });
-</script>

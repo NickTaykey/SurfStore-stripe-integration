@@ -25,3 +25,7 @@
 .edit-review-form {
   display: none;
 }
+
+.clear-rating-btn {
+  display: block;
+}

@@ -27,3 +27,9 @@ $(".edit-review-button").click(function() {
 $(".delete-review-form").submit(function(event) {
   alert("are you sure you want to delete your review?");
 });
+
+$(".clear-rating-btn").click(function() {
+  $(this)
+    .siblings(".input-no-rate")
+    .click();
+});
