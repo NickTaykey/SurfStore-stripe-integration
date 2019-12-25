@@ -38,7 +38,12 @@ const geoCodeClient = mapbox({ accessToken: process.env.MAPBOX_TOKEN });
 module.exports = {
   // POST INDEX
   async postIndex(req, res, next) {
-    let posts = await Post.find();
+    let posts = await Post.paginate(
+      {},
+      { page: req.query.page || 1, limit: 10 }
+    );
+    posts.page = Number(posts.page);
+    posts.pages = Number(posts.pages);
     res.render("posts", { posts, title: "Surf Store - Index" });
   },
   // POST NEW
@@ -101,8 +106,10 @@ module.exports = {
         populate: { path: "author", model: "User" }
       }
     });
+    const floorRating = post.calcAvgRating();
     res.render("posts/show", {
       post,
+      floorRating,
       title: `Surf Store - Show ${post.title}`
     });
   },

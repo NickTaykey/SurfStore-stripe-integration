@@ -18,6 +18,9 @@ const app = express();
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
+const seedPost = require("./seeds");
+
+// seedPost();
 
 // MODELS
 const User = require("./models/user");
@@ -99,6 +102,11 @@ app.use((req, res, next) => {
     _id: "5dff422afad0fc0387e73a51",
     username: "jhon"
   }; */
+
+  /* req.user = {
+    _id: "5e03c9cb73b19f048f2b46e2",
+    username: "root"
+  }; */
   res.locals.currentUser = req.user;
 
   next();
@@ -136,10 +144,11 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.render("error"); */
   // settiamo la sessione
-  req.session.error = err.message;
   // stampiamo l'errore nei log
-  if (err.message !== "Not Found") console.log(err);
-  console.log(err);
+  if (err.message !== "Not Found") {
+    req.session.error = err.message;
+    console.log(err);
+  }
   // reindirizziamo indietro
   res.redirect("back");
 });

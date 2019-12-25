@@ -1,0 +1,11 @@
+
+<% if(posts.page-1){ %>
+    <a href="/posts?page=<%= posts.page-1 %>">Prev</a>
+<% } %> 
+<% for(let i = 1; i<=posts.pages; i++){ %>
+    <a href="/posts?page=<%= i %>" <%= posts.page===i ? "style=color:#000;" : '' %> ><%= i %></a>
+<% } %>
+<% if(posts.page!==posts.pages){ %>
+    <a href="/posts?page=<%= posts.page+1 %>">Next</a>
+<% } %>
+    

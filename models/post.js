@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const Review = require("./review");
+// package che semplifica la paginazione dei post
+const mongoosePaginate = require("mongoose-paginate");
 
 const Schema = mongoose.Schema;
 
@@ -24,7 +26,8 @@ const PostSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: "User"
-  }
+  },
+  avgRating: { type: Number, default: 0 }
 });
 
 // prima di rimuover un post rimuovi tutte le reviews ad esso associate
@@ -33,5 +36,25 @@ PostSchema.pre("remove", async function() {
     _id: { $in: this.reviews }
   });
 });
+
+PostSchema.plugin(mongoosePaginate);
+
+// metodo del modello per calcolare il numero medio di stelle
+PostSchema.methods.calcAvgRating = function() {
+  let totalRating = 0,
+    floorRating;
+  if (this.reviews.length) {
+    this.reviews.forEach(r => {
+      totalRating += r.rating;
+    });
+    // due medie, una decimale (un numero con 2 cifre in totale), una intera (solo la parte intera del numero)
+    this.avgRating = Math.round((totalRating / this.reviews.length) * 10) / 10;
+    this.save();
+    floorRating = Math.floor(this.avgRating);
+  } else {
+    floorRating = totalRating;
+  }
+  return floorRating;
+};
 
 module.exports = mongoose.model("Post", PostSchema);
