@@ -8,7 +8,21 @@
   <% }) %>
 </div>
 <div><%= post.location %></div>
-<div><%= floorRating %></div>
+<div>
+  <% for(let i = 0; i<5; i++){ %>
+    <!-- se i<media intera : una stella completa -->
+    <% if(i<floorRating){ %>
+      <i class="fas fa-star"></i>
+      <!-- se c'è una parte decimale nella media che è compresa tra 0 e 1 : mezza stella -->
+    <% } else if((post.avgRating-i)>0 && (post.avgRating-i)<1) { %>
+      <i class="fas fa-star-half-alt"></i>
+      <!-- altrimenti stella vuota -->
+    <% } else { %>
+      <i class="far fa-star"></i>
+    <% } %>
+  <% } %>
+</div>
+
 <!-- LA MAPPA ANDRA' QUI (in un div con id MAP) -->
 <div id="map"></div>
 <div>

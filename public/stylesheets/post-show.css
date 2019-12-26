@@ -29,3 +29,8 @@
 .clear-rating-btn {
   display: block;
 }
+
+i.fas,
+i.far {
+  color: #f0ad4e;
+}

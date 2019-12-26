@@ -9,7 +9,8 @@ module.exports = async () => {
     const post = {
       title: faker.lorem.words(5),
       description: faker.lorem.paragraphs(10),
-      author: "5dfe539e1d7c37040f815fb8"
+      author: "5dfe539e1d7c37040f815fb8",
+      coordinates: [-10, 20]
     };
     await Post.create(post);
   }
