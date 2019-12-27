@@ -1,5 +1,7 @@
 const User = require("../models/user");
+const Post = require("../models/post");
 const passport = require("passport");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
 
 module.exports = {
   // SINGUP CONTROLLER
@@ -44,5 +46,12 @@ module.exports = {
     req.logout();
     // reindirizziamo l'utente alla home page
     res.redirect("/");
+  },
+
+  async getLandingPage(req, res, next) {
+    // seleziona tutti i post
+    let posts = await Post.find();
+    // renderizza la view context: post, mapBoxToken, title
+    res.render("index", { posts, mapBoxToken, title: "Surf Shop - Home" });
   }
 };

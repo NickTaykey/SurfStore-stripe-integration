@@ -27,7 +27,21 @@ const PostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User"
   },
-  avgRating: { type: Number, default: 0 }
+  avgRating: { type: Number, default: 0 },
+  propreties: {
+    description: String
+  },
+  geometry: {
+    coordinates: {
+      type: [Number],
+      required: true
+    },
+    type: {
+      type: String,
+      emun: ["Point"],
+      required: true
+    }
+  }
 });
 
 // prima di rimuover un post rimuovi tutte le reviews ad esso associate
