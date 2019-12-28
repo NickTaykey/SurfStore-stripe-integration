@@ -34,6 +34,7 @@ cloudinary.config({
 const mapbox = require("@mapbox/mapbox-sdk/services/geocoding");
 // mapbox account config
 const geoCodeClient = mapbox({ accessToken: process.env.MAPBOX_TOKEN });
+const mapBoxToken = process.env.MAPBOX_TOKEN;
 
 module.exports = {
   // POST INDEX
@@ -44,7 +45,7 @@ module.exports = {
     );
     posts.page = Number(posts.page);
     posts.pages = Number(posts.pages);
-    res.render("posts", { posts, title: "Surf Store - Index" });
+    res.render("posts", { posts, title: "Surf Store - Index", mapBoxToken });
   },
   // POST NEW
   postNew(req, res, next) {
@@ -106,7 +107,7 @@ module.exports = {
         populate: { path: "author", model: "User" }
       }
     });
-    const floorRating = post.calcAvgRating();
+    const floorRating = post.calculateAvgRating();
     res.render("posts/show", {
       post,
       floorRating,

@@ -7,7 +7,8 @@ a {
   color: #00b7ff;
 }
 
-/* cluster map feature styles */
+/* stiliziamo il contenitore della mappa e i popup */
+/* relativi alle mappe in index e landing (quelle con i cluster) */
 
 #map {
   width: 100%;

@@ -3,13 +3,13 @@ mapboxgl.accessToken =
 let map = new mapboxgl.Map({
   container: "map",
   style: "mapbox://styles/mapbox/streets-v11",
-  center: post.coordinates,
+  center: post.geometry.coordinates,
   zoom: 15
 });
 let el = document.createElement("div");
 el.className = "marker";
 new mapboxgl.Marker(el)
-  .setLngLat(post.coordinates)
+  .setLngLat(post.geometry.coordinates)
   .setPopup(
     new mapboxgl.Popup({ offset: 25 }).setHTML(
       "<h3>" + post.title + "</h3><p>" + post.location + "</p>"

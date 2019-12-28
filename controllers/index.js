@@ -49,9 +49,10 @@ module.exports = {
   },
 
   async getLandingPage(req, res, next) {
-    // seleziona tutti i post
+    // seleziona tutti i post (in modo da mostrare le loro località nella mappa)
     let posts = await Post.find();
     // renderizza la view context: post, mapBoxToken, title
+    // il token di mapbox serve per visualizzare la mappa nella view
     res.render("index", { posts, mapBoxToken, title: "Surf Shop - Home" });
   }
 };
