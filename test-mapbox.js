@@ -8,7 +8,7 @@ require("dotenv").config();
     nome, questo servizio si chiama geocoding, quindi importiamo geocoding
 */
 const mapbox = require("@mapbox/mapbox-sdk/services/geocoding"),
-    /*  creiamo un oggetto mapboxClient che rappresenta noi come utenti iscritti a mapbox e ci
+  /*  creiamo un oggetto mapboxClient che rappresenta noi come utenti iscritti a mapbox e ci
      permette di usare il nostro account, con i token che gli abbiamo associato per usare le
      API di mapbox
      
@@ -21,14 +21,12 @@ const mapbox = require("@mapbox/mapbox-sdk/services/geocoding"),
      FARLO VEDERE A TUTTI (chiunque c'e l'ha può usare il nostro account con le api di mapbox dalla sua
      app)
     */
-    geocodingClient = mapbox({ accessToken: process.env.MAPBOX_TOKEN });
-
+  geocodingClient = mapbox({ accessToken: process.env.MAPBOX_TOKEN });
 
 // USIAMO MABBOX PER TROVARE LE COORDINATE DI UN LUOGO CONOSCENDONE SOLO IL NOME
-// (per fare un qualcosa di generico scriviamo una funzione che prende come parametro il nome del luogo, 
+// (per fare un qualcosa di generico scriviamo una funzione che prende come parametro il nome del luogo,
 // stampa le coordinate)
 
-// const getCoords = place =>
 /* usiamo il metodo forwardGeocode del oggetto client per ricavare delle info relative al luogo in
 questione, questo metodo prende come parametro un oggetto che indica il luogo da ricercare
 questo avrà come proprietà necessarie al funzionamento del metodo:  query, associata al nome del luogo,
@@ -48,14 +46,16 @@ un luogo, sotto la chiave coordinates, in un array (il primo elemento è la long
 
 
 */
-/* geocodingClient.forwardGeocode({ query: place, limit: 1 }).send().then(res => {
-    console.log(res.body.features[0].geometry.coordinates);
-}).catch(err => console.error(err)); */
+const getCoords = place =>
+  geocodingClient
+    .forwardGeocode({ query: place, limit: 1 })
+    .send()
+    .then(res => {
+      console.log(res.body.features[0].geometry.coordinates);
+    })
+    .catch(err => console.error(err));
 
-
-
-// getCoords("London");
-
+getCoords("Belluno");
 
 // give the first place with the provided name's coordinates
 /* async function getCoordinates(place) {
@@ -91,7 +91,7 @@ getState("Via Feltre 102"); */
 // PROJECT WITH FAKER
 
 const faker = require("faker"),
-    addresses = [];
+  addresses = [];
 
 // GET THE COORDINATES OF A BUNCH OF RANDOM PLACES
 /* 
@@ -126,6 +126,4 @@ async function getPlaces() {
     }
 } */
 
-getPlaces()
-
-
+// getPlaces();
