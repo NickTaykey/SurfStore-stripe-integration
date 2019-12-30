@@ -20,7 +20,7 @@ const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
 const seedPost = require("./seeds");
 
-seedPost();
+// seedPost();
 
 // MODELS
 const User = require("./models/user");
