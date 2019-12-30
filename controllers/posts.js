@@ -41,7 +41,7 @@ module.exports = {
   async postIndex(req, res, next) {
     let posts = await Post.paginate(
       {},
-      { page: req.query.page || 1, limit: 10 }
+      { page: req.query.page || 1, limit: 10, sort: "-_id" }
     );
     posts.page = Number(posts.page);
     posts.pages = Number(posts.pages);
@@ -79,20 +79,20 @@ module.exports = {
       fs.unlinkSync(image.path);
     }
     /* UNA VOLTA UPLOADATE LE IMMAGINI TROVIAMO LE COORDINATE DEL LUOGO RELATIVO AL POST CON L'API DI MAPBOX */
-    let resonse = await geoCodeClient
+    let response = await geoCodeClient
       .forwardGeocode({ query: req.body.post.location, limit: 1 })
       .send();
     // mettiamo le coordinate restituiteci dal api in un array in req.body.post in modo da salvarle nel DB passando
     // req.body.post a create
-    req.body.post.coordinates = resonse.body.features[0].geometry.coordinates;
-
-    /* 
-       CREIAMO IL POST, ABBIAMO MEMORIZZATO LE IMMAGINI UPLOADATE DIRETTAMENTE IN UN ARRAY IN REQ.BODY.POST
-       PERCHE' IL QUESTO MODO C'E' LE ABBIAMO DIRETTAMENTE NEL OGGETTO CHE VOGLIAMO SALVARE NEL DB, E NON DOBBIAMO
-       CREARE UN NUOVO ARRAY E ASSOCIARLO AL REQ.BODY.POST MA UNA VOLTA CHE ABBIAMO UPLOADATO LE IMGS E POPOLATO L'ARRAY
-       DOBBIAMO PASSARE SOLO REQ.BODY.POST AL METODO PER SALVARLO NEL DB.
-     */
-    let post = await Post.create(req.body.post);
+    req.body.post.geometry = response.body.features[0].geometry;
+    let post = new Post(req.body.post);
+    post.properties.description = `<strong><a href="/posts/${post._id}">${
+      post.title
+    }</a></strong><p>${post.location}</p><p>${post.description.substring(
+      0,
+      20
+    )}...</p>`;
+    await post.save();
     req.session.success = "Post successfully created!";
     res.redirect(`/posts/${post.id}`);
   },
@@ -126,6 +126,10 @@ module.exports = {
   async postUpdate(req, res, next) {
     // selezioniamo il post per id
     let post = await Post.findById(req.params.id);
+    // aggiorniamo le altre proprietà del post
+    post.title = req.body.post.title;
+    post.price = req.body.post.price;
+    post.description = req.body.post.description;
     // controlliamo se abbiamo delle immagini da cancellare
     if (req.body.deleteImages && req.body.deleteImages.length) {
       // per comodità assegnamo l'array delle immagini da eliminiare ad una variabile
@@ -168,14 +172,16 @@ module.exports = {
         .forwardGeocode({ query: req.body.post.location, limit: 1 })
         .send();
       post.location = req.body.post.location;
-      post.coordinates = response.body.features[0].geometry.coordinates;
+      post.geometry = response.body.features[0].geometry;
+      post.properties.description = `<strong><a href="/posts/${post._id}">${
+        post.title
+      }</a></strong><p>${post.location}</p><p>${post.description.substring(
+        0,
+        20
+      )}...</p>`;
     }
-    // aggiorniamo le altre proprietà del post
-    post.title = req.body.post.title;
-    post.price = req.body.post.price;
-    post.description = req.body.post.description;
     // salviamo le modifiche
-    post.save();
+    await post.save();
     // reindirizziamo l'utente alla show page
     res.redirect(`/posts/${post.id}`);
   },

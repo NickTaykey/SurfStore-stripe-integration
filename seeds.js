@@ -46,7 +46,7 @@ async function seedPosts() {
       20
     )}...</p>`;
     // salviamo il post nel DB
-    post.save();
+    await post.save();
   }
   console.log("600 new posts created");
 }
