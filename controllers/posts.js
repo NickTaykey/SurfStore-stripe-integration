@@ -3,8 +3,7 @@ const Post = require("../models/post");
   per uploadare le immagini nel cloud in modo da potreci accedere e interagirci più facilmente
   e non sprecare spazio nel nostro server
 */
-const cloudinary = require("cloudinary");
-const fs = require("fs");
+const { cloudinary } = require("../cloudinary");
 /* 
    CONFIGURIAMO CLOUDINARY USANDO IL METODO CONFIG A CUI PASSIAMO UN OGGETTO DI OPZIONI, CHE AVRA' 3
    PROPRIETA' CHE CI SERVONO PER AUTENTICARCI CON IL NOSTRO ACCOUNT E QUINDI USARE LE API PER ACCEDERE
@@ -63,20 +62,16 @@ module.exports = {
     */
     req.body.post.images = [];
     /* ITERIAMO SU TUTTI GLI OGGETTI FILE PRESENTI NEL ARRAY REQ.FILES */
-    for (const image of req.files) {
-      /* UPLOADIAMO OGNI IMMAGINE NEL CLOUD USANDO L'API DI CLOUDINARY PASSANDO AL METODO IL PATH DEL IMMAGINE  */
-      let img = await cloudinary.v2.uploader.upload(image.path);
-      /* UNA VOLTA COMPLETATO L'UPLOAD AGGIUNGIAMO L'IMMAGINE AL ARRAY SOTTO FORMA DI UN OGGETTO CON 2 PROPRIETA'
-         L'URL A CUI E' ACCESSIBILE SU CLOUDINARY E IL SUO ID SU CLOUDINARY (il primo per poter visualizare l'immagine
-         nelle views e il secondo per poi potere interagire con l'immagine in questione nel cloud per poterla eliminare
-         o manipolarla) SIA L'URL CHE L'ID DEL IMMAGINE SONO NEL OGGETTO CHE CLOUDINARY CI RITORNA QUANDO ABBIAMO
-         COMPLETATO L'UPLOAD
+    for (const img of req.files) {
+      /*  
+      ora non abbiamo più bisogno di uploadare ogni immagine manualmente usando l'API di cloudinary
+      perché se ne è già occupato multer-storage-cloudinary e l'immagine è già stata uploadata e 
+      req.files contiene l'oggetto che rappresenta il file immagine nel cloud di cloudiary
       */
       req.body.post.images.push({
         url: img.secure_url,
         public_id: img.public_id
       });
-      fs.unlinkSync(image.path);
     }
     /* UNA VOLTA UPLOADATE LE IMMAGINI TROVIAMO LE COORDINATE DEL LUOGO RELATIVO AL POST CON L'API DI MAPBOX */
     let response = await geoCodeClient
@@ -156,15 +151,13 @@ module.exports = {
     // come false allora il codice del if non verrà eseguito)
     if (req.files.length) {
       // iteriamo sull'array delle immagini da uploadare
-      for (const image of req.files) {
-        //uploadiamo l'immagine
-        let img = await cloudinary.v2.uploader.upload(image.path);
+      for (const img of req.files) {
+        // non abbiamo più bisogno di uploadare l'immagine perché è gia stata uploadata su cloudinary
         // aggiungiamo l'immagine al array in DB
         post.images.push({
           url: img.secure_url,
           public_id: img.public_id
         });
-        fs.unlinkSync(image.path);
       }
     }
     if (req.body.post.location !== post.location) {

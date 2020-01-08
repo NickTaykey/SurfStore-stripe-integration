@@ -6,14 +6,15 @@ avendo poi un modo per accederci e interagirci
 const multer = require("multer");
 const router = express.Router();
 
+// file di configurazione di multer-storage-cloudinary
+const { storage } = require("../cloudinary");
 // multer config
 /* 
-confiuriamo multer creando un nuovo oggetto multer, passandogli delle opzioni tra {}
-in particolare, l'unica opzione che ci interessa è dest cioè la directory dove vogliamo 
-che i file vengano uploadati, la settiamo uguale a "uploads/"
+configuriamo cloudinary in modo che usi come motore per lo storage dei file multer-storage-cloudinary
+in questo modo i file non vengono più memorizzati in locale in uploads/ ma direttamente nel cloud su
+cloudinary
 */
-const upload = multer({ dest: "uploads/" });
-
+const upload = multer({ storage });
 
 // ROUTES
 const {
