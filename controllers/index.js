@@ -4,20 +4,33 @@ const passport = require("passport");
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 
 module.exports = {
+  // SHOW REGISTER FORM
+  getRegister(req, res, next) {
+    res.render("register", { title: "Register" });
+  },
   // SINGUP CONTROLLER
 
   // NON USIAMO TRY E CATCH PER GESTIRE GLI ERRORI IN QUANTO USIAMO IL MIDDLEWARE errorHanler
   // DEFINITO IN middleware/index.js CHE ESEGUE IL CONTROLLER E IN CASO DI ERRORE ESEGUE IL MIDDLEWARE
   // DI EXPRESS PER LA GESTIONE DEGLI ERRORI (che visualizza l'errore nella view error.ejs)
-
   async postRegister(req, res, next) {
     const newUser = new User({
       username: req.body.username,
       email: req.body.email,
       image: req.body.image
     });
-    await User.register(newUser, req.body.password);
-    res.redirect("/");
+    let user = await User.register(newUser, req.body.password);
+    // quando l'utente si iscrive viene loggato in automatico
+    req.login(user, err => {
+      // se nn ci sono stati errori nel login viene reindirizzato alla landing con un messaggio di benvenuto
+      if (err) return next(err);
+      req.session.success = `Welcome to the Surf Store app ${user.username}!`;
+      res.redirect("/");
+    });
+  },
+  // SHOW LOGIN FORM
+  getLogin(req, res, next) {
+    res.render("login", { title: "Login" });
   },
 
   // LOGIN CONTROLLER

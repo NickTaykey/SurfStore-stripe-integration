@@ -94,10 +94,10 @@ app.use((req, res, next) => {
   delete req.session.success;
 
   // settiamo un utente sempre loggato
-  req.user = {
+  /* req.user = {
     _id: "5dfe539e1d7c37040f815fb8",
     username: "nick"
-  };
+  }; */
   /* req.user = {
     _id: "5dff422afad0fc0387e73a51",
     username: "jhon"
