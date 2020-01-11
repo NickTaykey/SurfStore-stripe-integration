@@ -33,25 +33,33 @@ module.exports = {
     res.render("login", { title: "Login" });
   },
 
-  // LOGIN CONTROLLER
-  postLogin(req, res, next) {
-    /* 
-      possiamo USARE PASSPORT.AUTHENTICATE() PER FARE IL LOGIN DI UN UTENTE DA DENTRO IL CONTROLLER
-      ma non ci basta richiamarlo, dato che è un METODO CHE RITORNA UNA FUNZIONE (che sarebbe un middleware
-      che quando usiamo questo metodo passandolo direttamente alla route viene associato alla route in questione
-      ed eseguito quando un utente va a quella route), ma DOBBIAMO ANCHE ESEGUIRE LA FUNZIONE CHE RITORNA IN MODO
-      CHE FACCIA VERAMETE IL LOGIN quando andiamo a questa route cioè in modo che il suo codice venga veramente eseguito
-      e INOLTRE DOVREMMO PASSARE TRA () ANCHE I PARAMETRI REQ, RES, NEXT (anche questi passati di default quando usiamo
-      il metodo come middleware IN QUANTO HA BISOGNO DI ACCEDERE ALLA RICHIESTA E ALLA RISPOSTA PER FARE IL LOGIN),
-      quindi dovremmo passare come VALORI A QUESTI PARAMETRI I REQ, RES, E NEXT CHE SONO STATI PASSATI AL CONTROLLER.
-    */
-    passport.authenticate("local", {
-      // se l'utente si logga con successo vogliamo che venga reindirizzato alla home
-      successRedirect: "/",
-      // altrimenti lo reindirizziamo al form di login
-      failureRedirect: "/login"
-    })(req, res, next);
+  /* LOGIN CONTROLLER (lo abbiamo modificato perché vogliamo che l'url di redirect sia variabile in base
+  al valore di req.session.previousUrl ) */
+  async postLogin(req, res, next) {
+    // troviamo username e password
+    const { username, password } = req.body;
+    // controlliamo se sono corretti usando passport.authenticate
+    let { user, err } = await User.authenticate()(username, password);
+    // se sono corretti (no errori + un utente ritornato)
+    if (!err && user) {
+      // loggiamo l'utente con req.login()
+      req.login(user, err => {
+        // nella callback SE NON CI SONO ERRORI facciamo il redirect
+        if (err) return next(err);
+        // troviamo l'url nella sessione (se non c'è lo settiamo a "/")
+        const url = req.session.previousUrl || "/";
+        // lo eliminiamo dalla sessione
+        delete req.session.previousUrl;
+        // settiamo il messaggio di benvenuto
+        req.session.success = `Welcome back ${username}!`;
+        // facciamo il redirect
+        res.redirect(url);
+      });
+    }
   },
+  /* USANDO User.authenticate()(username, password) stiamo controllando se c'è un utente che ha queste
+  credenziali (se nn ci sono errori e c'è un utente allora le credenziali sono corrette)
+  con req.login() stiamo loggando l'utente (creando una sessione http valida per quel login) */
 
   // LOGOUT CONTROLLER
   getLogout(req, res, next) {

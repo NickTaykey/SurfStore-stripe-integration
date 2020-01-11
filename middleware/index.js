@@ -25,5 +25,14 @@ module.exports = {
     if (review.author.equals(req.user._id)) return next();
     req.session.error = "You are not authorized to update that review";
     res.redirect(`/posts/${req.params.id}/`);
+  },
+  // controlla se l'utente è loggato
+  isLoggedIn(req, res, next) {
+    // se l'utente è loggato esegue next
+    if (req.isAuthenticated()) return next();
+    // se nn è loggato redirige a login con un errore e l'url originale nella sessione
+    req.session.error = "You have to be logged in to do that!";
+    req.session.previousUrl = req.originalUrl;
+    res.redirect("/login");
   }
 };

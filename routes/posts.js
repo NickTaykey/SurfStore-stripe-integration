@@ -28,13 +28,13 @@ const {
 } = require("../controllers/posts");
 
 // MIDDLEWARES
-const { asyncErrorHandler } = require("../middleware");
+const { asyncErrorHandler, isLoggedIn } = require("../middleware");
 
 /* INDEX GET /posts */
 router.get("/", asyncErrorHandler(postIndex));
 
 // NEW GET /posts/new
-router.get("/new", postNew);
+router.get("/new", isLoggedIn, postNew);
 
 // SHOW GET /posts/:id
 router.get("/:id", asyncErrorHandler(postShow));
@@ -54,16 +54,26 @@ router.get("/:id", asyncErrorHandler(postShow));
     (PRIMA VIENE ESEGUITO QUESTO MIDDLEWARE E I FILE VENGONO CARICATI NELLA CARTELLA UPLOADS E SOLO DOPO IL CONTROLLER
     VIENE ESEGUITO E POSSIAMO ACCEDERE AL ARRAY DI FILE DA ESSO USANDO req.files)
 */
-router.post("/", upload.array("images", 4), asyncErrorHandler(postCreate));
+router.post(
+  "/",
+  isLoggedIn,
+  upload.array("images", 4),
+  asyncErrorHandler(postCreate)
+);
 
 // EDIT GET /posts/:id/edit
-router.get("/:id/edit", asyncErrorHandler(postEdit));
+router.get("/:id/edit", isLoggedIn, asyncErrorHandler(postEdit));
 
 // UPDATE PUT /posts/:id
 // middleware upload.array per gestire l'upload di file multipli da un solo campo in un form
-router.put("/:id", upload.array("images", 4), asyncErrorHandler(postUpdate));
+router.put(
+  "/:id",
+  isLoggedIn,
+  upload.array("images", 4),
+  asyncErrorHandler(postUpdate)
+);
 
 // DESTROY DELETE /posts/:id
-router.delete("/:id", asyncErrorHandler(postDestroy));
+router.delete("/:id", isLoggedIn, asyncErrorHandler(postDestroy));
 
 module.exports = router;
