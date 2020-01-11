@@ -25,17 +25,5 @@ module.exports = {
     if (review.author.equals(req.user._id)) return next();
     req.session.error = "You are not authorized to update that review";
     res.redirect(`/posts/${req.params.id}/`);
-  },
-  // middleware che controlla se l'utente che si vuole registrare è già registrato
-  async userExistsMiddleware(req, res, next) {
-    // trova un utente con l'email messa nel form
-    let user = await User.findOne({ email: req.body.email });
-    // se c'è un utente diamo un errore
-    if (user) {
-      req.session.error = "There is already a user registerd with this email";
-      return res.redirect("back");
-    }
-    // se tutto è a posto salviamo l'utente nel DB
-    next();
   }
 };

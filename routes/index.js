@@ -13,7 +13,7 @@ const {
 } = require("../controllers");
 
 // MIDDLEWARE
-const { asyncErrorHandler, userExistsMiddleware } = require("../middleware");
+const { asyncErrorHandler } = require("../middleware");
 
 /* GET home/landing page. */
 router.get("/", asyncErrorHandler(getLandingPage));
@@ -24,11 +24,7 @@ router.get("/register", getRegister);
 
 // la callback che passiamo è quella ritornata da asyncErrorHandler che esegue il codice e in caso di errori
 // esegue il middleware di express
-router.post(
-  "/register",
-  asyncErrorHandler(userExistsMiddleware),
-  asyncErrorHandler(postRegister)
-);
+router.post("/register", asyncErrorHandler(postRegister));
 // GET login /login
 router.get("/login", getLogin);
 // POST login /login
