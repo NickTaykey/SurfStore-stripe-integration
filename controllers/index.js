@@ -6,7 +6,7 @@ const mapBoxToken = process.env.MAPBOX_TOKEN;
 module.exports = {
   // SHOW REGISTER FORM
   getRegister(req, res, next) {
-    res.render("register", { title: "Register" });
+    res.render("register", { title: "Register", username: "", email: "" });
   },
   // SINGUP CONTROLLER
 
@@ -14,19 +14,36 @@ module.exports = {
   // DEFINITO IN middleware/index.js CHE ESEGUE IL CONTROLLER E IN CASO DI ERRORE ESEGUE IL MIDDLEWARE
   // DI EXPRESS PER LA GESTIONE DEGLI ERRORI (che visualizza l'errore nella view error.ejs)
   async postRegister(req, res, next) {
-    const newUser = new User({
-      username: req.body.username,
-      email: req.body.email,
-      image: req.body.image
-    });
-    let user = await User.register(newUser, req.body.password);
-    // quando l'utente si iscrive viene loggato in automatico
-    req.login(user, err => {
-      // se nn ci sono stati errori nel login viene reindirizzato alla landing con un messaggio di benvenuto
-      if (err) return next(err);
-      req.session.success = `Welcome to the Surf Store app ${user.username}!`;
-      res.redirect("/");
-    });
+    /* testiamo il codice, SE CI SONO DEGLI ERRORI VUOL DIRE CHE: l'email inserita è già stata usata, 
+       o lo username è già stato usato NN CI POSSONO ESSERE ALTRI ERRORI */
+    try {
+      let user = await User.register(new User(req.body), req.body.password);
+      // quando l'utente si iscrive viene loggato in automatico
+      req.login(user, err => {
+        // se nn ci sono stati errori nel login viene reindirizzato alla landing con un messaggio di benvenuto
+        if (err) return next(err);
+        req.session.success = `Welcome to the Surf Store app ${user.username}!`;
+        res.redirect("/");
+      });
+    } catch (err) {
+      const { email, username } = req.body;
+      // NEL CASO DI UN ERRORE
+      // prendiamo il messaggio
+      let error = err.message;
+      // se il messaggio di errore è quello di mongoose (relativo al fatto che L'EMAIL É GIÁ STATA USATA)
+      // ALTRIMENTI E' L'ERRORE GENERATO DA PASSPORT PERCHÉ LO USERNAME E' GIÁ STATO USATO.
+      if (error.includes("duplicate key") && error.includes("index: email_1")) {
+        error = "A user with the given email is already registered";
+      }
+      req.session.error = error;
+      // renderiziamo il form con il valore dei campi inseriti NON LA PASSWORD PER MOTIVI DI SICUREZZA
+      res.render("register", {
+        title: "Register",
+        username,
+        email,
+        error
+      });
+    }
   },
   // SHOW LOGIN FORM
   getLogin(req, res, next) {

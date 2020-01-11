@@ -19,6 +19,7 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
 const seedPost = require("./seeds");
+const favicon = require("serve-favicon");
 
 // seedPost();
 
@@ -48,7 +49,7 @@ const postRouter = require("./routes/posts");
 const reviewRouter = require("./routes/reviews");
 
 // GENERAL CONFIGS
-
+app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 // dichiariamo ad express che vogliamo usare ejs-mate su tutti i template ejs (x gestire i template)
 app.engine("ejs", engine);
 // view engine setup

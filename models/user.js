@@ -4,7 +4,9 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-  email: String,
+  /* L'EMAIL DEVE ESSERE OBBLIGATORIA DA INSERIRE E UNICA PER OGNI UTENTE (se cerchiamo di registrare un
+  utente con un email già usata mongoose ci da un errore) */
+  email: { type: String, required: true, unique: true },
   image: String
 });
 
