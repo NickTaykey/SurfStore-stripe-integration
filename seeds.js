@@ -31,10 +31,7 @@ async function seedPosts() {
         coordinates: [cities[random1000].longitude, cities[random1000].latitude]
       },
       // setta l'autore del post
-      author: {
-        _id: "5dfe539e1d7c37040f815fb8",
-        username: "nick"
-      }
+      author: "5e1cad7feae84c05da632f53"
     };
     // creiamo un oggetto post che rappresenta quello che abbiamo assemblato che vogliamo salvare nel DB
     let post = new Post(postData);

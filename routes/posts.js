@@ -28,7 +28,7 @@ const {
 } = require("../controllers/posts");
 
 // MIDDLEWARES
-const { asyncErrorHandler, isLoggedIn } = require("../middleware");
+const { asyncErrorHandler, isLoggedIn, isAuthor } = require("../middleware");
 
 /* INDEX GET /posts */
 router.get("/", asyncErrorHandler(postIndex));
@@ -62,18 +62,29 @@ router.post(
 );
 
 // EDIT GET /posts/:id/edit
-router.get("/:id/edit", isLoggedIn, asyncErrorHandler(postEdit));
+router.get(
+  "/:id/edit",
+  isLoggedIn,
+  asyncErrorHandler(isAuthor),
+  asyncErrorHandler(postEdit)
+);
 
 // UPDATE PUT /posts/:id
 // middleware upload.array per gestire l'upload di file multipli da un solo campo in un form
 router.put(
   "/:id",
   isLoggedIn,
+  asyncErrorHandler(isAuthor),
   upload.array("images", 4),
   asyncErrorHandler(postUpdate)
 );
 
 // DESTROY DELETE /posts/:id
-router.delete("/:id", isLoggedIn, asyncErrorHandler(postDestroy));
+router.delete(
+  "/:id",
+  isLoggedIn,
+  asyncErrorHandler(isAuthor),
+  asyncErrorHandler(postDestroy)
+);
 
 module.exports = router;

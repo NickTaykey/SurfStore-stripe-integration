@@ -80,6 +80,7 @@ module.exports = {
     // mettiamo le coordinate restituiteci dal api in un array in req.body.post in modo da salvarle nel DB passando
     // req.body.post a create
     req.body.post.geometry = response.body.features[0].geometry;
+    req.body.post.author = req.user._id;
     let post = new Post(req.body.post);
     post.properties.description = `<strong><a href="/posts/${post._id}">${
       post.title
@@ -111,16 +112,16 @@ module.exports = {
   },
   // EDIT POST
   async postEdit(req, res, next) {
-    let post = await Post.findById(req.params.id);
+    // recuperiamo il post dalle variabili dei template
+    const { post } = res.locals;
     res.render("posts/edit", {
-      post,
       title: `Surf Store - Edit ${post.title}`
     });
   },
   // UPDATE POST
   async postUpdate(req, res, next) {
-    // selezioniamo il post per id
-    let post = await Post.findById(req.params.id);
+    // ritroviamo il post nelle variabili dei template
+    const { post } = res.locals;
     // aggiorniamo le altre proprietà del post
     post.title = req.body.post.title;
     post.price = req.body.post.price;
@@ -180,8 +181,8 @@ module.exports = {
   },
   // DESTROY POST
   async postDestroy(req, res, next) {
-    // salviamo il post eliminato in una variabile
-    let post = await Post.findById(req.params.id);
+    // ritroviamo il post tra le variabili dei templates
+    const { post } = res.locals;
     // iteriamo su tutte le immagini che il post aveva e LE ELIMINIAMO DA CLOUDINARY
     for (const image of post.images) {
       await cloudinary.v2.uploader.destroy(image.public_id);

@@ -35,7 +35,6 @@ module.exports = {
       if (error.includes("duplicate key") && error.includes("index: email_1")) {
         error = "A user with the given email is already registered";
       }
-      req.session.error = error;
       // renderiziamo il form con il valore dei campi inseriti NON LA PASSWORD PER MOTIVI DI SICUREZZA
       res.render("register", {
         title: "Register",
@@ -47,7 +46,7 @@ module.exports = {
   },
   // SHOW LOGIN FORM
   getLogin(req, res, next) {
-    res.render("login", { title: "Login" });
+    res.render("login", { title: "Login", username: "" });
   },
 
   /* LOGIN CONTROLLER (lo abbiamo modificato perché vogliamo che l'url di redirect sia variabile in base
@@ -72,6 +71,11 @@ module.exports = {
         // facciamo il redirect
         res.redirect(url);
       });
+    } else if (err) return next(err);
+    else {
+      // user non trovato
+      const error = "Invalid username or password";
+      res.render("login", { title: "Login", error, username });
     }
   },
   /* USANDO User.authenticate()(username, password) stiamo controllando se c'è un utente che ha queste

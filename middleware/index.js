@@ -1,5 +1,6 @@
 const Review = require("../models/review");
 const User = require("../models/user");
+const Post = require("../models/post");
 // GENERAL PURPOSE MIDDLEWARES
 module.exports = {
   /*
@@ -34,5 +35,18 @@ module.exports = {
     req.session.error = "You have to be logged in to do that!";
     req.session.previousUrl = req.originalUrl;
     res.redirect("/login");
+  },
+  // controlla se l'utente autenticato è l'autore di un post
+  async isAuthor(req, res, next) {
+    let post = await Post.findById(req.params.id);
+    // se l'utente è l'autore del post
+    if (post.author.equals(req.user._id)) {
+      // conserviamo il post nelle variabili dei template in modo da poter accederci direttamente senza
+      // interagire con il DB
+      res.locals.post = post;
+      return next();
+    }
+    req.session.error = "Access denied";
+    res.redirect("back");
   }
 };
