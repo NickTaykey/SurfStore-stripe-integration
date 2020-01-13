@@ -47,6 +47,6 @@ module.exports = {
       return next();
     }
     req.session.error = "Access denied";
-    res.redirect("back");
+    res.redirect("/");
   }
 };

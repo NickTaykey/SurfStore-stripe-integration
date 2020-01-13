@@ -111,7 +111,7 @@ module.exports = {
     });
   },
   // EDIT POST
-  async postEdit(req, res, next) {
+  postEdit(req, res, next) {
     // recuperiamo il post dalle variabili dei template
     const { post } = res.locals;
     res.render("posts/edit", {

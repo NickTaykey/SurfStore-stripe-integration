@@ -25,16 +25,19 @@
 
 <!-- LA MAPPA ANDRA' QUI (in un div con id MAP) -->
 <div id="map"></div>
-<div>
-  <a href="/posts/<%= post.id %>/edit">
-    <button>Edit</button>
-  </a>
-</div>
-<div>
-  <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-    <input type="submit" value="Delete" />
-  </form>
-</div>
+<%# solo se l'utente è loggato ed è l'autore del post mostra i pulsanti edit, delete post %>
+<% if(currentUser && post.author.equals(currentUser._id)){ %>
+  <div>
+    <a href="/posts/<%= post.id %>/edit">
+      <button>Edit</button>
+    </a>
+  </div>
+  <div>
+    <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+      <input type="submit" value="Delete" />
+    </form>
+  </div>
+<% } %>
 <!-- REVIEWS -->
 <h2>Leave a review</h2>
 <form

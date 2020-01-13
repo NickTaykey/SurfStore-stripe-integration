@@ -4,9 +4,14 @@ const passport = require("passport");
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 
 module.exports = {
-  // SHOW REGISTER FORM
+  // SHOW REGISTER FORM only if the user is not logged in
   getRegister(req, res, next) {
-    res.render("register", { title: "Register", username: "", email: "" });
+    if (req.isAuthenticated()) return res.redirect("/");
+    res.render("register", {
+      title: "Register",
+      username: "",
+      email: ""
+    });
   },
   // SINGUP CONTROLLER
 
@@ -46,6 +51,7 @@ module.exports = {
   },
   // SHOW LOGIN FORM
   getLogin(req, res, next) {
+    if (req.isAuthenticated()) return res.redirect("/");
     res.render("login", { title: "Login", username: "" });
   },
 
