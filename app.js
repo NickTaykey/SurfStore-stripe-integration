@@ -17,7 +17,6 @@ const session = require("express-session");
 const app = express();
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
-const bodyParser = require("body-parser");
 const seedPost = require("./seeds");
 const favicon = require("serve-favicon");
 
@@ -55,7 +54,7 @@ app.engine("ejs", engine);
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
