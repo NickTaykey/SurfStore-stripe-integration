@@ -39,6 +39,7 @@
   </div>
 <% } %>
 <!-- REVIEWS -->
+<% if(currentUser){ %>
 <h2>Leave a review</h2>
 <form
   action="/posts/<%= post._id %>/reviews"
@@ -71,13 +72,16 @@
   </fieldset>
   <input type="submit" value="Submit" />
 </form>
+<% } else { %>
+<h2><a href="/login?returnTo=true">Leave a Review</a></h2>
+<% } %>
 <h3>all the reviews</h3>
 <% post.reviews.forEach(function(review){ %>
 <div>
   <strong><%= review.author.username %></strong>
   <p class="starability-result" data-rating="<%= review.rating %>"></p>
   <p><%= review.body %></p>
-  <% if(review.author.equals(currentUser._id)){ %>
+  <% if(currentUser && review.author.equals(currentUser._id)){ %>
   <br />
   <button class="edit-review-button">Edit</button>
   <form

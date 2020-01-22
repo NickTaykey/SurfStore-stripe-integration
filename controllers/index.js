@@ -52,6 +52,8 @@ module.exports = {
   // SHOW LOGIN FORM
   getLogin(req, res, next) {
     if (req.isAuthenticated()) return res.redirect("/");
+    // se è specificato un returnTo=true in query string settiamo il redirectUrl nella sessione a req.header.referer
+    if (req.query.returnTo) req.session.previousUrl = req.headers.referer;
     res.render("login", { title: "Login", username: "" });
   },
 
