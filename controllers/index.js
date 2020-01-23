@@ -104,5 +104,14 @@ module.exports = {
     // renderizza la view context: post, mapBoxToken, title
     // il token di mapbox serve per visualizzare la mappa nella view
     res.render("index", { posts, mapBoxToken, title: "Surf Shop - Home" });
+  },
+  async getProfile(req, res, next) {
+    // trova i primi 10 post del utente
+    let posts = await Post.find()
+      .where("author")
+      .equals(req.user._id)
+      .limit(10)
+      .exec();
+    res.render("profile", { posts });
   }
 };
