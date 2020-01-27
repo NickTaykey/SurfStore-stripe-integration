@@ -48,5 +48,40 @@ module.exports = {
     }
     req.session.error = "Access denied";
     res.redirect("/");
+  },
+  // controlla se la password (attuale) che l'utente ha messo nel edit profile form è corretta (ci assicuriamo che sia autoriazato a modificare il profilo)
+  async isValidPassword(req, res, next) {
+    const { currentPassword } = req.body;
+    const { user } = await User.authenticate()(
+      req.user.username,
+      currentPassword
+    );
+    // credenziali corrette PERMETTIAMO AL UTENTE DI AGGIORNARE IL PROFILO
+    if (user) {
+      res.locals.user = user;
+      return next();
+    }
+    // settiamo un messaggio di errore di credenziali errate e reindiriziamo al form
+    req.session.error = "You have to provide the current password to update";
+    res.redirect("profile");
+  },
+  // controlla se è stata passata una nuova password (se si la setta)
+  async setNewPassword(req, res, next) {
+    const { user } = res.locals;
+    const { newPassword, passwordConfirmation } = req.body;
+    // se sono state passate delle nuove password (vogliamo cambiarle)
+    if (newPassword && passwordConfirmation) {
+      // se le password sono uguali le aggiorniamo ALTRIMENTI SOLLEVIAMO UN ERRORE
+      if (newPassword === passwordConfirmation) {
+        // aggiorniamo le password user.setPassword
+        await user.setPassword(newPassword);
+        return next();
+      } else {
+        req.session.error = "the passwords have to match!";
+        return res.redirect("/profile");
+      }
+    }
+    // altrimenti andiamo avanti con i middleware
+    next();
   }
 };
