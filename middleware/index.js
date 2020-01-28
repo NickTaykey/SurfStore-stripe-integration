@@ -69,8 +69,13 @@ module.exports = {
   async setNewPassword(req, res, next) {
     const { user } = res.locals;
     const { newPassword, passwordConfirmation } = req.body;
+    // se la nuova pwd non c'è MESSAGGIO DI ERRORE
+    if (!passwordConfirmation) {
+      req.session.error = "missing password confirmation";
+      return res.redirect("/profile");
+    }
     // se sono state passate delle nuove password (vogliamo cambiarle)
-    if (newPassword && passwordConfirmation) {
+    else if (newPassword && passwordConfirmation) {
       // se le password sono uguali le aggiorniamo ALTRIMENTI SOLLEVIAMO UN ERRORE
       if (newPassword === passwordConfirmation) {
         // aggiorniamo le password user.setPassword

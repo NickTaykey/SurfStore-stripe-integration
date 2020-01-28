@@ -8,7 +8,7 @@
 <% }) %>
 
 <p>Update Info:</p>
-<form action="/profile?_method=PUT" method="POST" id="update-profile">
+<form action="/profile?_method=PUT" method="POST">
   <div>
     <label for="username">Username:</label>
     <input
@@ -70,6 +70,6 @@
     <label for="image">Image:</label>
     <input type="file" id="image" name="image" />
   </div>
-  <input type="submit" value="Update" />
+  <input type="submit" id="update-profile" value="Update" />
 </form>
 <script src="/javascripts/profile.js"></script>
