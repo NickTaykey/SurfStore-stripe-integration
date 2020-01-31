@@ -6,7 +6,7 @@ const cities = require("./cities");
 
 // crea 600 post casuali nel db
 async function seedPosts() {
-  // elimina tutti i post e le review dal DB
+  // cancella tutti i post e le review dal DB
   await Post.deleteMany({});
   await Review.deleteMany({});
 
