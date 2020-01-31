@@ -1,7 +1,8 @@
 const User = require("../models/user");
 const Post = require("../models/post");
-const passport = require("passport");
 const util = require("util");
+const { deleteProfileImage } = require("../middleware");
+const { cloudinary } = require("../cloudinary");
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 
 module.exports = {
@@ -23,16 +24,30 @@ module.exports = {
     /* testiamo il codice, SE CI SONO DEGLI ERRORI VUOL DIRE CHE: l'email inserita è già stata usata, 
        o lo username è già stato usato NN CI POSSONO ESSERE ALTRI ERRORI */
     try {
+      // controlliamo se c'è un immagine
+      if (req.file) {
+        // se si associamo i dati del immagine su cloudinary nel oggetto del db
+        const { public_id, secure_url } = req.file;
+        req.body.image = { public_id, secure_url };
+        // se non c'era niente lasciamo il db associare l'immagine di default (in questo caso niente public_id)
+      }
+
       let user = await User.register(new User(req.body), req.body.password);
       // quando l'utente si iscrive viene loggato in automatico
       req.login(user, err => {
         // se nn ci sono stati errori nel login viene reindirizzato alla landing con un messaggio di benvenuto
-        if (err) return next(err);
+        if (err) {
+          // cancelliamo l'immagine profilo
+          deleteProfileImage(req);
+          return next(err);
+        }
         req.session.success = `Welcome to the Surf Store app ${user.username}!`;
         res.redirect("/");
       });
     } catch (err) {
       const { email, username } = req.body;
+      // cancelliamo l'immagine profilo
+      deleteProfileImage(req);
       // NEL CASO DI UN ERRORE
       // prendiamo il messaggio
       let error = err.message;
@@ -124,6 +139,18 @@ module.exports = {
     // FATTO CHE L'UTENTE HA INSERITO VALORI INVALIDI O ASSETI PER LE CREDENZIALI, CON GLI ERRORI CORRELATI
     if (username) user.username = username;
     if (email) user.email = email;
+
+    // controlliamo se c'è un immagine con cui uploadare quella attuale
+    if (req.file) {
+      // se c'è cancelliamo quella attuale (se l'immagine attuale non è quella di defualt ha un public_id E' SU CLOUDINARY)
+      if (req.user.image.public_id) {
+        await cloudinary.v2.uploader.destroy(req.user.image.public_id);
+      }
+      // associamo l'immagine nuova al oggetto del DB
+      const { public_id, secure_url } = req.file;
+      user.image = { public_id, secure_url };
+    }
+
     await user.save();
     // rifacciamo il login perché nel caso in cui l'utente ha cambiato pwd o username la sessione non è più valida
     // usiamo il metodo promisify di util per creare una versione di un metodo req.login (CHE SUPPORTA SOLO LE CALLBACK E NON LE PROMESSE
