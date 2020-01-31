@@ -1,8 +1,9 @@
 const Review = require("../models/review");
 const User = require("../models/user");
 const Post = require("../models/post");
+const { cloudinary } = require("../cloudinary");
 // GENERAL PURPOSE MIDDLEWARES
-module.exports = {
+const middlewares = {
   /*
     MIDDLEWARE PER GESTIRE GLI ERRORI NEI CONTROLLERS, ESEGUE IL CODICE DEL CONTROLLER E SE CI SONO DEGLI
     ERRORI ESEGUE NEXT IL MIDDLEWARE PER LA GESTIONE DEGLI ERRORI BUILT-IN IN EXPRESS, ALTRIMENTI NON FA
@@ -62,6 +63,8 @@ module.exports = {
       return next();
     }
     // settiamo un messaggio di errore di credenziali errate e reindiriziamo al form
+    // cancelliamo l'immagine profilo uploadata per non sprecare spazio nel cloud
+    middlewares.deleteProfileImage(req);
     req.session.error = "You have to provide the current password to update";
     res.redirect("profile");
   },
@@ -71,6 +74,8 @@ module.exports = {
     const { newPassword, passwordConfirmation } = req.body;
     // se la nuova pwd non c'è MESSAGGIO DI ERRORE
     if (!passwordConfirmation) {
+      // cancelliamo l'immagine profilo uploadata per non sprecare spazio nel cloud
+      middlewares.deleteProfileImage(req);
       req.session.error = "missing password confirmation";
       return res.redirect("/profile");
     }
@@ -82,11 +87,23 @@ module.exports = {
         await user.setPassword(newPassword);
         return next();
       } else {
+        // cancelliamo l'immagine profilo uploadata per non sprecare spazio nel cloud
+        middlewares.deleteProfileImage(req);
         req.session.error = "the passwords have to match!";
         return res.redirect("/profile");
       }
     }
     // altrimenti andiamo avanti con i middleware
     next();
+  },
+  // middleware che eseguiamo in caso di errore per cancellare l'immagine del utente uploadata (SE C'E')
+  async deleteProfileImage(req) {
+    // se un immagine è stata uploadata
+    if (req.file) {
+      // la cancelliamo
+      await cloudinary.v2.uploader.destroy(req.file.public_id);
+    }
   }
 };
+
+module.exports = middlewares;
