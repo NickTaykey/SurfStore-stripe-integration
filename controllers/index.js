@@ -25,6 +25,8 @@ module.exports = {
        o lo username è già stato usato NN CI POSSONO ESSERE ALTRI ERRORI */
     try {
       // controlliamo se c'è un immagine
+      // eval(require("locus"));
+
       if (req.file) {
         // se si associamo i dati del immagine su cloudinary nel oggetto del db
         const { public_id, secure_url } = req.file;

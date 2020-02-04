@@ -22,6 +22,12 @@ const {
   setNewPassword
 } = require("../middleware");
 
+const multer = require("multer");
+const { storage } = require("../cloudinary");
+
+// configura multer in modo che usi cloudinary-storage per memorizzare le immagini direttamente nel cloud
+const upload = multer({ storage });
+
 /* GET home/landing page. */
 router.get("/", asyncErrorHandler(getLandingPage));
 
@@ -31,7 +37,12 @@ router.get("/register", getRegister);
 
 // la callback che passiamo è quella ritornata da asyncErrorHandler che esegue il codice e in caso di errori
 // esegue il middleware di express
-router.post("/register", asyncErrorHandler(postRegister));
+router.post(
+  "/register",
+  // questo middleware SEMPRE PRIMA DI USARE REQ.BODY PERCHE' lo popola al posto di body-parser
+  upload.single("image"),
+  asyncErrorHandler(postRegister)
+);
 // GET login /login
 router.get("/login", getLogin);
 // POST login /login
@@ -46,6 +57,8 @@ router.get("/profile", isLoggedIn, asyncErrorHandler(getProfile));
 router.put(
   "/profile",
   isLoggedIn,
+  // questo middleware SEMPRE PRIMA DI USARE REQ.BODY PERCHE' lo popola al posto di body-parser
+  upload.single("image"),
   asyncErrorHandler(isValidPassword),
   asyncErrorHandler(setNewPassword),
   asyncErrorHandler(updateProfile)

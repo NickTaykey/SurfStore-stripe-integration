@@ -73,7 +73,7 @@ const middlewares = {
     const { user } = res.locals;
     const { newPassword, passwordConfirmation } = req.body;
     // se la nuova pwd non c'è MESSAGGIO DI ERRORE
-    if (!passwordConfirmation) {
+    if (newPassword && !passwordConfirmation) {
       // cancelliamo l'immagine profilo uploadata per non sprecare spazio nel cloud
       middlewares.deleteProfileImage(req);
       req.session.error = "missing password confirmation";
