@@ -12,9 +12,9 @@ const UserSchema = new Schema({
     public_id: String
   },
   // token (string casuale per resettare la password)
-  resetToken: String,
+  resetPasswordToken: String,
   // data di scadenza del token dopo la quale non sarà più utilizzabile per cambiare la password
-  resetTokenExpiration: Date
+  resetPasswordExpires: Date
 });
 
 UserSchema.plugin(passportLocalMongoose);
