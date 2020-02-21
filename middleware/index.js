@@ -103,6 +103,21 @@ const middlewares = {
       // la cancelliamo
       await cloudinary.v2.uploader.destroy(req.file.public_id);
     }
+  },
+  async validatePasswordResetToken(req, res, next) {
+    const { token } = req.params;
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: {
+        $gt: Date.now()
+      }
+    });
+    if (!user) {
+      req.session.error = "Password reset token invalid or expired!";
+      return res.redirect("/forgot-password");
+    }
+    res.locals.user = user;
+    next();
   }
 };
 

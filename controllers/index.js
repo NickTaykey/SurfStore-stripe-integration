@@ -76,8 +76,6 @@ module.exports = {
   },
   // SHOW LOGIN FORM
   getLogin(req, res, next) {
-    console.log(req.hostname);
-    console.log(req.headers.host);
     if (req.isAuthenticated()) return res.redirect("/");
     // se è specificato un returnTo=true in query string settiamo il redirectUrl nella sessione a req.header.referer
     if (req.query.returnTo) req.session.previousUrl = req.headers.referer;
@@ -218,7 +216,7 @@ module.exports = {
       */
       text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.
 			Please click on the following link, or copy and paste it into your browser to complete the process:
-			http://${req.headers.host}/reset/${token}
+			http://${req.headers.host}/reset/${user.resetPasswordToken}
 			If you did not request this, please ignore this email and your password will remain unchanged.`.replace(
         /			/g,
         ""
@@ -233,7 +231,35 @@ module.exports = {
   },
   /* viene attivato da link mandato per email e controlla se il token è stato associato
    a qualche utente e se nn è scaduto, se passa in controlli renderizza reset.ejs */
-  async getReset(req, res, next) {},
+  async getReset(req, res, next) {
+    const { token } = req.params;
+    res.render("users/reset", { token });
+  },
   // DOPO AVER VALIDATO IL TOKEN resetta la password del utente
-  async putReset(req, res, next) {}
+  async putReset(req, res, next) {
+    const { user } = res.locals;
+    const { newPassword, confirmPassword } = req.body;
+    const { token } = req.params;
+    if (newPassword === confirmPassword) {
+      await user.setPassword(newPassword);
+      user.resetPasswordToken = null;
+      user.resetPasswordExpires = null;
+      await user.save();
+      const login = util.promisify(req.login.bind(req));
+      await login(user);
+      const msg = {
+        to: user.email,
+        from: "The Surf-Store Team <authTeam@surfStore.local>",
+        subject: "Your password has been successfully reseted",
+        text:
+          "Your account password has been successfully reseted, if you did not do that, reply us at once"
+      };
+      await sgMail.send(msg);
+      req.session.success = "Your password has been successfully reseted";
+      res.redirect("/");
+    } else {
+      req.session.error = "Passwords do not match!";
+      return res.redirect(`/reset/${token}`);
+    }
+  }
 };

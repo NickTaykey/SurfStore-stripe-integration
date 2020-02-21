@@ -11,7 +11,11 @@ const {
   postLogin,
   getLogout,
   getProfile,
-  updateProfile
+  updateProfile,
+  getForgot,
+  putForgot,
+  getReset,
+  putReset
 } = require("../controllers");
 
 // MIDDLEWARE
@@ -19,7 +23,8 @@ const {
   asyncErrorHandler,
   isLoggedIn,
   isValidPassword,
-  setNewPassword
+  setNewPassword,
+  validatePasswordResetToken
 } = require("../middleware");
 
 const multer = require("multer");
@@ -64,20 +69,20 @@ router.put(
   asyncErrorHandler(updateProfile)
 );
 // GET forgot (show forgot password form) /forgot
-router.get("/forgot", (req, res, next) => {
-  res.send("GET forgot");
-});
+router.get("/forgot-password", asyncErrorHandler(getForgot));
 // PUT forgot (process pwd reset request, send email set token ecc) /forgot
-router.put("/forgot", (req, res, next) => {
-  res.send("PUT forgot");
-});
+router.put("/forgot-password", asyncErrorHandler(putForgot));
 // GET reset (show form to reset the password url sent via email) /reset/:token
-router.get("/reset/:token", (req, res, next) => {
-  res.send("GET reset");
-});
+router.get(
+  "/reset/:token",
+  asyncErrorHandler(validatePasswordResetToken),
+  asyncErrorHandler(getReset)
+);
 // PUT reset (set the new password) /reset/:token
-router.put("/reset/:token", (req, res, next) => {
-  res.send("PUT reset");
-});
+router.put(
+  "/reset/:token",
+  asyncErrorHandler(validatePasswordResetToken),
+  asyncErrorHandler(putReset)
+);
 
 module.exports = router;
