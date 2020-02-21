@@ -4,6 +4,13 @@ const util = require("util");
 const { deleteProfileImage } = require("../middleware");
 const { cloudinary } = require("../cloudinary");
 const mapBoxToken = process.env.MAPBOX_TOKEN;
+// per generare il token del pwd reset
+const crypto = require("crypto");
+// API di sendgrid per inviare email dal codice
+const sgMail = require("@sendgrid/mail");
+// ci autentichiamo con il nostro account al API di sendgrid in modo da poter mandare email dal codice
+// con il nostro account
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 module.exports = {
   // SHOW REGISTER FORM only if the user is not logged in
@@ -69,6 +76,8 @@ module.exports = {
   },
   // SHOW LOGIN FORM
   getLogin(req, res, next) {
+    console.log(req.hostname);
+    console.log(req.headers.host);
     if (req.isAuthenticated()) return res.redirect("/");
     // se è specificato un returnTo=true in query string settiamo il redirectUrl nella sessione a req.header.referer
     if (req.query.returnTo) req.session.previousUrl = req.headers.referer;
@@ -163,5 +172,68 @@ module.exports = {
     await login(user);
     req.session.success = "Your profile has been successfully updated!";
     res.redirect("/profile");
-  }
+  },
+  // renderizza forgor.ejs
+  getForgot(req, res, next) {
+    res.render("users/forgot");
+  },
+  // controlla se l'email è valida, setta token e data di scadenza ed invia la mail
+  async putForgot(req, res, next) {
+    const { email } = req.body;
+    // trova l'utente con l'email messa nel form
+    let user = await User.findOne({ email });
+    // se l'utente non è presente nel DB, messaggio di errore, non possiamo procedere nel resettare la pwd di un utente che nn esiste
+    if (!user) {
+      req.session.error = `The user with the email: ${email} is not registered`;
+      return res.redirect("/forgot-password");
+    }
+    // settiamo il token e la data di scadenza un ora dopo la creazione del token
+    user.resetPasswordToken = crypto.randomBytes(20).toString("hex");
+    user.resetPasswordExpires = Date.now() + 3600000;
+    await user.save();
+    // inivio del email
+    // creiamo un oggetto che modella l'email
+    const msg = {
+      // destinatario
+      to: email,
+      /* 
+      mittente (dato che inviamo usando sendgrid allora l'email nn viene inviata da un indrizzo email 
+      vero e proprio, ma dal servizio di mailing di sendgrid quindi l'email, se venisse inviata di default
+      non apparirebbe inviata da nessun indrizzo email, quindi per ragioni di sicurezza, di traciabilità e
+      per evitare ambiguità SENDGRID CI OBBLIGA A SPECIFICARE L'INDRIZZO A CUI NOME SARA' INVIATA L'EMAIL)
+      lo specifichiamo direttamete nel campo from possiamo anche aggiungere del testo dopo questo campo
+      EVIDENZIAMO L'INDRIZZO TRA < > IN OGNI CASO L'UTENTE VEDRA' ANCHE CHE L'EMAIL E' STATA INVIATA USANDO 
+      SENDGRID COME SERVIZIO PER RAGIONI DI SICUREZZA.
+      */
+      from: "The Surf-Store Team <authTeam@surfStore.local>",
+      // oggetto email
+      subject: "Request to reset your surf-store account password",
+      /* 
+      testo vero e proprio, qui usiamo la sintassi, template string litteral per aggiungere i valori delle
+      variabili in modo più semplice, (USIAMO req.headers.host per accedere al nome del host del sito web
+      "localhost:3000"), sanitiziamo la stringa usando replace e rimuovendo tutti i whitespaces che sono stati
+      aggiunti a causa del fatto che siamo andati a capo per vedere meglio il contenuto della stringa dal codice
+      (vengono renderizzati come contenuto della stringa quando usiamo la sintassi string literals) li rimpiazziamo
+      con un "" .
+      */
+      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.
+			Please click on the following link, or copy and paste it into your browser to complete the process:
+			http://${req.headers.host}/reset/${token}
+			If you did not request this, please ignore this email and your password will remain unchanged.`.replace(
+        /			/g,
+        ""
+      )
+    };
+    // inviamo l'email
+    await sgMail.send(msg);
+    // messaggio di successo e redirect
+    req.session.success =
+      "An email with further instruction has been sent to you";
+    res.redirect("/forgot-password");
+  },
+  /* viene attivato da link mandato per email e controlla se il token è stato associato
+   a qualche utente e se nn è scaduto, se passa in controlli renderizza reset.ejs */
+  async getReset(req, res, next) {},
+  // DOPO AVER VALIDATO IL TOKEN resetta la password del utente
+  async putReset(req, res, next) {}
 };
