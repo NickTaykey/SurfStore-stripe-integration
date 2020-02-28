@@ -14,6 +14,8 @@ async function seedPosts() {
   for (const i of new Array(600)) {
     // genera un numero casuale da 1 a 1000 per selezionare una città casuale dal array
     const random1000 = Math.floor(Math.random() * 1000);
+    // numero casuale da 0 a 5 (numero di stelle medio del post)
+    const random5 = Math.floor(Math.random() * 6);
 
     // genera titolo e descrizione casuali (lorem)
     const title = faker.lorem.word();
@@ -30,6 +32,8 @@ async function seedPosts() {
         type: "Point",
         coordinates: [cities[random1000].longitude, cities[random1000].latitude]
       },
+      price: random1000,
+      avgRating: random5,
       // setta l'autore del post
       author: "5e1cad7feae84c05da632f53"
     };

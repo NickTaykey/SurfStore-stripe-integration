@@ -28,10 +28,19 @@ const {
 } = require("../controllers/posts");
 
 // MIDDLEWARES
-const { asyncErrorHandler, isLoggedIn, isAuthor } = require("../middleware");
+const {
+  asyncErrorHandler,
+  isLoggedIn,
+  isAuthor,
+  searchAndFilter
+} = require("../middleware");
 
 /* INDEX GET /posts */
-router.get("/", asyncErrorHandler(postIndex));
+router.get(
+  "/",
+  asyncErrorHandler(searchAndFilter),
+  asyncErrorHandler(postIndex)
+);
 
 // NEW GET /posts/new
 router.get("/new", isLoggedIn, postNew);

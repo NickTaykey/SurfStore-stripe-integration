@@ -2,6 +2,13 @@
 <html>
   <head>
     <title><%= title %></title>
+    <!-- CDN di BS4 (SOLO PER SVILUPPO, DA RIMUOVERE IN PRODUZIONE) -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
     <!-- 
       includiamo tutti i componenti che ci servono (css e js) per visualizzare le mappe e popolarle
       con le coordinate delle località dei posts, usando l'API di mapbox
@@ -23,5 +30,10 @@
   <body>
     <% include ../partials/navbar %><% include ../partials/flash-messages %> <%-
     body -%>
+
+    <!-- carichiamo questo script solo se ci troviamo in index -->
+    <% if(title==="Surf Store - Index"){ %>
+    <script src="/javascripts/post-index.js"></script>
+    <% } %>
   </body>
 </html>

@@ -2,6 +2,19 @@ const Review = require("../models/review");
 const User = require("../models/user");
 const Post = require("../models/post");
 const { cloudinary } = require("../cloudinary");
+// da usare per il filto 'location' in searchAndFilter
+const mapbox = require("@mapbox/mapbox-sdk/services/geocoding");
+const geoCodeClient = mapbox({ accessToken: process.env.MAPBOX_TOKEN });
+
+/* 
+useremo questa funzione per sanitizare la stringa che l'utente ha messo nella barra di ricerca.
+seleziona tutti i caratteri speciali (CHE SONO VALUTATI NELLE REGEXP) e ci mette un \ davanti in
+modo che non vengano valutati ed eseguiti quando eseguiamo la regexp.
+*/
+function escapeRegExp(string) {
+  return string.replace(/[.*+\-?^${}()|[\]\\]/g, "\\$&");
+}
+
 // GENERAL PURPOSE MIDDLEWARES
 const middlewares = {
   /*
@@ -117,6 +130,157 @@ const middlewares = {
       return res.redirect("/forgot-password");
     }
     res.locals.user = user;
+    next();
+  },
+  /* assembla la query con cui cercare o filtrare i post (se l'utente ha inviato il form di ricerca in index)
+  altrimenti questa query sarà {} (quella di default) . */
+  async searchAndFilter(req, res, next) {
+    // controlliamo se sono stati passati dei valori in url-query-string (DOBBIAMO ASSEMBLARE LA QUERY O NO)
+    // troviamo le chiavi dei valori passati in url-query-string
+    const keys = Object.keys(req.query);
+    // se sono stati passati dei valori in url-query-string IL FORM E' STATO INVIATO
+    if (keys.length) {
+      // destrutturiamo i valori associati ai vari campi del form passati in query-string
+      let { search, location, distance, price, avgRating } = req.query;
+      /* in base ai valori dei campi specificati dal utente nel form (IN QUERY-STRING) POPOLEREMO L'ARRAY
+      dbQueries CON LE VARIE QUERY CON I VALORI CHE L'UTENTE HA PASSATO NEL FORM IN MODO DA SELEZIONARE
+      SOLO I POSTS CHE RISPETTANO I CRITERI DI SELEZIONE SPECIFICATI DAL UTENTE. */
+      const dbQueries = [];
+
+      // se è stata specificata una 'stringa chiave' con cui selezionare i post nel DB
+      if (search) {
+        /* 
+        componiamo la query per selezionare solo i posts che contengono la stringa in questione
+        può essere contenuta in diversi campi : TITOLO, DESCRIZIONE, LOCALITA'
+        LA CERCHIAMO USANDO UN REGEX 
+        
+        PRIMA SANITIZIAMO LA STRINGA IN MODO DA METTERE \ DAVANTI AD OGNI CARATTERE SPECIALE CHE POTREBBE
+        MODIFICARE IL FUNZIONAMENTO DELLA REGEX (portare a errori o a risultati errati)
+        */
+        // creiamo la regex di ricerca con la stringa chiave sanitizata (globale e case-insensitive)
+        search = new RegExp(escapeRegExp(search), "gi");
+        // METTIAMO LA QUERY NEL ARRAY
+        dbQueries.push({
+          // se il post contiene search in title o in description o in location allora selezioniamo il post
+          $or: [
+            { title: search },
+            { description: search },
+            { location: search }
+          ]
+        });
+      }
+
+      // controlliamo se la località è definita
+      if (location) {
+        // troviamo le coordinate della località
+        let response = await geoCodeClient
+          .forwardGeocode({ query: location, limit: 1 })
+          .send();
+        const { coordinates } = response.body.features[0].geometry;
+        // convertiamo la distanza del form in metri (mongodb lavora in metri,
+        // in questo modo abbiamo risultati coerenti con il valore in miglia)
+        distance = distance || 25;
+        distance *= 1609.34;
+        // console.log(distance / 1609.34, coordinates);
+        // creiamo la query e mettiamo la query nel array
+        dbQueries.push({
+          /* usiamo l'operatore $near (che fa uso del indice $2dsphere per controllare le coordinate dei
+          post più velocemente) per selezionare tutti i posts la cui distanza dal luogo passato dal utente
+          (coordinates) è minore (uguale) a quella specificata dal utente (o 25 che è il valore di default) */
+          geometry: {
+            $near: {
+              /* con l'operatore $geometry settiamo il luogo di riferimente (la cui distanza con quello del
+              post è comparata) SARA' UN OGGETTO GEOJSON che indica un punto type: "Point", che ha coordinate
+              quelle del luogo di riferimento (coordinates) */
+              $geometry: {
+                type: "Point",
+                coordinates
+              },
+              /* settiamo la distanza massima del luogo del post con quello di riferimente usando $maxDistance
+              (IN QUESTO MODO VENGONO SELEZIONATI SOLO I POST LA CUI DISTANZA E' AL MASSIMO (minore o uguale)
+              ) QUELLA SPECIFICATA */
+              $maxDistance: distance
+            }
+          }
+        });
+      }
+      // controlliamo se il prezzo è definito
+      if (price) {
+        // controlliamo se il prezzo minimo è definito -> selezioniamo tutti i post con quel prezzo minimo
+        if (price.min) dbQueries.push({ price: { $gte: price.min } });
+        // facciamo lo stesso per il massimo
+        if (price.max) dbQueries.push({ price: { $lte: price.max } });
+        /* in questo modo l'utente può specificare o il minimo o il massimo o entrambi (anche nessuno) 
+        ottenendo post filtrati come vuole in base ai prezzi passati */
+      }
+      // controlliamo se il avgRating è definito
+      if (avgRating) {
+        // selezioniamo i posts che hanno come valore di avgRating uno di quelli nel array avgRating (il valore
+        // che l'utente ha specificato è un array, in quanto poteva filtrare i valori di avgRating dei post usando
+        // un form con delle checkbox selezionando più valori in base a quale selezionare i posts)
+        dbQueries.push({
+          // selezioniamo i posts il cui avgRating nel array di quelli che l'utente ha settato nel form
+          avgRating: {
+            $in: avgRating
+          }
+        });
+        // console.log(dbQueries[0], avgRating);
+      }
+
+      /* ora che abbiamo controllato tutti i campi del form (potenzialmente composto una query)
+      la query vera e propria, per interrogare il DB (adesso abbiamo solo un array di query separate che
+      dobbiamo unire) 
+      
+      
+      controlliamo se è stata composta una query (se l'utente nn ha inivato il form o è qui x chè aveva
+      page in url-query-string sarà una query vuota -> seleziona tutti i posts )
+      
+      dato che la query deve essere passata al controller che la eseguirà la mettiamo in res.locals 
+     
+      SE LA QUERY È STATA ASSEMBLATA (L'ARRAY DBQUERIES HA DEGLI ELEMENTI) uniamo ogni singola query del
+      array usando l'operatore $and, in modo da comporre una query che SELEZIONA SOLO I POSTS CHE RISPETTANO
+      TUTTE LE QUERY passate a questo operatore (a cui passiamo un array di query -> dbQueries)
+      ALTRIMENTI GLI PASSIAMO UNA QUERY {} SELEZIONA TUTTI I POSTS DAL DB
+      */
+      res.locals.dbQuery = dbQueries.length ? { $and: dbQueries } : {};
+    }
+    /* vogliamo mantenere lo stato del form anche dopo che è stato inviato, mettiamo query come variabile
+    ejs in modo da poter accedere ai valori di ogni campo del form */
+    res.locals.query = req.query;
+    /* 
+    creiamo gli url di paginazione (url che saranno settati come valore del attributo href nei link del
+    partial paginatePosts), questi avranno in base alla situazione (paginiamo sia i risultati di una ricerca
+    che tutti i posts mostrati) la pagina in query string ed eventualmente i dati del form (solo il primo nel
+    caso paginiamo tutti i posts e anche il secondo nel caso paginiamo solo i risultati di una ricerca)
+     
+    QUINDI CAPIAMO IN CHE CONTESTO DI TROVIAMO:
+    
+    IL FORM È STATO INVIATO (PAGINARE RISULTATI DI UNA RICERCA) -> i link hanno in query string i dati del form
+    -> la pagina è separata da questi ultimi da un & (query string già iniziata)
+
+    IL FORM NON E' STATO INIVATO (PAGINARE TUTTI I POSTS) -> i link hanno i query string solo il numero della pagina
+    con davanti il ? (fa iniziare la query string)
+
+    per capire in che caso ci troviamo, eliminiamo page dal array keys (chiavi di req.query)
+
+    - se la lunghezza è > 0 il form è stato iniviato (ci sono i dati del form in query string)
+    - altrimenti non è stato inviato il form (non ci sono altri dati oltre a page in query string)
+
+    eliminiamo page dal array
+    */
+    keys.splice(keys.indexOf("page"), 1);
+    // in base al caso in cui ci troviamo settiamo il delimitatore (& o ?) che deve essere messo prima di page in query string
+    const delimiter = keys.length ? "&" : "?";
+    /* creiamo gli url di paginazione partendo dagli url (originali con anche i dati in query string che sono
+    stati passati in questa richiesta), rimuoviamo page dalla stringa (per evitare errori quando metteremo il nostro placeholder
+    senza valore di page) ed aggiungiamo il placeholder con il delimitatore (NOTA, la situazione in termini di valori
+    in query string degli url per quanto riguarda il delimitatore è quella che abbiamo stabilito scegliendolo, quindi il nostro
+    delimitatore funzionerà) IL VALORE DELLA PAGINA SARA' POI AGGIUNTO DAL PARTIAL*/
+    res.locals.paginateUrl =
+      req.originalUrl.replace(/(\?|\&)page=\d+/g, "") + `${delimiter}page=`;
+
+    // console.log(res.locals.query);
+    // eseguiamo il controller
     next();
   }
 };

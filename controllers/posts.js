@@ -38,10 +38,36 @@ const mapBoxToken = process.env.MAPBOX_TOKEN;
 module.exports = {
   // POST INDEX
   async postIndex(req, res, next) {
-    let posts = await Post.paginate(
-      {},
-      { page: req.query.page || 1, limit: 10, sort: "-_id" }
-    );
+    /* 
+    prima eseguiamo un middleware che si occupa di controllare se l'utente è arrivato a questa route inviado
+    il form filterSearch o no, nel caso in cui sia arrivato inviando il form considera tutti i campi che l'utente
+    ha compilato nel form ed assembla una query che coinvolge tutti questi campi, in modo che i post che verranno
+    selezzionati dal DB saranno solo quelli che rispettano i criteri specificati dal utente, questa query sarà
+    passata a questo controller attraverso res.locals, LA QUERY CHE FAREMO ESEGUIRE AL DB SARA' MEMORIZATA QUI IN OGNI
+    CASO, SI NEL CASO IN CUI L'UTENTE ABBIA COMPILATO IL FORM CON DEI DATI E QUINDI LA QUERY SARA' STATA ASSEMBLATA
+    SIA NEL CASO IN CUI L'UTENTE NON SIA ARRIVATO A QUESTA RUOTE INVIANDO IL FORM. IN QUESTO CASO res.locals.dbQuery
+    sarà {}
+    */
+
+    // quindi destrutturiamo la query e la facciamo eseguire al DB
+    const { dbQuery } = res.locals;
+    // cancelliamo dbQuery perché non ci serve nelle views (potrebbe essere un oggetto grande che occupa spazio inutilmente)
+    delete res.locals.dbQuery;
+    let posts = await Post.paginate(dbQuery, {
+      page: req.query.page || 1,
+      limit: 10,
+      sort: "-_id"
+    });
+    /* 
+       ora controlliamo se l'utente aveva inviato il form e non ci sono risultati,
+       IN QUESTO CASO VOGLIAMO SOLLEVARE UN ERRORE PERCHE' LA RICERCA DEL UTENTE 
+       NON HA PRODOTTO RISULTATI dato che vogliamo conservare i campi del form li 
+       mettiamo in res.locals.query, se l'oggetto è definito allora vuol dire che 
+       il form è stato inviato.
+     */
+    if (res.locals.query && !posts.docs.length) {
+      res.locals.error = "No results matching that query";
+    }
     posts.page = Number(posts.page);
     posts.pages = Number(posts.pages);
     res.render("posts", { posts, title: "Surf Store - Index", mapBoxToken });
@@ -94,8 +120,6 @@ module.exports = {
   },
   // POST SHOW
   async postShow(req, res, next) {
-    // x generare un errore
-    // throw new Error("huge error");
     let post = await Post.findById(req.params.id).populate({
       path: "reviews",
       options: {
@@ -103,6 +127,11 @@ module.exports = {
         populate: { path: "author", model: "User" }
       }
     });
+    /* 
+      per ora dato che i post sono stati generati automaticamente usando seed ed abbiamo già generato un
+      avgRating allora associamo direttamente ad avgRating floorRating (in questo modo abbiamo già di
+      default una valutazione media del post e possiamo subito testare i filtri relativi alle valutazioni) 
+    */
     const floorRating = post.calculateAvgRating();
     res.render("posts/show", {
       post,
