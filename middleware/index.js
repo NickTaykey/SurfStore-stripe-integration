@@ -135,6 +135,10 @@ const middlewares = {
   /* assembla la query con cui cercare o filtrare i post (se l'utente ha inviato il form di ricerca in index)
   altrimenti questa query sarà {} (quella di default) . */
   async searchAndFilter(req, res, next) {
+    /* in base ai valori dei campi specificati dal utente nel form (IN QUERY-STRING) POPOLEREMO L'ARRAY
+    dbQueries CON LE VARIE QUERY CON I VALORI CHE L'UTENTE HA PASSATO NEL FORM IN MODO DA SELEZIONARE
+    SOLO I POSTS CHE RISPETTANO I CRITERI DI SELEZIONE SPECIFICATI DAL UTENTE. */
+    const dbQueries = [];
     // controlliamo se sono stati passati dei valori in url-query-string (DOBBIAMO ASSEMBLARE LA QUERY O NO)
     // troviamo le chiavi dei valori passati in url-query-string
     const keys = Object.keys(req.query);
@@ -142,10 +146,6 @@ const middlewares = {
     if (keys.length) {
       // destrutturiamo i valori associati ai vari campi del form passati in query-string
       let { search, location, distance, price, avgRating } = req.query;
-      /* in base ai valori dei campi specificati dal utente nel form (IN QUERY-STRING) POPOLEREMO L'ARRAY
-      dbQueries CON LE VARIE QUERY CON I VALORI CHE L'UTENTE HA PASSATO NEL FORM IN MODO DA SELEZIONARE
-      SOLO I POSTS CHE RISPETTANO I CRITERI DI SELEZIONE SPECIFICATI DAL UTENTE. */
-      const dbQueries = [];
 
       // se è stata specificata una 'stringa chiave' con cui selezionare i post nel DB
       if (search) {
@@ -242,8 +242,9 @@ const middlewares = {
       TUTTE LE QUERY passate a questo operatore (a cui passiamo un array di query -> dbQueries)
       ALTRIMENTI GLI PASSIAMO UNA QUERY {} SELEZIONA TUTTI I POSTS DAL DB
       */
-      res.locals.dbQuery = dbQueries.length ? { $and: dbQueries } : {};
     }
+    res.locals.dbQuery = dbQueries.length ? { $and: dbQueries } : {};
+
     /* vogliamo mantenere lo stato del form anche dopo che è stato inviato, mettiamo query come variabile
     ejs in modo da poter accedere ai valori di ogni campo del form */
     res.locals.query = req.query;
