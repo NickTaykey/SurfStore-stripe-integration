@@ -20,7 +20,9 @@
         placeholder="Address or ZipCode"
         value="<%= query.location %>"
       />
-      <small><a href="#">Use my location</a></small>
+      <small><a href="#" id="find-me">Use my location</a></small
+      ><br />
+      <p id="status"></p>
     </div>
     <legend>Distance (miles)</legend>
     <div>
@@ -91,3 +93,4 @@
     <input type="submit" />
   </div>
 </form>
+<script src="/javascripts/use-my-location.js"></script>

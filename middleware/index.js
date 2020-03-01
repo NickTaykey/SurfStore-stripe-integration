@@ -172,11 +172,36 @@ const middlewares = {
 
       // controlliamo se la località è definita
       if (location) {
-        // troviamo le coordinate della località
-        let response = await geoCodeClient
-          .forwardGeocode({ query: location, limit: 1 })
-          .send();
-        const { coordinates } = response.body.features[0].geometry;
+        // metteremo le coordinate in questa variabile
+        let coordinates;
+        try {
+          /* 
+          il valore di location (che arrivati a questo punto non può essere vuoto)
+          sarà: 
+          
+          - un oggetto JSON (array) con le coordinate del utente nel caso abbia usato la funzionalità di geoLocation
+            nel form
+          - una stringa con il nome della location di riferimento nel caso in cui l'utente l'abbia specificata manualmente 
+          
+          AL INTERNO DI QUESTO TRY CERCHIAMO SI CONVERTIRE L'OGGETTO JSON location in un array che contiene le coordinate
+          (metodo JSON.parse ) nel caso in cui tutto vada bene vuol dire che location era un array in formato JSON con le
+          coordinate (ce le abbiamo già) NON SERVE CHIAMARE L'API DI MAPBOX PER TROVARE LE COORDINATE DEL LUOGO
+
+          SE CI DA UN ERRORE (location non è un array JSON con le coordinate del luogo) allora l'utente ha inserito il nome 
+          (l'idrizzo o un codice postale nel input location) allora dobbiamo trovare le coordinate usando mapbox
+
+          CON QUESTA LOGICA, QUALSIASI COSA L'UTENTE INSERISCA NEL FORM CI RITROVEREMO SEMPRE NELLA SITUAZIONE IN CUI
+          ABBIAMO LE COORDINATE DEL LUOGO DI RIFERIMENTO NELLA VARIABILE coordinates
+          */
+          coordinates = JSON.parse(location);
+        } catch (error) {
+          // troviamo le coordinate della località
+          let response = await geoCodeClient
+            .forwardGeocode({ query: location, limit: 1 })
+            .send();
+          coordinates = response.body.features[0].geometry.coordinates;
+        }
+        // console.log(coordinates);
         // convertiamo la distanza del form in metri (mongodb lavora in metri,
         // in questo modo abbiamo risultati coerenti con il valore in miglia)
         distance = distance || 25;
