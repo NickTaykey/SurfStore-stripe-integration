@@ -79,6 +79,7 @@ app.use(passport.session());
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+app.locals.moment = require("moment")
 
 /* TUTTI I MIDDLEWARE PRIMA DEL MONTAGGIO DELLE ROUTE VENGONO ESEGUITI PRIMA DEL CODICE DI OGNI ROUTE */
 // setta titolo di default per ogni view E IMPLEMENTA FLASH MESSAGES
