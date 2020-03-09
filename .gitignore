@@ -1,6 +1,7 @@
 /node_modules
 .env
 todos.txt
-/uploads
 test-mapbox.js
 test.js
+./public/wrapkit
+./public/images
