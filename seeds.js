@@ -32,6 +32,9 @@ async function seedPosts() {
         type: "Point",
         coordinates: [cities[random1000].longitude, cities[random1000].latitude]
       },
+      images:[{
+        url: "https://res.cloudinary.com/devsprout/image/upload/v1561315599/surf-shop/surfboard.jpg"
+      }],
       price: random1000,
       avgRating: random5,
       // setta l'autore del post

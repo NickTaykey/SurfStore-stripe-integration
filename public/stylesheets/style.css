@@ -1,10 +1,8 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.logo {
+  color: #fff;
 }
-
-a {
-  color: #00b7ff;
+.logo:hover {
+  color: #fff;
 }
 
 /* stiliziamo il contenitore della mappa e i popup */

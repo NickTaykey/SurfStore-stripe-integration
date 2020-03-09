@@ -124,11 +124,14 @@ module.exports = {
   },
 
   async getLandingPage(req, res, next) {
-    // seleziona tutti i post (in modo da mostrare le loro località nella mappa)
-    let posts = await Post.find();
+    /* seleziona tutti i post (in modo da mostrare le loro località nella mappa)
+    selezioniamo tutti i post dai più recenti ai meno recenti */
+    let posts = await Post.find().sort("-_id").exec();
+    // selezianiamo solo i 3 posts più recenti
+    let recentPosts = posts.slice(0, 3);
     // renderizza la view context: post, mapBoxToken, title
     // il token di mapbox serve per visualizzare la mappa nella view
-    res.render("index", { posts, mapBoxToken, title: "Surf Shop - Home" });
+    res.render("index", { posts, recentPosts, mapBoxToken, title: "Surf Shop - Home" });
   },
   async getProfile(req, res, next) {
     // trova i primi 10 post del utente
