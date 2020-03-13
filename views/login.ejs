@@ -1,28 +1,35 @@
 <% layout("layouts/boilerplate") -%>
 <form action="/login" method="post">
-  <div>
-    <label for="username"></label>
-    <input
-      type="text"
-      id="username"
-      name="username"
-      placeholder="username"
-      value="<%= username %>"
-      required
-    />
+  <div class="row">
+    <div class="col-12 col-lg-6 offset-lg-3">
+        <h1 class="text-center my-4">Login</h1>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+            placeholder="username"
+            value="<%= username %>"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="password"
+            required
+          />
+        </div>
+        <input class="btn btn-primary btn-block mb-4" type="submit" value="Login" />
+      </form>
+      <div>
+        <a href="/forgot-password">Forgot Password?</a>
+      </div>
+    </div>
   </div>
-  <div>
-    <label for="password"></label>
-    <input
-      type="password"
-      id="password"
-      name="password"
-      placeholder="password"
-      required
-    />
-  </div>
-  <input type="submit" />
-</form>
-<div>
-  <a href="/forgot-password">Forgot Password?</a>
-</div>
