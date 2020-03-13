@@ -14,13 +14,11 @@ async function seedPosts() {
   for (const i of new Array(600)) {
     // genera un numero casuale da 1 a 1000 per selezionare una città casuale dal array
     const random1000 = Math.floor(Math.random() * 1000);
-    // numero casuale da 0 a 5 (numero di stelle medio del post)
-    const random5 = Math.floor(Math.random() * 6);
-
+    
     // genera titolo e descrizione casuali (lorem)
     const title = faker.lorem.word();
     const description = faker.lorem.text();
-
+    
     // assembla il post come oggetto
     const postData = {
       title,
@@ -36,9 +34,8 @@ async function seedPosts() {
         url: "https://res.cloudinary.com/devsprout/image/upload/v1561315599/surf-shop/surfboard.jpg"
       }],
       price: random1000,
-      avgRating: random5,
       // setta l'autore del post
-      author: "5e1cad7feae84c05da632f53"
+      author: "5e67f5f85046810486b57e60"
     };
     // creiamo un oggetto post che rappresenta quello che abbiamo assemblato che vogliamo salvare nel DB
     let post = new Post(postData);
@@ -48,7 +45,16 @@ async function seedPosts() {
     }">${title}</a></strong><p>${post.location}</p><p>${description.substring(
       0,
       20
-    )}...</p>`;
+      )}...</p>`;
+      for(let i = 0; i<20; i++){
+        // numero casuale da 0 a 5 (numero di stelle medio del post)
+        const random5 = Math.floor(Math.random() * 6);
+        post.reviews.push(await Review.create({
+          body: faker.lorem.lines(2),
+          rating: random5,
+          author:"5e67f5f85046810486b57e60"
+        }));
+    }
     // salviamo il post nel DB
     await post.save();
   }

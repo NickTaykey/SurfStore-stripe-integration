@@ -2,19 +2,18 @@
 <html>
   <head>
     <title><%= title %></title>
-    <!-- CDN di BS4 (SOLO PER SVILUPPO, DA RIMUOVERE IN PRODUZIONE) -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap4/css/bootstrap.min.css">
     <!-- 
       includiamo tutti i componenti che ci servono (css e js) per visualizzare le mappe e popolarle
       con le coordinate delle località dei posts, usando l'API di mapbox
     -->
     <link rel="stylesheet" href="/stylesheets/style.css" />
-    <link rel="stylesheet" href="/stylesheets/navbar.css" />
+    <link rel="stylesheet" href="/stylesheets/searchAndFilter.css" />
+
     <link
       rel="stylesheet"
       href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css"
@@ -28,12 +27,22 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js"></script>
   </head>
   <body>
-    <% include ../partials/navbar %><% include ../partials/flash-messages %> <%-
+    <% include ../partials/navbar %>
+    <div class="container mt-3">
+      <% include ../partials/flash-messages %> <%-
     body -%>
+    
 
-    <!-- carichiamo questo script solo se ci troviamo in index -->
-    <% if(title==="Surf Store - Index"){ %>
-    <script src="/javascripts/post-index.js"></script>
-    <% } %>
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="/libs/jquery-3.4.1.slim.min.js"></script>
+      <script src="/libs/popper.min.js"></script>
+      <script src="/bootstrap4/js/bootstrap.min.js"></script>
+    
+      <!-- carichiamo questo script solo se ci troviamo in index -->
+      <% if(title==="Surf Store - Index"){ %>
+      <script src="/javascripts/post-index.js"></script>
+      <% } %>
+    </div>
   </body>
 </html>

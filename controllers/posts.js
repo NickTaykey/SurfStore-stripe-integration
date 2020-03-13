@@ -125,9 +125,9 @@ module.exports = {
       path: "reviews",
       options: {
         sort: { _id: -1 },
-        populate: { path: "author", model: "User" }
+        populate: { path: "author", model: "User" },
       }
-    });
+    }).exec();
     /* 
       per ora dato che i post sono stati generati automaticamente usando seed ed abbiamo già generato un
       avgRating allora associamo direttamente ad avgRating floorRating (in questo modo abbiamo già di

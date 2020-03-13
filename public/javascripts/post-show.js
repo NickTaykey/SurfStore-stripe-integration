@@ -6,6 +6,10 @@ let map = new mapboxgl.Map({
   center: post.geometry.coordinates,
   zoom: 15
 });
+// disabilità lo zoom con lo scrooling del mouse
+map.scrollZoom.disable();
+// aggiungiamo i controller + e - per modificare lo zoom direttamente dalla mappa
+map.addControl(new mapboxgl.NavigationControl());
 let el = document.createElement("div");
 el.className = "marker";
 new mapboxgl.Marker(el)
@@ -29,7 +33,15 @@ $(".delete-review-form").submit(function(event) {
 });
 
 $(".clear-rating-btn").click(function() {
-  $(this)
-    .siblings(".input-no-rate")
+  $(".reset-rating-fieldset")
+    .children("input[type=radio]:checked")
+    .attr("checked", false);
+  $(".reset-rating-fieldset")
+    .children(".input-no-rate")
     .click();
 });
+
+$("#reviewNewFormToogler").click(e=>{
+  e.preventDefault();
+  $(".new-review-form").toggle()
+})

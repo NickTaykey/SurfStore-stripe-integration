@@ -1,50 +1,31 @@
 <% layout("layouts/boilerplate") -%>
-<h1>New Post!</h1>
-<!-- 
-  PER UPLOADARE FILE O IMMAGINI IL FORM DEVE AVERE COME METODO POST E VALORE DI 
-  enctype "multipart/form-data", quest ultimo attributo ci serve per poter caricare i file nel server usando
-  il form, inoltre il metodo della richiesta deve essere POST perchè altrimenti non possiamo usare questo valore
-  di enctype e quindi non possiamo caricare files 
--->
 <form action="/posts" method="POST" enctype="multipart/form-data">
-  <div>
-    <input type="text" placeholder="Title" name="post[title]" />
+  <div class="row">
+    <section class="col-12 col-md-6 offset-md-3">
+      <h1 class="text-center my-5">Sell a Board</h1>
+      <div class="form-group">
+        <input class="form-control" type="text" placeholder="Title" name="post[title]" />
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="file" name="images" accept="image/*" multiple required/>
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="number" placeholder="Price" name="post[price]" step=".01" />
+      </div>
+      <div class="form-group">
+        <textarea
+          class="form-control"
+          name="post[description]"
+          placeholder="Description"
+          id=""
+          cols="30"
+          rows="1"
+        ></textarea>
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="text" placeholder="Location" name="post[location]" />
+      </div>
+      <input class="btn btn-primary btn-block" type="submit" value="submit" />
+    </section>
   </div>
-  <div>
-    <!-- USIAMO IL TAG input CON type="file" PER CREARE UN CAMPO DEL FORM CHE PERMETTE AL UTENTE DI SCEGLIERE
-         E DI CARICARE DEI FILE
-
-         USIAMO L'ATTRIBUTO multiple PER POTER CARICARE PIU' FILE DALLO STESSO INPUT SELEZIONANDO TUTTI I FILE
-         DA CARICARE DALLA FINESTRA DEL FINDER
-
-         USIAMO L'ATTRIBUTO accept PER SPECIFICARE QUALI TIPI DI FILE L'UTENTE PUO' SELEZIONARE PER UPLOADARE,
-         PUO' ASSUMERE DIVERSI VALORI:
-
-          "image/*"  ->  SOLO FILE IMMAGINI
-          "video/*"  ->  SOLO FILE VIDEO
-          "audio/*"  ->  SOLO FILE AUDIO
-          ".est1, .est2" -> SOLO I FILE CON LE ESTENSIONI SPECIFICATE CON IL . DAVANTI E SEPARATE DA UNA ,
-                            SE E' SOLO 1 SCRIVIAMO SOLO .ESTENSIONE
-
-          "media_type" -> SOLO FILE MEDIA PER ESEMPIO, AUDIO, VIDEO O IMMAGINI.
-
-       -->
-    <input type="file" name="images" accept="image/*" multiple />
-  </div>
-  <div>
-    <input type="number" placeholder="Price" name="post[price]" step=".01" />
-  </div>
-  <div>
-    <textarea
-      name="post[description]"
-      placeholder="Description"
-      id=""
-      cols="30"
-      rows="10"
-    ></textarea>
-  </div>
-  <div>
-    <input type="text" placeholder="Location" name="post[location]" />
-  </div>
-  <input type="submit" value="submit" />
 </form>

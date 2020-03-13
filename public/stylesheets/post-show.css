@@ -1,6 +1,5 @@
 #map {
   margin: 20px 0 20px 0;
-  width: 600px;
   height: 400px;
 }
 
@@ -30,7 +29,28 @@
   display: block;
 }
 
-i.fas,
-i.far {
+i.fas, i.far {
   color: #f0ad4e;
 }
+.description{
+  text-align: justify;
+}
+.image-container{
+  height: 450px;
+}
+
+.image-container img{
+  max-height: 450px;
+}
+
+.starability-basic{
+  min-height: 0px;
+}
+
+.starability-basic > label{
+  margin: 0;
+}
+.review-conten{
+  text-align: justify;
+}
+

@@ -1,12 +1,30 @@
-<% if(posts.page-1){ %>
-    <a href="<%= paginateUrl %><%= posts.page-1 %>">Prev</a>
-<% } %> 
-<% if(posts.pages>1){ %>
-    <% for(let i = 1; i<=posts.pages; i++){ %>
-        <a href="<%= paginateUrl %><%= i %>" <%= posts.page===i ? "style=color:#000;" : '' %> ><%= i %></a>
-    <% } %>
-<% } %>
-<% if(posts.page!==posts.pages){ %>
-    <a href="<%= paginateUrl %><%= posts.page+1 %>">Next</a>
-<% } %>
-    
+<div class="container">
+  <nav aria-label="Page navigation example">
+    <ul class="pagination d-flex justify-content-center">
+      <% if(posts.page-1){ %>
+        <li class="page-item">
+            <a class="page-link" href="<%= paginateUrl %><%= posts.page-1 %>" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+      <% } %> 
+      <% if(posts.pages>1){ %>
+        <% for(let i = 1; i<=posts.pages; i++){ %>
+            <li class="page-item <%= posts.page===i ? 'active' : '' %>"><a class="page-link" href="<%= paginateUrl %><%= i %>" ><%= i %></a></li>
+            <% if((i%21)===0){ %>
+                </ul>
+                <ul class="pagination d-flex justify-content-center">
+            <% } %>
+        <% } %>
+      <% } %>
+      <% if(posts.page!==posts.pages){ %>
+        <li class="page-item">
+            <a class="page-link" href="<%= paginateUrl %><%= posts.page+1 %>" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+      <% } %>
+    </ul>
+  </nav>
+</div>
+

@@ -96,8 +96,8 @@ app.use((req, res, next) => {
 
   // settiamo un utente sempre loggato
   /* req.user = {
-    _id: "5dfe539e1d7c37040f815fb8",
-    username: "nick"
+    _id: "5e6bdb0d76fa9509ed9a5377",
+    username: "Nico"
   }; */
   /* req.user = {
     _id: "5dff422afad0fc0387e73a51",

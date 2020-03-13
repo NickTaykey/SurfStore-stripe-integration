@@ -2,22 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><%= title %></title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/starbility-basic.min.css" />
     <link rel="stylesheet" href="/stylesheets/style.css" />
-    <link rel="stylesheet" href="/stylesheets/navbar.css" />
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js"></script>
     <link
       href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/stylesheets/post-show.css" />
-    <link rel="stylesheet" href="/stylesheets/starbility-basic.min.css" />
-    <script
-      src="https://kit.fontawesome.com/f463be6819.js"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://kit.fontawesome.com/41db850298.js" crossorigin="anonymous"></script>
     <script
       src="https://code.jquery.com/jquery-3.4.1.min.js"
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -26,7 +25,14 @@
   </head>
   <body>
     <% include ../partials/navbar %> <% include ../partials/flash-messages %>
-    <%- body -%>
+    <div class="container">
+      <%- body -%>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/libs/jquery-3.4.1.slim.min.js"></script>
+    <script src="/libs/popper.min.js"></script>
+    <script src="/bootstrap4/js/bootstrap.min.js"></script>
     <script>
       const post = <%- JSON.stringify(post) %>;
     </script>
