@@ -26,8 +26,3 @@
   color: green;
 }
 
-/* stile del immagine del profilo del utente */
-.profile-image {
-  width: 100px;
-  border-radius: 50%;
-}

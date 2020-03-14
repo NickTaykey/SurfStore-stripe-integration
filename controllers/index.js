@@ -140,7 +140,7 @@ module.exports = {
       .equals(req.user._id)
       .limit(10)
       .exec();
-    res.render("profile", { posts });
+    res.render("profile", { posts, title: "Surf Store | my profile" });
   },
   // aggiorna tutte le proprietà del utente ESCLUSE LE PASSWORD (gestite dai middleware)
   async updateProfile(req, res, next) {

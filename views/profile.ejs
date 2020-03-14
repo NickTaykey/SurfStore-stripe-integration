@@ -1,83 +1,93 @@
 <% layout("layouts/boilerplate") -%>
-<h1>
-  <img
-    src="<%= currentUser.image.secure_url %>"
-    alt="<%= currentUser.username %>'s profile image"
-    class="profile-image"
-  />
-  <%= currentUser.username %>'s profile
-</h1>
-<p>Recent posts:</p>
-<% posts.forEach(function(post){ %>
-<div>
-  <a href="/posts/<%= post.id %>"><%= post.title %></a>
-</div>
-<% }) %>
-
-<p>Update Info:</p>
-<form action="/profile?_method=PUT" method="POST" enctype="multipart/form-data">
-  <div>
-    <label for="username">Username:</label>
-    <input
-      type="text"
-      id="username"
-      name="username"
-      placeholder="username"
-      value="<%= currentUser.username %>"
-      autofocus
-      required
-    />
+<header class="mt-5 row">
+  <div class="col-xs-12 col-lg-6">
+    <img src="<%= currentUser.image.secure_url %>" alt="<%= currentUser.username %>'s profile image" class="w-100 rounded d-inline-block mr-4"/>
   </div>
-  <div>
-    <label for="current-password"
-      >Current password (required to Update any field):</label
-    >
-    <input
-      type="password"
-      id="current-password"
-      name="currentPassword"
-      placeholder="current password"
-      required
-    />
+  <div class="col-xs-12 col-lg-6 d-flex align-items-center">
+    <h1 class="display-4 mt-5 mt-lg-0 ml-lg-5 w-100 text-center">
+      <%= currentUser.username %>'s profile
+    </h1>
   </div>
-
-  <div>
-    <label for="new-password">New Password:</label>
-    <input
-      type="password"
-      id="new-password"
-      name="newPassword"
-      placeholder="new password"
-    />
+</header>
+<section class="row my-5">
+  <div class="col-xs-12 mb-5 col-lg-4">
+    <h4 class="mb-4">Recent posts:</h4>
+    <ul class="list-group">
+      <% posts.forEach(function(post){ %>
+        <li class="list-group-item"><a href="/posts/<%= post.id %>"><%= post.title %></a></li>
+      <% }) %>
+    </ul>
   </div>
-
-  <div>
-    <label for="password-confirmation">New Password Confermation:</label>
-    <input
-      type="password"
-      id="password-confirmation"
-      name="passwordConfirmation"
-      placeholder="password confirmation"
-    />
+  <div class="col-xs-12 mb-5 col-lg-8">
+    <h4 class="mb-4">Update Info:</h4>
+    <form action="/profile?_method=PUT" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label class="d-inline-block" for="username">Username:</label>
+        <input
+          class="form-control d-inline-block"
+          type="text"
+          id="username"
+          name="username"
+          placeholder="username"
+          value="<%= currentUser.username %>"
+          autofocus
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="current-password"><strong>Current password (required to Update any field): </strong></label>
+        <input
+          type="password"
+          class="form-control d-inline-block"
+          id="current-password"
+          name="currentPassword"
+          placeholder="current password"
+          required
+        />
+      </div>
+    
+      <div class="form-group">
+        <label class="d-inline-block" for="new-password">New Password:</label>
+        <input
+          class="form-control d-inline-block"
+          type="password"
+          id="new-password"
+          name="newPassword"
+          placeholder="new password"
+        />
+      </div>
+    
+      <div class="form-group">
+        <label class="d-inline-block" for="password-confirmation">New Password Confermation:</label>
+        <input
+          class="form-control d-inline-block"
+          type="password"
+          id="password-confirmation"
+          name="passwordConfirmation"
+          placeholder="password confirmation"
+        />
+      </div>
+      <div class="form-group" class="validation-message"></div>
+    
+      <div class="form-group">
+        <label class="d-inline-block" for="email">Email:</label>
+        <input
+          class="form-control d-inline-block"
+          type="email"
+          name="email"
+          id="email"
+          placeholder="email"
+          value="<%= currentUser.email %>"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label class="d-inline-block" for="image">Image:</label>
+        <strong>(The current image will be deleted)</strong>
+        <input class="form-control" type="file" id="image" name="image" />
+      </div>
+      <input class="btn btn-primary btn-block" type="submit" id="update-profile" value="Update" />
+    </form>
+    <script src="/javascripts/profile.js"></script>
   </div>
-  <div class="validation-message"></div>
-
-  <div>
-    <label for="email">Email:</label>
-    <input
-      type="email"
-      name="email"
-      id="email"
-      placeholder="email"
-      value="<%= currentUser.email %>"
-      required
-    />
-  </div>
-  <div>
-    <label for="image">Image:</label>
-    <small>(The current image will be deleted)</small>
-    <input type="file" id="image" name="image" />
-  </div>
-  <input type="submit" id="update-profile" value="Update" />
-</form>
-<script src="/javascripts/profile.js"></script>
+</section>
