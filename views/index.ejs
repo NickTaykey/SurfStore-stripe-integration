@@ -1,20 +1,79 @@
-<% layout("layouts/boilerplate.ejs") -%>
-<h1><%= title %></h1>
-<p>Welcome to <%= title %></p>
-<!-- container della mappa con i cluster -->
-<div id="map"></div>
-
-<!-- SCRIPT DI CONFIGURAZIONE -->
-<script>
-  // setta il token di mapbox in questo modo possiamo usare l'API
-  mapboxgl.accessToken = "<%= mapBoxToken %>";
-  // crea un oggetto che contiene tutti i post in questo modo possiamo mostrarli facilemente nella mappa
-  // (il codice per questo è scritto in un file esterno quindi nn possiamo usare ejs lì)
-  /* i posts sono associati a features perché gli oggetti che rappresentano le località della mappa sono di
-  tipo geoJSON cioè oggetti json formattati in modo da modellare una località sotto forma di un oggetto
-  seguendo una specifica definita. */
-  // negli oggetti geoJSON gli oggetti che definiscono una località sono associati a features in un oggetto
-  // che li contiene
-  var posts = {features: <%- JSON.stringify(posts) %>};
-</script>
-<script src="/javascripts/allPostsClusterMap.js"></script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap4/css/bootstrap.min.css">
+    <!-- 
+      includiamo tutti i componenti che ci servono (css e js) per visualizzare le mappe e popolarle
+      con le coordinate delle località dei posts, usando l'API di mapbox
+    -->
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" href="/stylesheets/landing.css" />
+    <link
+      rel="stylesheet"
+      href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css"
+      type="text/css"
+    />
+    <link
+      href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js"></script>
+  </head>
+  <body>
+    <header id="background-image">
+      <section>
+          <section class="my-5 mx-auto">
+            <h1 class="display-4 text-center">Surf Shop</h1>
+            <h3 class="text-center">Welcome to Surf Shop!</h3>
+          </section>
+          <!-- container della mappa con i cluster -->
+          <section class="d-flex justify-content-center">
+            <div class="w-100">
+              <div class="rounded" id="map"></div>
+              <div class="mt-5">
+                  <a href="/posts/new" class="btn btn-lg btn-outline-info d-inline-block">Sell</a><a href="/posts" class="btn mt-4 mt-lg-0 btn-lg btn-outline-primary d-inline-block">Buy</a>
+              </div>
+              <div class="container">
+              <h2 class="text-center my-5">Latest 3 posts</h2>
+              <div class="row">
+                <% recentPosts.forEach(p=>{ %>
+                  <div class="col-xs-12 col-lg-4 mb-5">
+                    <div class="card">
+                      <div class="image-container">
+                        <img src="<%= p.images.length ? p.images[0].url : '/images/default_board_img.jpeg' %>" class="card-img-top" alt="...">
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title text-center"><%= p.title %></h5>
+                        <a href="/posts/<%= p._id %>" class="mx-0 card-link text-center d-inline-block w-100 py-0">View More</a>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+              </div>
+            </div>
+          </section>
+      </section>
+    </header>
+     <!-- SCRIPT DI CONFIGURAZIONE -->
+     <script>
+      // setta il token di mapbox in questo modo possiamo usare l'API
+      mapboxgl.accessToken = "<%= mapBoxToken %>";
+      // crea un oggetto che contiene tutti i post in questo modo possiamo mostrarli facilemente nella mappa
+      // (il codice per questo è scritto in un file esterno quindi nn possiamo usare ejs lì)
+      /* i posts sono associati a features perché gli oggetti che rappresentano le località della mappa sono di
+      tipo geoJSON cioè oggetti json formattati in modo da modellare una località sotto forma di un oggetto
+      seguendo una specifica definita. */
+      // negli oggetti geoJSON gli oggetti che definiscono una località sono associati a features in un oggetto
+      // che li contiene
+      var posts = {features: <%- JSON.stringify(posts) %>};
+    </script>
+    <script src="/javascripts/allPostsClusterMap.js"></script>
+  </body>
+</html>

@@ -3,7 +3,7 @@
 // mostriamo la mappa in div#map
 var map = new mapboxgl.Map({
   container: "map", // id del container
-  style: "mapbox://styles/mapbox/streets-v8",
+  style: "mapbox://styles/nicktay/ck3ampwvm0kjh1ctfkb9qbzem",
   center: [-98.55562, 39.809734], // centro della mappa
   zoom: 3.3 // zoom iniziale
 });
@@ -175,9 +175,11 @@ map.on("load", function() {
   // quando il cursore esce da un punto che non è un cluster torna ad essere standard
   map.on("mouseleave", "unclustered-point", mouseLeaveCursor);
 });
-
-// disabilità lo zoom con lo scrooling del mouse
-map.scrollZoom.disable();
-// aggiungiamo i controller + e - per modificare lo zoom direttamente dalla mappa
-map.addControl(new mapboxgl.NavigationControl());
+const title = document.querySelector("title").textContent;
+if(title!=="Surf Shop - Home"){
+  // disabilità lo zoom con lo scrooling del mouse
+  map.scrollZoom.disable();
+  // aggiungiamo i controller + e - per modificare lo zoom direttamente dalla mappa
+  map.addControl(new mapboxgl.NavigationControl());
+}
 

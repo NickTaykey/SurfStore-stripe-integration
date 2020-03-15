@@ -1,0 +1,59 @@
+h1, h3, h2{
+    color: whitesmoke;
+}
+
+#background-image { 
+    background-image: url("/images/banner-bg.jpg");
+    position: absolute;
+    width: 100%;
+    height: 165%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+#map{
+    opacity: 0.8;
+}
+@media only screen and (max-width: 992px){
+    #background-image{
+        height: 256%;
+        background-repeat: repeat-y;
+
+    }
+    div>a{
+        box-sizing: border-box;
+        width: 90%;
+        margin: auto 5%;
+        padding: 20px 0 20px 0!important;
+    }
+}
+
+
+@media only screen and (min-width: 992px){
+    div>a{
+        box-sizing: border-box;
+        width: 40%;
+        padding: 20px 0 20px 0!important;
+    }
+    a.btn-outline-info{
+        margin-right: 1%;
+        margin-left: 9%;
+    }
+    a.btn-outline-primary{
+        margin-left: 1%;
+    }
+}
+
+.image-container{
+    height: 240px;
+}
+
+.card-img-top{
+    max-height: 240px;
+}
