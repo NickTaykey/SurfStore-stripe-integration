@@ -3,6 +3,7 @@ const Post = require("./models/post");
 const Review = require("./models/review");
 // array che contiene tanti oggetti che rappresentano delle città vere con le loro info
 const cities = require("./cities");
+const authorId = "5e6feaeea9c17e0bd2de346f";
 
 // crea 600 post casuali nel db
 async function seedPosts() {
@@ -35,7 +36,7 @@ async function seedPosts() {
       }],
       price: random1000,
       // setta l'autore del post
-      author: "5e67f5f85046810486b57e60"
+      author: authorId
     };
     // creiamo un oggetto post che rappresenta quello che abbiamo assemblato che vogliamo salvare nel DB
     let post = new Post(postData);
@@ -52,7 +53,7 @@ async function seedPosts() {
         post.reviews.push(await Review.create({
           body: faker.lorem.lines(2),
           rating: random5,
-          author:"5e67f5f85046810486b57e60"
+          author:authorId
         }));
     }
     // salviamo il post nel DB
