@@ -8,7 +8,7 @@ const UserSchema = new Schema({
   utente con un email già usata mongoose ci da un errore) */
   email: { type: String, required: true, unique: true },
   image: {
-    secure_url: { type: String, default: "/images/default-profile.jpg" },
+    secure_url: { type: String },
     public_id: String
   },
   // token (string casuale per resettare la password)

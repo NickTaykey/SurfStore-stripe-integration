@@ -18,6 +18,7 @@
       </div>
       <div><strong>Price:</strong> $<%= post.price %></div>
       <div class="my-3 description"><%= post.description %></div>
+      <div class="my-3 text-muted">Posted <%= moment(new Date(post._id.getTimestamp())).calendar() %></div>
       <%# solo se l'utente è loggato ed è l'autore del post mostra i pulsanti edit, delete post %>
       <% if(currentUser && post.author.equals(currentUser._id)){ %>
         <a class="btn btn-warning d-inline-block" href="/posts/<%= post.id %>/edit">
@@ -106,6 +107,7 @@
                   <div class="card-body">
                     <h5 class="card-title mr-2 d-inline-block"><%= review.author.username %></h5>
                     <p class="starability-result d-inline-block my-0" data-rating="<%= review.rating %>"></p>
+                    <p class="text-muted float-right">Left <%= moment(new Date(review._id.getTimestamp())).calendar() %></p>
                     <p class="card-text review-content"><%= review.body %></p>
                     <% if(currentUser && review.author.equals(currentUser._id)){ %>
                       <button class="edit-review-button btn btn-warning d-inline-block btn-sm">Edit</button>
