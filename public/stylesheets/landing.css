@@ -20,6 +20,23 @@ h1, h3, h2{
 #map{
     opacity: 0.8;
 }
+
+.btn-outline-primary{
+    color: #20A4F3;
+    border-color: #20A4F3;
+}
+.btn-outline-primary:hover{
+    background-color: #20A4F3;
+}
+
+.btn-outline-info{
+    color: #2EC4B6;
+    border-color: #2EC4B6;
+}
+.btn-outline-info:hover{
+    background-color: #2EC4B6;
+}
+
 @media only screen and (max-width: 992px){
     #background-image{
         height: 256%;
