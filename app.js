@@ -154,6 +154,5 @@ app.use((err, req, res, next) => {
   res.redirect("/posts");
 });
 
-app.listen(8888, "localhost", ()=>console.log("listening on port 8888"));
 
 module.exports = app;
