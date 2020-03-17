@@ -15,6 +15,10 @@ function geoLocation(e) {
     location.value = `[${longitude}, ${latitude}]`;
     // diamo un feedback al utente che tutto è andato per il verso giusto e la geolocalizazione è avvenuta con successo
     status.textContent = "Geolocation successfully completed!";
+    location.classList.remove("d-inline-block");
+    location.classList.add("d-none");
+    findMeLink.classList.remove("d-inline-block");
+    findMeLink.classList.add("d-none");
   }
   // CALLBACK DI ERRORE
   function errorCallback(err) {

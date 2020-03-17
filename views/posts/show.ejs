@@ -16,7 +16,7 @@
           <% } %>
         <% } %>
       </div>
-      <div><strong>Price:</strong> $<%= post.price %></div>
+      <div class="font-weight-bold"><strong>Price:</strong> $<%= post.price %></div>
       <div class="my-3 description"><%= post.description %></div>
       <div class="my-3 text-muted">Posted <%= moment(new Date(post._id.getTimestamp())).calendar() %></div>
       <%# solo se l'utente è loggato ed è l'autore del post mostra i pulsanti edit, delete post %>
