@@ -15,7 +15,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 module.exports = {
   // SHOW REGISTER FORM only if the user is not logged in
   getRegister(req, res, next) {
-    if (req.isAuthenticated()) return res.redirect("/");
+    if (req.isAuthenticated()) return res.redirect("/posts");
     res.render("register", {
       title: "Register",
       username: "",
@@ -51,7 +51,7 @@ module.exports = {
           return next(err);
         }
         req.session.success = `Welcome to the Surf Store app ${user.username}!`;
-        res.redirect("/");
+        res.redirect("/posts");
       });
     } catch (err) {
       const { email, username } = req.body;
@@ -76,7 +76,7 @@ module.exports = {
   },
   // SHOW LOGIN FORM
   getLogin(req, res, next) {
-    if (req.isAuthenticated()) return res.redirect("/");
+    if (req.isAuthenticated()) return res.redirect("/posts");
     // se è specificato un returnTo=true in query string settiamo il redirectUrl nella sessione a req.header.referer
     if (req.query.returnTo) req.session.previousUrl = req.headers.referer;
     res.render("login", { title: "Login", username: "" });
@@ -96,7 +96,7 @@ module.exports = {
         // nella callback SE NON CI SONO ERRORI facciamo il redirect
         if (err) return next(err);
         // troviamo l'url nella sessione (se non c'è lo settiamo a "/")
-        const url = req.session.previousUrl || "/";
+        const url = req.session.previousUrl || "/posts";
         // lo eliminiamo dalla sessione
         delete req.session.previousUrl;
         // settiamo il messaggio di benvenuto
@@ -120,7 +120,7 @@ module.exports = {
     // facciamo il logout del utente
     req.logout();
     // reindirizziamo l'utente alla home page
-    res.redirect("/");
+    res.redirect("/posts");
   },
 
   async getLandingPage(req, res, next) {
@@ -259,7 +259,7 @@ module.exports = {
       };
       await sgMail.send(msg);
       req.session.success = "Your password has been successfully reseted";
-      res.redirect("/");
+      res.redirect("/posts");
     } else {
       req.session.error = "Passwords do not match!";
       return res.redirect(`/reset/${token}`);

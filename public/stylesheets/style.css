@@ -30,3 +30,7 @@
 .fa-user{
   font-size: 200px;
 }
+
+.form-control{
+  height: initial!important;
+}

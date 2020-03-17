@@ -151,7 +151,7 @@ app.use((err, req, res, next) => {
     console.log(err);
   }
   // reindirizziamo indietro
-  res.redirect("back");
+  res.redirect("/posts");
 });
 
 module.exports = app;

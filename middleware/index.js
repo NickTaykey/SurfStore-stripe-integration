@@ -61,7 +61,7 @@ const middlewares = {
       return next();
     }
     req.session.error = "Access denied";
-    res.redirect("/");
+    res.redirect("/posts");
   },
   // controlla se la password (attuale) che l'utente ha messo nel edit profile form è corretta (ci assicuriamo che sia autoriazato a modificare il profilo)
   async isValidPassword(req, res, next) {

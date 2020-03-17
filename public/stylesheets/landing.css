@@ -24,9 +24,10 @@ h1, h3, h2{
 .btn-outline-primary{
     color: #20A4F3;
     border-color: #20A4F3;
+    background-color: transparent!important;;
 }
 .btn-outline-primary:hover{
-    background-color: #20A4F3;
+    background-color: #20A4F3!important;
 }
 
 .btn-outline-info{
