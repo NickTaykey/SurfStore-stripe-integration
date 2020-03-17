@@ -37,7 +37,6 @@ async function seedPosts() {
       price: random1000,
       // setta l'autore del post
       author: authorId,
-      avgRating: Math.floor(Math.random() * 6)
     };
     // creiamo un oggetto post che rappresenta quello che abbiamo assemblato che vogliamo salvare nel DB
     let post = new Post(postData);
@@ -59,6 +58,7 @@ async function seedPosts() {
     }
     // salviamo il post nel DB
     await post.save();
+    post.avgRating = await post.calculateAvgRating();
   }
   console.log("600 new posts created");
 }
