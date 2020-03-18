@@ -12,8 +12,8 @@
     /></div>
   </fieldset>
   <fieldset class="form-group">
-    <legend>Location</legend>
-    <div class="mt-2">
+    <legend id="location-legend">Location</legend>
+    <div class="mt-2" id="location-container">
       <label for="location" class="sr-only">location</label>
       <input class="form-control w-50 mr-2 d-inline-block"
         type="text"
@@ -24,8 +24,8 @@
       />
       <a href="#" id="find-me">Use my location</a>
       <br />
-      <p id="status" class="font-weight-bold"></p>
     </div>
+    <p id="status" class="m-0 my-4 font-weight-bold"></p>
     <div class="form-group">
       <p>Distance (miles):</p>
       <input type="radio" name="distance" value="25" id="distance25" <%=

@@ -6,7 +6,8 @@ function geoLocation(e) {
    QUESTO E' IL MODO PIÚ SEMPLICE PER INVIARLO IN QUESTO MODO) */
   const status = document.getElementById("status");
   const location = document.getElementById("location");
-
+  const locationContainer = document.getElementById("location-container");
+  const locationLegend = document.getElementById("location-legend");
   // CALLBACK DI SUCCESSO
   function successCallback(position) {
     // troviamo le coordinate
@@ -15,10 +16,9 @@ function geoLocation(e) {
     location.value = `[${longitude}, ${latitude}]`;
     // diamo un feedback al utente che tutto è andato per il verso giusto e la geolocalizazione è avvenuta con successo
     status.textContent = "Geolocation successfully completed!";
-    location.classList.remove("d-inline-block");
-    location.classList.add("d-none");
-    findMeLink.classList.remove("d-inline-block");
-    findMeLink.classList.add("d-none");
+    locationLegend.classList.add("mb-0");
+    locationContainer.style.display = "none";
+    
   }
   // CALLBACK DI ERRORE
   function errorCallback(err) {
