@@ -3,7 +3,7 @@ const Post = require("./models/post");
 const Review = require("./models/review");
 // array che contiene tanti oggetti che rappresentano delle città vere con le loro info
 const cities = require("./cities");
-const authorId = "5e6feaeea9c17e0bd2de346f";
+const authorId = "5e79f44310849609906cf9a1";
 
 // crea 600 post casuali nel db
 async function seedPosts() {

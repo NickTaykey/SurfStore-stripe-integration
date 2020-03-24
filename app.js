@@ -26,7 +26,7 @@ const favicon = require("serve-favicon");
 const User = require("./models/user");
 
 // CONNECT TO THE DATABASE
-mongoose.connect("mongodb://localhost:27017/surf-store", {
+mongoose.connect("mongodb://localhost:27017/surf-store-ajax", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
