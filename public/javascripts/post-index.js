@@ -4,6 +4,8 @@ const findMeBtn = document.getElementById("find-me");
 const statusLabel = document.getElementById("status");
 const locationContainer = document.getElementById("location-container");
 const locationLegend = document.getElementById("location-legend");
+const pageNumber = document.getElementById("page-number");
+let map = loadMap();
 
 clearBtn.addEventListener("click", e => {
   // blocchiamo il comportamento di default del link, in questo modo evitiamo comportamenti anomali (che il link si apra)
@@ -42,6 +44,9 @@ $(".page-item").click(function(e){
     } else {
       $("#Next").parents(".page-item").hide();
     }
+    // update page number at the top
+    pageNumber.textContent = response.page!==1 ? " N° " + response.page : "";
+
     // add new posts to the index
     $("#post-container").html("");
     response.docs.forEach(post => {
@@ -60,5 +65,8 @@ $(".page-item").click(function(e){
         </div>
       `);
     });
+    posts = { features: response.docs };
+    map.remove();
+    map = loadMap()
   });
 });
