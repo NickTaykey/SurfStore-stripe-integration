@@ -71,6 +71,9 @@ module.exports = {
     posts.page = Number(posts.page);
     posts.pages = Number(posts.pages);
     // console.log(dbQuery, res.locals.query);
+    if(req.xhr){
+      return res.json(posts);
+    }
     res.render("posts", { posts, title: "Surf Store - Index", mapBoxToken });
   },
   // POST NEW

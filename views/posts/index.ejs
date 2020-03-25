@@ -22,7 +22,6 @@
       <h6 class="card-subtitle mb-3 text-muted"><%= post.location %></h6>
       <p class="card-text"><%= post.description.slice(0, 20) %> ... </p>
       <a href="/posts/<%= post.id %>" class="card-link">View More</a>
-      <small class="text-muted float-right">Posted <%= moment(new Date(post._id.getTimestamp())).calendar() %></small>
     </div>
   </div>
 </div>
@@ -30,6 +29,7 @@
 <% }) %> 
 </section>
 <% include ../partials/postPagination %>
+
 
 <script>
   mapboxgl.accessToken = "<%= mapBoxToken %>";

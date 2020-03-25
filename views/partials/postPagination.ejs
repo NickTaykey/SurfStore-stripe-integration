@@ -1,13 +1,11 @@
 <div class="container">
   <nav aria-label="Page navigation example">
     <ul class="pagination d-flex justify-content-center">
-      <% if(posts.page-1){ %>
-        <li class="page-item">
-            <a class="page-link" href="<%= paginateUrl %><%= posts.page-1 %>" aria-label="Previous">
+        <li class="page-item" <% if(posts.page===1){ %>style="display: none;"<% } %>>
+            <a class="page-link" id="Previous" href="<%= paginateUrl %><%= posts.page-1 %>" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
-      <% } %> 
       <% if(posts.pages>1){ %>
         <% for(let i = 1; i<=posts.pages; i++){ %>
             <li class="page-item <%= posts.page===i ? 'active' : '' %>"><a class="page-link" href="<%= paginateUrl %><%= i %>" ><%= i %></a></li>
@@ -17,13 +15,11 @@
             <% } %>
         <% } %>
       <% } %>
-      <% if(posts.page!==posts.pages){ %>
-        <li class="page-item">
-            <a class="page-link" href="<%= paginateUrl %><%= posts.page+1 %>" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-      <% } %>
+      <li class="page-item" <% if(posts.page===posts.pages){ %>style="display: none;"<% } %>>
+          <a class="page-link" id="Next" href="<%= paginateUrl %><%= posts.page+1 %>" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          </a>
+      </li>
     </ul>
   </nav>
 </div>
