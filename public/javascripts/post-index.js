@@ -126,17 +126,20 @@ searchForm.addEventListener("submit", function(e){
     map.remove();
     posts = { features: response.docs };
     map = loadMap();
+    let ul;
+    function createUl(){
+      // <ul class="pagination d-flex justify-content-center">
+      ul = document.createElement("ul");
+      ul.classList.add("pagination");
+      ul.classList.add("d-flex");
+      ul.classList.add("justify-content-center");
+      $paginationBar.append(ul);  
+    }
 
     // update pagination controllers
     // update urls
     $paginationBar.html("");
-    // <ul class="pagination d-flex justify-content-center">
-    let ul = document.createElement("ul");
-    ul.classList.add("pagination");
-    ul.classList.add("d-flex");
-    ul.classList.add("justify-content-center");
-    $paginationBar.append(ul);  
-
+    createUl();
 
     // add previous page link
     let li = document.createElement("li");
@@ -145,12 +148,13 @@ searchForm.addEventListener("submit", function(e){
     let a = document.createElement("a");
     a.setAttribute("id", "Previous");
     a.classList.add("page-link");
-    a.setAttribute("href", `/posts?${formData}&page=${currentPage-1}`);
+    a.setAttribute("href", `/posts?${formData}&page=${response.page-1}`);
     a.innerHTML = `<span aria-hidden="true">&laquo;</span>`;
     li.append(a); 
     $(li).hide();
 
     for(let i = 1; i<=response.pages; i++){
+      if((i%21)===0) createUl();
       // <li class="page-item <%= posts.page===i ? 'active' : '' %>">
       let li = document.createElement("li");
       li.classList.add("page-item");
@@ -170,7 +174,7 @@ searchForm.addEventListener("submit", function(e){
     a = document.createElement("a");
     a.setAttribute("id", "Next");
     a.classList.add("page-link");
-    a.setAttribute("href", `/posts?${formData}&page=${currentPage+1}`);
+    a.setAttribute("href", `/posts?${formData}&page=${response.page+1}`);
     a.innerHTML = `<span aria-hidden="true">&raquo;</span>`;
     li.append(a); 
   });
