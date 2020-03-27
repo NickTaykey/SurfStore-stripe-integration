@@ -1,5 +1,5 @@
 <div class="container">
-  <nav aria-label="Page navigation example">
+  <nav aria-label="Page navigation example" id="pagination-bar">
     <ul class="pagination d-flex justify-content-center">
         <li class="page-item" <% if(posts.page===1){ %>style="display: none;"<% } %>>
             <a class="page-link" id="Previous" href="<%= paginateUrl %><%= posts.page-1 %>" aria-label="Previous">
@@ -17,7 +17,7 @@
       <% } %>
       <li class="page-item" <% if(posts.page===posts.pages){ %>style="display: none;"<% } %>>
           <a class="page-link" id="Next" href="<%= paginateUrl %><%= posts.page+1 %>" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
+            <span aria-hidden="true">&raquo;</span>
           </a>
       </li>
     </ul>
