@@ -44,4 +44,5 @@ $(".clear-rating-btn").click(function() {
 $("#reviewNewFormToogler").click(e=>{
   e.preventDefault();
   $(".new-review-form").toggle()
-})
+});
+

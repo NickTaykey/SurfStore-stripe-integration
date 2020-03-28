@@ -76,10 +76,6 @@ module.exports = {
     }
     res.render("posts", { posts, title: "Surf Store - Index", mapBoxToken });
   },
-  // POST NEW
-  postNew(req, res, next) {
-    res.render("posts/new", { title: "Surf Store - New Post" });
-  },
   // POST CREATE
   async postCreate(req, res, next) {
     /* 
@@ -92,16 +88,18 @@ module.exports = {
     */
     req.body.post.images = [];
     /* ITERIAMO SU TUTTI GLI OGGETTI FILE PRESENTI NEL ARRAY REQ.FILES */
-    for (const img of req.files) {
-      /*  
-      ora non abbiamo più bisogno di uploadare ogni immagine manualmente usando l'API di cloudinary
-      perché se ne è già occupato multer-storage-cloudinary e l'immagine è già stata uploadata e 
-      req.files contiene l'oggetto che rappresenta il file immagine nel cloud di cloudiary
-      */
-      req.body.post.images.push({
-        url: img.secure_url,
-        public_id: img.public_id
-      });
+    if(req.files && req.files.length){
+      for (const img of req.files) {
+        /*  
+        ora non abbiamo più bisogno di uploadare ogni immagine manualmente usando l'API di cloudinary
+        perché se ne è già occupato multer-storage-cloudinary e l'immagine è già stata uploadata e 
+        req.files contiene l'oggetto che rappresenta il file immagine nel cloud di cloudiary
+        */
+        req.body.post.images.push({
+          url: img.secure_url,
+          public_id: img.public_id
+        });
+      }
     }
     /* UNA VOLTA UPLOADATE LE IMMAGINI TROVIAMO LE COORDINATE DEL LUOGO RELATIVO AL POST CON L'API DI MAPBOX */
     let response = await geoCodeClient
@@ -119,8 +117,8 @@ module.exports = {
       20
     )}...</p>`;
     await post.save();
-    req.session.success = "Post successfully created!";
-    res.redirect(`/posts/${post.id}`);
+    if(req.xhr) res.json(post);
+    else res.redirect(`/posts`);
   },
   // POST SHOW
   async postShow(req, res, next) {

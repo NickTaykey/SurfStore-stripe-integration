@@ -95,19 +95,10 @@ app.use((req, res, next) => {
   delete req.session.success;
 
   // settiamo un utente sempre loggato
-  /* req.user = {
-    _id: "5e6bdb0d76fa9509ed9a5377",
-    username: "Nico"
-  }; */
-  /* req.user = {
-    _id: "5dff422afad0fc0387e73a51",
-    username: "jhon"
-  }; */
-
-  /* req.user = {
-    _id: "5e03c9cb73b19f048f2b46e2",
-    username: "root"
-  }; */
+  req.user = {
+    _id: "5e79f44310849609906cf9a1",
+    username: "Nick"
+  };
   res.locals.currentUser = req.user;
 
   next();

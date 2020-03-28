@@ -1,8 +1,18 @@
 <% layout("layouts/boilerplate") -%>
 <h2 class="my-5">
-  <a class="btn btn-primary btn-lg mr-2" href="/posts/new">New Post</a>
+  <!-- Button trigger modal -->
+  <% if(currentUser){ %>
+    <button type="button" class="btn btn-primary btn-lg mr-2" data-toggle="modal" data-target="#exampleModal">
+      New Post
+    </button>
+  <% } else { %>
+    <a href="/login" class="btn btn-primary btn-lg mr-2">New Post</a>
+  <% } %>
   Index Page<span id="page-number"></span>
 </h2>
+<% if(currentUser){ %>
+  <% include ./new.ejs %>
+<% } %>
 <div class="row mb-3">
   <div class="col-md-12 col-lg-4 mb-4 mb-lg-0">
     <% include ../partials/searchFilter.ejs %>

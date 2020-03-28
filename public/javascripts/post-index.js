@@ -8,9 +8,13 @@ const pageNumber = document.getElementById("page-number");
 const searchForm = document.getElementById("search-and-filter-form");
 const h2 = document.querySelector("h2");
 const $paginationBar = $("#pagination-bar");
+const newPostForm = document.getElementById("new-post-form");
+const resetNewFormBtn = document.getElementById("reset-new-form");
 let map = loadMap();
 let searchFormEncoded;
 let currentPage = 1;
+const spinner = document.getElementById("uploading-spinner");
+
 
 clearBtn.addEventListener("click", e => {
   // blocchiamo il comportamento di default del link, in questo modo evitiamo comportamenti anomali (che il link si apra)
@@ -80,6 +84,21 @@ $paginationBar.on("click", ".page-item", function(e){
     map = loadMap()
   });
 });
+
+
+// reset form btn code
+resetNewFormBtn.addEventListener("click", function(e){
+  e.preventDefault();
+  const $form = $(this).parents("form");
+  if($form.find(".alert-danger").length) 
+    $form.find(".alert-danger").remove();
+  $($form).find("input[name='post[title]']").val("");
+  $($form).find("input[name=images]").val("");
+  $($form).find("input[name='post[price]']").val("");
+  $($form).find("input[name='post[description]']").val("");
+  $($form).find("input[name='post[location]']").val("");
+})
+
 
 // search and filter feature AJAX refact
 searchForm.addEventListener("submit", function(e){
@@ -178,4 +197,86 @@ searchForm.addEventListener("submit", function(e){
     a.innerHTML = `<span aria-hidden="true">&raquo;</span>`;
     li.append(a); 
   });
-})
+});
+
+// new post feature code
+if(newPostForm){
+  newPostForm.addEventListener("submit", function(e){
+    e.preventDefault();
+
+    // new post form validation and error handling
+    let sendForm = true;
+    function raiseAlertError(errName, imgError){
+      let alert = document.querySelector(".alert");
+        if(alert) alert.remove();
+        alert = document.createElement("div");;
+        alert.classList.add("alert");
+        alert.classList.add("my-3");
+        alert.setAttribute("role", "alert");
+        alert.classList.add("alert-danger");
+        let errorMessage;
+        if(imgError) errorMessage = imgError;
+        else errorMessage = `Error! Missing ${errName}`;
+        alert.textContent=errorMessage;
+        $("#form-title").after(alert);
+        sendForm=false;
+    }
+
+    if(!$(this).find("input[name='post[title]']").val().length) return raiseAlertError("title");
+    if(!$(this).find("input[name=images]")[0].files.length) return raiseAlertError("images");
+    if($(this).find("input[name=images]")[0].files.length>4) return raiseAlertError(undefined, "You can upload at the most 4 images!")
+    if(!$(this).find("input[name='post[price]']").val().length) return raiseAlertError("price");
+    if(!$(this).find("input[name='post[description]']").val().length) return raiseAlertError("description");
+    if(!$(this).find("input[name='post[location]']").val().length) return raiseAlertError("location");
+
+    if(sendForm){
+      const data = new FormData(this);
+      spinner.removeAttribute("style");
+      $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: "/posts",
+        data: data,
+        contentType: false,
+        processData: false,
+        success: response=>{
+          spinner.setAttribute("style", "display: none!important;")
+          // close modal and reset fields
+          $("#close-btn").click();
+          $("input:not([type='submit'])").val("");
+          $("input[type=text], input[type=number]").val("");
+          // add new post the the list
+          $("#post-container").prepend(`
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4 mb-5">
+              <div class="card">
+                <img src="${ response.images.length ? response.images[0].url : '/images/default_board_img.jpeg' }" class="card-img-top" alt="..." height="300px">
+                <div class="card-body">
+                  <h5 class="card-title">${response.title }</h5>
+                  <h6 class="card-subtitle mb-3">Price: $${ response.price }</h6>
+                  <h6 class="card-subtitle mb-3 text-muted">${ response.location }</h6>
+                  <p class="card-text">${ response.description.slice(0, 20) } ... </p>
+                  <a href="/posts/${ response._id }" class="card-link">View More</a>
+                </div>
+              </div>
+            </div>
+          `);
+          // add success alert
+          if($(".alert").length) $(".alert").remove();
+          // set status alert 
+          let alert = document.querySelector(".alert");
+          if(alert) alert.remove();
+          alert = document.createElement("div");;
+          alert.classList.add("alert");
+          alert.setAttribute("role", "alert");
+          alert.classList.add("alert-success");
+          alert.textContent=`${response.title} successfully created!`;
+          $("h2").after(alert);
+          // update map
+          map.remove();
+          posts.features.push(response);
+          map = loadMap();
+        }
+      });
+    }
+  });
+}

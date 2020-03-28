@@ -19,7 +19,6 @@ const upload = multer({ storage });
 // ROUTES
 const {
   postIndex,
-  postNew,
   postCreate,
   postShow,
   postEdit,
@@ -42,8 +41,6 @@ router.get(
   asyncErrorHandler(postIndex)
 );
 
-// NEW GET /posts/new
-router.get("/new", isLoggedIn, postNew);
 
 // SHOW GET /posts/:id
 router.get("/:id", asyncErrorHandler(postShow));

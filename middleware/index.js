@@ -44,7 +44,9 @@ const middlewares = {
   // controlla se l'utente è loggato
   isLoggedIn(req, res, next) {
     // se l'utente è loggato esegue next
-    if (req.isAuthenticated()) return next();
+    if (req.isAuthenticated() || req.xhr) {
+      return next();
+    }
     // se nn è loggato redirige a login con un errore e l'url originale nella sessione
     req.session.error = "You have to be logged in to do that!";
     req.session.previousUrl = req.originalUrl;
