@@ -20,7 +20,9 @@ module.exports = {
     post.reviews.push(review);
     post.save();
     req.session.success = "Review successfully created!";
-    res.redirect(`/posts/${post.id}`);
+    review = await review.populate("author");
+    eval(require("locus"));
+    if(req.xhr) return res.json(review);
   },
   // UPDATE REVIEW
   async reviewUpdate(req, res, next) {

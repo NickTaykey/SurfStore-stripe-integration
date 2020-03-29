@@ -1,68 +1,77 @@
-<% layout("layouts/boilerplate") -%>
-<form action="/posts/<%= post.id %>?_method=PUT" method="POST" id="editForm" enctype="multipart/form-data">
-  <div class="row mb-5">
-    <section class="col-12 col-md-6 offset-md-3">
-      <h1 class="text-center my-5">Edit a <%= post.title %></h1>
-      <div class="form-group">
-        <input
-            class="form-control"
-            type="text"
-            placeholder="Title"
-            name="post[title]"
-            value="<%= post.title %>"
-        />      
-      </div>
-      <div class="form-group">
-        <input
-            class="form-control"
-            type="file"
-            name="images"
-            accept="image/*"
-            id="imageUpload"
-            multiple
-        />
-        <% post.images.forEach(function(img, i){ %>
-          <div class="<%= i===0 ? 'my-4' : 'mb-4' %>">
-            <img src="<%= img.url %>" alt="SurfBoardImage" width="400px" />
-            <label class="d-inline-block ml-3" for="image<%= i %>">Delete?</label>
-            <input
-                class="d-inline-block ml-3 deleteImageCheckbox"
-                type="checkbox"
-                name="deleteImages[]"
-                id="image<%= i %>"
-                value="<%= img.public_id %>"
-            />
-          </div>      
-        <% }) %>
-      </div>
-      <div class="form-group">
-        <input
-            class="form-control"
-            type="number"
-            placeholder="Price"
-            name="post[price]"
-            value="<%= post.price %>"
-            step=".01"
-        />      
-      </div>
-      <div class="form-group">
-        <textarea
-            class="form-control"
-            name="post[description]"
-            placeholder="Description"
-            cols="30"
-            rows="10"><%= post.description %></textarea>
-      </div>
-      <div class="form-group">
-        <input
-            class="form-control"
-            type="text"
-            placeholder="Location"
-            name="post[location]"
-            value="<%= post.location %>"
-        />      
-      </div>
-      <input class="btn btn-warning btn-block" type="submit" value="submit" />
+<a href="#" class="btn btn-secondary btn-block mb-4" style="display: none;" id="close-form-btn">Cancel</a>
+<form 
+   action="/posts/<%= post.id %>?_method=PUT"
+   method="POST" 
+   class="mb-5"
+   id="editForm" 
+   enctype="multipart/form-data"
+   style="display: none;"
+>
+  <h1 class="my-4" id="form-title">Edit a <%= post.title %></h1>
+  <div class="d-inline-block mb-4" id="uploading-spinner" style="display: none!important;">
+    <div class="spinner-border ml-auto mr-2" role="status" aria-hidden="true"></div>
+    <h4 class="d-inline-block">Uploading the images</h4>
+  </div>
+  <div class="form-group">
+    <input
+        class="form-control"
+        type="text"
+        placeholder="Title"
+        name="post[title]"
+        value="<%= post.title %>"
+    />      
+  </div>
+  <div class="form-group">
+    <input
+        class="form-control"
+        type="file"
+        name="images"
+        accept="image/*"
+        id="imageUpload"
+        multiple
+    />
+    <section id="img-list">
+      <% post.images.forEach(function(img, i){ %>
+        <div class="<%= i===0 ? 'my-4' : 'mb-4' %>">
+          <img src="<%= img.url %>" alt="SurfBoardImage" width="50%" />
+          <label class="d-inline-block ml-3" for="image<%= i %>">Delete?</label>
+          <input
+              class="d-inline-block ml-3 deleteImageCheckbox"
+              type="checkbox"
+              name="deleteImages[]"
+              id="image<%= i %>"
+              value="<%= img.public_id %>"
+          />
+        </div>      
+      <% }) %>
     </section>
   </div>
+  <div class="form-group">
+    <input
+        class="form-control"
+        type="number"
+        placeholder="Price"
+        name="post[price]"
+        value="<%= post.price %>"
+        step=".01"
+    />      
+  </div>
+  <div class="form-group">
+    <input
+      class="form-control"
+      name="post[description]"
+      placeholder="Description"
+      value="<%= post.description %>"
+    >
+  </div>
+  <div class="form-group">
+    <input
+        class="form-control"
+        type="text"
+        placeholder="Location"
+        name="post[location]"
+        value="<%= post.location %>"
+    />      
+  </div>
+  <input class="btn btn-warning btn-block" type="submit" value="submit" />
 </form>

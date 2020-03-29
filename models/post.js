@@ -17,6 +17,7 @@ description che conterrà una descrizione, stringa, del luogo
 const PostSchema = new Schema({
   title: String,
   price: Number,
+  updated: { type: Boolean, default: false },
   description: String,
   images: [{ url: String, public_id: String }],
   location: String,

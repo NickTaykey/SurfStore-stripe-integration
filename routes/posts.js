@@ -67,8 +67,6 @@ router.post(
   asyncErrorHandler(postCreate)
 );
 
-// EDIT GET /posts/:id/edit
-router.get("/:id/edit", isLoggedIn, asyncErrorHandler(isAuthor), postEdit);
 
 // UPDATE PUT /posts/:id
 // middleware upload.array per gestire l'upload di file multipli da un solo campo in un form

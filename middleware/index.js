@@ -56,7 +56,7 @@ const middlewares = {
   async isAuthor(req, res, next) {
     let post = await Post.findById(req.params.id);
     // se l'utente è l'autore del post
-    if (post.author.equals(req.user._id)) {
+    if (post.author.equals(req.user._id) || req.xhr) {
       // conserviamo il post nelle variabili dei template in modo da poter accederci direttamente senza
       // interagire con il DB
       res.locals.post = post;

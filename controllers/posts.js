@@ -141,14 +141,6 @@ module.exports = {
       title: `Surf Store - Show ${post.title}`
     });
   },
-  // EDIT POST
-  postEdit(req, res, next) {
-    // recuperiamo il post dalle variabili dei template
-    const { post } = res.locals;
-    res.render("posts/edit", {
-      title: `Surf Store - Edit ${post.title}`
-    });
-  },
   // UPDATE POST
   async postUpdate(req, res, next) {
     // ritroviamo il post nelle variabili dei template
@@ -205,10 +197,11 @@ module.exports = {
         20
       )}...</p>`;
     }
+    post.updated=true;
     // salviamo le modifiche
-    await post.save();
+    let postToDisplay = await post.save();
     // reindirizziamo l'utente alla show page
-    res.redirect(`/posts/${post.id}`);
+    if(req.xhr) return res.json(postToDisplay);
   },
   // DESTROY POST
   async postDestroy(req, res, next) {
