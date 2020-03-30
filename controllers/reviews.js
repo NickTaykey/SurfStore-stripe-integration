@@ -1,6 +1,7 @@
 const Post = require("../models/post"),
   Review = require("../models/review");
-module.exports = {
+const moment = require("moment");
+  module.exports = {
   // REVIEW CREATE
   async reviewCreate(req, res, next) {
     // popoliamo le review in quanto dobbiamo accedere al id del autore
@@ -12,23 +13,29 @@ module.exports = {
       review.author._id.equals(req.user._id)
     ).length;
     if (usersReview) {
-      req.session.error = "You can only post one review";
-      return res.redirect("back");
+      return res.json({ error : "You can only post one review" });
     }
     req.body.review.author = req.user._id;
     let review = await Review.create(req.body.review);
     post.reviews.push(review);
-    post.save();
-    req.session.success = "Review successfully created!";
-    review = await review.populate("author");
-    eval(require("locus"));
-    if(req.xhr) return res.json(review);
+    await post.save();
+    if(req.xhr){
+      return res.json(
+        {
+          review, 
+          author: { 
+            _id: req.user._id, 
+            username: req.user.username,
+            leftOn: moment(new Date(review._id.getTimestamp())).calendar()
+          } 
+        });
+    }
   },
   // UPDATE REVIEW
   async reviewUpdate(req, res, next) {
-    await Review.findByIdAndUpdate(req.params.review_id, req.body.review);
-    req.session.success = "review successfully updated!";
-    res.redirect("back");
+    req.body.review.updated = true;
+    let review = await Review.findByIdAndUpdate(req.params.review_id, req.body.review, { new: true });
+    if(req.xhr) return res.json(review);
   },
   // DESTROY REVIEW
   async reviewDestroy(req, res, next) {
@@ -38,7 +45,6 @@ module.exports = {
     });
     // eliminare review
     await Review.findByIdAndRemove(req.params.review_id);
-    req.session.success = "review successfully deleted!";
-    res.redirect("back");
+    if(req.xhr) res.json({ status: 200 });
   }
 };

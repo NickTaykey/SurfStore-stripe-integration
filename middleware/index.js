@@ -37,14 +37,14 @@ const middlewares = {
   // controlla se l'utente loggato ha creato la review in questione
   async checkReviewAuthor(req, res, next) {
     let review = await Review.findById(req.params.review_id);
-    if (review.author.equals(req.user._id)) return next();
+    if (req.xhr || review.author.equals(req.user._id)) return next();
     req.session.error = "You are not authorized to update that review";
     res.redirect(`/posts/${req.params.id}/`);
   },
   // controlla se l'utente è loggato
   isLoggedIn(req, res, next) {
     // se l'utente è loggato esegue next
-    if (req.isAuthenticated() || req.xhr) {
+    if (req.xhr || req.isAuthenticated()) {
       return next();
     }
     // se nn è loggato redirige a login con un errore e l'url originale nella sessione
@@ -56,7 +56,7 @@ const middlewares = {
   async isAuthor(req, res, next) {
     let post = await Post.findById(req.params.id);
     // se l'utente è l'autore del post
-    if (post.author.equals(req.user._id) || req.xhr) {
+    if (req.xhr || post.author.equals(req.user._id)) {
       // conserviamo il post nelle variabili dei template in modo da poter accederci direttamente senza
       // interagire con il DB
       res.locals.post = post;

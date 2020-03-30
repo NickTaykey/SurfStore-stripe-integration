@@ -1,5 +1,5 @@
 <% layout("layouts/post-show-layout") -%>
-<div class="row">
+<div class="row" id="main-row">
   <div class="col-xs-12 col-lg-4 my-4">
       <section id="info-box">
         <h1 id="post-title"><%= post.title %></h1>
@@ -22,7 +22,7 @@
         <div class="my-3 text-muted" id="date">Posted <%= moment(new Date(post._id.getTimestamp())).calendar() %> <% if(post.updated){ %><strong class='font-weight-bold' id='updated-label'>Updated</strong><% } %></div>
         <%# solo se l'utente è loggato ed è l'autore del post mostra i pulsanti edit, delete post %>
         <% if(currentUser && post.author.equals(currentUser._id)){ %>
-          <a class="btn btn-warning d-inline-block" href="/posts/<%= post.id %>/edit" id="edit-post-btn">
+          <a class="btn btn-warning d-inline-block" href="/posts/<%= post._id %>/edit" id="edit-post-btn">
             Edit
           </a>
           <button type="button" class="btn btn-danger d-inline-block" data-toggle="modal" data-target="#exampleModal">
@@ -37,7 +37,7 @@
                   <h6 class="text-center mb-4">This action is irreverible</h6>
                   <footer class="justify-content-center" style="display: flex!important;">
                     <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Close</button>
-                    <form class="d-inline-block" action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+                    <form class="d-inline-block" action="/posts/<%= post._id %>?_method=DELETE" method="POST">
                       <input class="btn btn-danger" type="submit" value="Delete" />
                     </form>
                   </footer>
@@ -78,7 +78,7 @@
       </div>
       <!-- REVIEWS -->
       <div class="container">
-        <div class="row id="main-row"">
+        <div class="row">
           <div class="col-xs-12 col-lg-10 offset-lg-1">
             <% if(currentUser){ %>
               <button class="btn btn-secondary btn-block mt-5" id="reviewNewFormToogler">Leave a review <i class="fas fa-arrow-down text-white d-inline-block ml-2"></i></button>
@@ -112,7 +112,7 @@
                 <label for="rate5" title="Amazing">5 stars</label>
               </fieldset>
               <button class="btn btn-sm btn-warning d-inline-block clear-rating-btn ml-2" type="button">Clear rating</button>
-              <textarea placeholder="your review" class="form-control mt-3" name="review[body]" cols="30" rows="1" required></textarea>
+              <input type="text" placeholder="your review" class="form-control mt-3" name="review[body]">
               <input class="btn btn-primary btn-block mt-3" type="submit" value="Submit" />
               </form>
               <% } else { %>
@@ -121,23 +121,41 @@
               <h3 class="my-4">all the reviews</h3>
               <section id="review-container">
                 <% post.reviews.forEach(function(review){ %>
-                  <div class="card w-100 mb-4">
+                  <div class="card w-100 mb-4 review">
                     <div class="card-body">
                       <h5 class="card-title mr-2 d-inline-block"><%= review.author.username %></h5>
-                      <p class="starability-result d-inline-block my-0" data-rating="<%= review.rating %>"></p>
-                      <p class="text-muted float-right">Left <%= moment(new Date(review._id.getTimestamp())).calendar() %></p>
+                      <p class="starability-result d-inline-block my-0 rating" data-rating="<%= review.rating %>"></p>
+                      <p class="text-muted float-right">Left <%= moment(new Date(review._id.getTimestamp())).calendar() %><%- review.updated ? ' <strong class="d-inline-block ml-2 font-weight-bold updated-label">Updated</strong>' : '' %></p>
                       <p class="card-text review-content"><%= review.body %></p>
                       <% if(currentUser && review.author.equals(currentUser._id)){ %>
                         <button class="edit-review-button btn btn-warning d-inline-block btn-sm">Edit</button>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal2">
+                          Delete
+                        </button>
+                        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document" style="min-height: initial;">
+                            <div class="modal-content">
+                              <div class="modal-body">
+                                <h3 class="text-center my-4">Are you sure to delete the review?</h3>
+                                <h6 class="text-center mb-4">This action is irreverible</h6>
+                                <footer class="justify-content-center" style="display: flex!important;">
+                                  <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Close</button>
+                                  <form
+                                    action="/posts/<%= post._id %>/reviews/<%= review._id %>?_method=DELETE"
+                                    method="post"
+                                    id="delete-review-form"
+                                    class="delete-review-form d-inline-block"
+                                  >
+                                    <input class="btn btn-danger" type="submit" value="Delete" />
+                                  </form>
+                                </footer>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
                         <form
-                          action="/posts/<%= post._id %>/reviews/<%= review._id %>?_method=DELETE"
-                          method="post"
-                          class="delete-review-form d-inline-block"
-                        >
-                          <input class="btn btn-danger btn-sm" type="submit" value="Delete" />
-                        </form>
-                        <form
-                          action="/posts/<%= post.id %>/reviews/<%= review.id %>?_method=PUT"
+                          action="/posts/<%= post._id %>/reviews/<%= review._id %>?_method=PUT"
                           method="POST"
                           class="edit-review-form"
                         >
@@ -168,7 +186,7 @@
                           </fieldset>
                           <button class="clear-rating-btn btn btn-warning btn-sm d-inline-block" type="button">Clear rating</button>
                         </div>
-                        <textarea placeholder="your review" class="form-control mb-3" name="review[body]" cols="30" rows="2" required><%= review.body %></textarea>
+                        <input type="text" placeholder="your review" class="form-control mb-3" name="review[body]" value="<%= review.body %>" required>
                         
                         <input class="btn btn-primary btn-block" type="submit" value="Update" />
                     </form>

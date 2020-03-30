@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const ReviewSchema = new Schema({
   body: String,
   rating: Number,
+  updated: { type: Boolean, default: false },
   author: {
     type: Schema.Types.ObjectId,
     ref: "User"
