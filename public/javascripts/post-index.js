@@ -15,6 +15,10 @@ let searchFormEncoded;
 let currentPage = 1;
 const spinner = document.getElementById("uploading-spinner");
 
+if(window.location.search==="?showNewForm=true"){
+  $("#new-post-form-trigger").click();
+}
+
 
 clearBtn.addEventListener("click", e => {
   // blocchiamo il comportamento di default del link, in questo modo evitiamo comportamenti anomali (che il link si apra)

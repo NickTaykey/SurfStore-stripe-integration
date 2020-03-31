@@ -18,7 +18,7 @@
     </ul>
     <ul class="navbar-nav ml-auto">
         <% if(currentUser){ %>
-            <li class="nav-item"><a class="nav-link" href="/posts/new">New Post</a></li>
+            <li class="nav-item"><a class="nav-link" href="/posts?showNewForm=true">New Post</a></li>
             <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
             <li class="nav-item active"><h5 class="nav-link">Welcome <%= currentUser.username %>!</h5 class=""></li>
