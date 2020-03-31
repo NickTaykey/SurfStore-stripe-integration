@@ -2,29 +2,30 @@ mapboxgl.accessToken =
   "pk.eyJ1Ijoibmlja3RheSIsImEiOiJjazJ1cTdkNzUwOXZnM2hwYTV2Z3ppa3J3In0.RlGvSEVuNTV8qf0t1zfviw";
   
 function loadMap(center){
-  return new mapboxgl.Map({
+  let map =  new mapboxgl.Map({
     container: "map",
     style: "mapbox://styles/nicktay/ck3ampwvm0kjh1ctfkb9qbzem",
     center: center,
     zoom: 15
   });
+  // disabilità lo zoom con lo scrooling del mouse
+  map.scrollZoom.disable();
+  // aggiungiamo i controller + e - per modificare lo zoom direttamente dalla mappa
+  map.addControl(new mapboxgl.NavigationControl());
+  let el = document.createElement("div");
+  el.className = "marker";
+  new mapboxgl.Marker(el)
+    .setLngLat(post.geometry.coordinates)
+    .setPopup(
+      new mapboxgl.Popup({ offset: 25 }).setHTML(
+        "<h3>" + post.title + "</h3><p>" + post.location + "</p>"
+      )
+    )
+    .addTo(map);
+  return map;
 }
 let map = loadMap(post.geometry.coordinates);
 
-// disabilità lo zoom con lo scrooling del mouse
-map.scrollZoom.disable();
-// aggiungiamo i controller + e - per modificare lo zoom direttamente dalla mappa
-map.addControl(new mapboxgl.NavigationControl());
-let el = document.createElement("div");
-el.className = "marker";
-new mapboxgl.Marker(el)
-  .setLngLat(post.geometry.coordinates)
-  .setPopup(
-    new mapboxgl.Popup({ offset: 25 }).setHTML(
-      "<h3>" + post.title + "</h3><p>" + post.location + "</p>"
-    )
-  )
-  .addTo(map);
 
 $("#review-container").on("click", ".edit-review-button", function() {
   $(this).text() === "Edit" ? $(this).text("Cancel") : $(this).text("Edit");
@@ -284,7 +285,7 @@ reviewForm.addEventListener("submit", function(e){
                 </fieldset>
                 <button class="clear-rating-btn btn btn-warning btn-sm d-inline-block" type="button">Clear rating</button>
               </div>
-              <input type='text' placeholder="your review" class="form-control mb-3" name="review[body]" value='${ review.body }' required>
+              <input type='text' placeholder="your review" class="form-control mb-3" name="review[body]" value='${ review.body }'>
               
               <input class="btn btn-primary btn-block" type="submit" value="Update" />
           </form>
@@ -349,6 +350,20 @@ $("#review-container").on("submit", ".edit-review-form", function(e) {
   e.preventDefault();
   const url = this.getAttribute("action");
   const data = $(this).serialize();
+  // deal with errors in review update
+  if(!$(this).find("input[name='review[body]']").val().length){
+    if($(this).find(".alert").length)
+       $(this).find(".alert").remove();
+    let alert = document.createElement("div");
+    alert.classList.add("alert");
+    alert.classList.add("mb-0");
+    alert.classList.add("mt-4");
+    alert.setAttribute("role", "alert");
+    alert.classList.add("alert-danger");
+    let errorMessage = `Error! Missing review`;
+    alert.textContent=errorMessage;
+    return $(this).prepend(alert);
+  }
   $.ajax({
     type: "PUT",
     url,
@@ -366,9 +381,19 @@ $("#review-container").on("submit", ".edit-review-form", function(e) {
         .attr("data-rating", response.rating);
       // hide edit review form
       $(".edit-review-button").click();
+      if($(this.form).find(".alert").length)
+       $(this.form).find(".alert").remove();
       // add success alert
-      // deal with errors in review update
-
+      let alert = document.querySelector(".alert");
+      if(alert) alert.remove();
+      alert = document.createElement("div");;
+      alert.classList.add("alert");
+      alert.setAttribute("role", "alert");
+      alert.classList.add("alert-success");
+      alert.classList.add("mt-4");
+      alert.textContent=`Review successfully updated!`;
+      $("#main-row").before(alert);
+    
     }
   })
 });
