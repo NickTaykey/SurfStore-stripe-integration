@@ -21,7 +21,6 @@ const seedPost = require("./seeds");
 const favicon = require("serve-favicon");
 
 // seedPost();
-
 // MODELS
 const User = require("./models/user");
 
@@ -95,10 +94,15 @@ app.use((req, res, next) => {
   delete req.session.success;
 
   // settiamo un utente sempre loggato
-  req.user = {
-    _id: "5e79f44310849609906cf9a1",
-    username: "Nick"
-  };
+  /* req.user = {
+    _id: "5e84e82ec28034042096188d",
+    username: "nicky",
+    email: "asd@asd.com",
+    image : {
+      public_id : "surf-store/photo-1533873984035-25970ab0746168df2fd4ed75c881a6ee973cc00c91dc",
+      secure_url : "https://res.cloudinary.com/dmxuerbxv/image/upload/v1585768494/surf-store/photo-1533873984035-25970ab0746168df2fd4ed75c881a6ee973cc00c91dc.jpg"
+    }
+  }; */
   res.locals.currentUser = req.user;
 
   next();
@@ -138,8 +142,12 @@ app.use((err, req, res, next) => {
   // settiamo la sessione
   // stampiamo l'errore nei log
   if (err.message !== "Not Found") {
-    req.session.error = err.message;
-    console.log(err);
+    if(err.message.includes("Image file format") && err.message.includes("not allowed")){
+      return res.json({ error: "File format not allowed" });
+    } else {
+      req.session.error = err.message;
+      console.log(err);
+    }
   }
   // reindirizziamo indietro
   res.redirect("/posts");

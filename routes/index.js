@@ -24,7 +24,7 @@ const {
   isLoggedIn,
   isValidPassword,
   setNewPassword,
-  validatePasswordResetToken
+  validatePasswordResetToken,
 } = require("../middleware");
 
 const multer = require("multer");

@@ -1,22 +1,29 @@
 <% layout("layouts/boilerplate") -%>
 <header class="mt-5 row">
-  <% if(currentUser.image.secure_url){ %>
-    <div class="col-xs-12 col-lg-6">
+    <div id="custom-img-container" class="col-xs-12 col-lg-6"  style='<%= currentUser.image.secure_url ? "display: block!important;" : "display: none!important;" %>'>
       <img src="<%= currentUser.image.secure_url %>" alt="<%= currentUser.username %>'s profile image" class="w-100 rounded d-inline-block mr-4"/>
     </div>
-  <% } %>
-  <div class="<%= currentUser.image.secure_url ? 'col-xs-12 col-lg-6' : 'col-12 ' %> d-flex align-items-center justify-content-center">
-    <% if(!currentUser.image.secure_url){ %>
+    <div 
+      id="default-img-container"
+      class="col-12  <%= !(currentUser.image.secure_url) ? 'd-block' : 'd-none' %>"
+      style='<%= !(currentUser.image.secure_url) ? "display: block!important;" : "display: none!important;" %>'  
+    >
       <div class="my-4 text-center">
         <i class="fas fa-user"></i>
       </div>
-    <% } %>
-    <h1 class="display-4 mt-5 mt-lg-0 ml-lg-5 <%= currentUser.image.secure_url ? 'w-100' : ' w-auto ' %> text-center">
+    </div>
+  <div 
+    id="title-container"
+    class="<%= !currentUser.image.secure_url ? 'col-12' : 'col-xs-12 col-lg-6' %> d-flex align-items-center justify-content-center">
+    <h1 
+      id="title" 
+      class="display-4 text-center <%= currentUser.image.secure_url ? 'my-5' : 'my-3' %>"
+    >
       <%= currentUser.username %>'s profile
     </h1>
   </div>
 </header>
-<section class="row my-5">
+<section class="<%= currentUser.image.secure_url ? 'my-0 my-lg-5' : 'my-4' %> row">
   <% if(posts && posts.length){ %>
     <div class="col-xs-12 mb-5 col-lg-4">
       <h4 class="mb-4">Recent posts:</h4>
@@ -28,8 +35,16 @@
     </div>
   <% } %>
   <div class="col-xs-12 mb-5 <%= posts && posts.length ? 'col-lg-8' : 'd-flex flex-column align-items-center w-100' %>">
-    <h4 class="mb-4">Update Info:</h4>
-    <form action="/profile?_method=PUT" method="POST" enctype="multipart/form-data">
+    <h4 class="mb-4" id="form-title">Update Info:</h4>
+    <h5 class="my-4 d-none" id="upload-image-spinner">
+      <div class="d-inline-block  mr-3">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>      
+      <span>Uploading Images ... </span>
+    </h5>
+    <form action="/profile?_method=PUT" method="POST" enctype="multipart/form-data" id="update-profile-form">
       <div class="form-group">
         <label class="d-inline-block" for="username">Username:</label>
         <input
@@ -40,7 +55,6 @@
           placeholder="username"
           value="<%= currentUser.username %>"
           autofocus
-          required
         />
       </div>
       <div class="form-group">
@@ -51,7 +65,6 @@
           id="current-password"
           name="currentPassword"
           placeholder="current password"
-          required
         />
       </div>
     
@@ -65,7 +78,6 @@
           placeholder="new password"
         />
       </div>
-    
       <div class="form-group">
         <label class="d-inline-block" for="password-confirmation">New Password Confermation:</label>
         <input
@@ -76,7 +88,7 @@
           placeholder="password confirmation"
         />
       </div>
-      <div class="form-group" class="validation-message"></div>
+      <div class="form-group validation-message"></div>
     
       <div class="form-group">
         <label class="d-inline-block" for="email">Email:</label>
@@ -87,7 +99,6 @@
           id="email"
           placeholder="email"
           value="<%= currentUser.email %>"
-          required
         />
       </div>
       <div class="form-group">

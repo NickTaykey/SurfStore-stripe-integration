@@ -68,7 +68,7 @@ const middlewares = {
   // controlla se la password (attuale) che l'utente ha messo nel edit profile form è corretta (ci assicuriamo che sia autoriazato a modificare il profilo)
   async isValidPassword(req, res, next) {
     const { currentPassword } = req.body;
-    const { user } = await User.authenticate()(
+    const { user }  = await User.authenticate()(
       req.user.username,
       currentPassword
     );
@@ -80,8 +80,12 @@ const middlewares = {
     // settiamo un messaggio di errore di credenziali errate e reindiriziamo al form
     // cancelliamo l'immagine profilo uploadata per non sprecare spazio nel cloud
     middlewares.deleteProfileImage(req);
-    req.session.error = "You have to provide the current password to update";
-    res.redirect("profile");
+    if(!currentPassword){
+      req.session.error = "You have to provide the current password to update"
+      return res.redirect("/profile");
+    } else {
+      return res.json({ error: "Wrong password!" });
+    }
   },
   // controlla se è stata passata una nuova password (se si la setta)
   async setNewPassword(req, res, next) {
@@ -92,7 +96,7 @@ const middlewares = {
       // cancelliamo l'immagine profilo uploadata per non sprecare spazio nel cloud
       middlewares.deleteProfileImage(req);
       req.session.error = "missing password confirmation";
-      return res.redirect("/profile");
+      return res.redirect("/profile");  
     }
     // se sono state passate delle nuove password (vogliamo cambiarle)
     else if (newPassword && passwordConfirmation) {
@@ -104,8 +108,7 @@ const middlewares = {
       } else {
         // cancelliamo l'immagine profilo uploadata per non sprecare spazio nel cloud
         middlewares.deleteProfileImage(req);
-        req.session.error = "the passwords have to match!";
-        return res.redirect("/profile");
+        return res.json({ error : "the passwords have to match!" });
       }
     }
     // altrimenti andiamo avanti con i middleware

@@ -393,7 +393,6 @@ $("#review-container").on("submit", ".edit-review-form", function(e) {
       alert.classList.add("mt-4");
       alert.textContent=`Review successfully updated!`;
       $("#main-row").before(alert);
-    
     }
   })
 });

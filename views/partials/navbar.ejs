@@ -21,7 +21,7 @@
             <li class="nav-item"><a class="nav-link" href="/posts?showNewForm=true">New Post</a></li>
             <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-            <li class="nav-item active"><h5 class="nav-link">Welcome <%= currentUser.username %>!</h5 class=""></li>
+            <li class="nav-item active" id="username-label"><h5 class="nav-link">Welcome <%= currentUser.username %>!</h5></li>
         <% } else { %>
             <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
             <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>

@@ -146,6 +146,7 @@ module.exports = {
   async updateProfile(req, res, next) {
     const { user } = res.locals;
     const { username, email } = req.body;
+
     // controlliamo se a username e email sono stati passati dei valori nel form (se no non facciamo NIENTE)
     // forma di validazione di queste proprietà lato server IN QUESTO MODO EVITIAMO DI CAUSARE DANNI LEGATI AL
     // FATTO CHE L'UTENTE HA INSERITO VALORI INVALIDI O ASSETI PER LE CREDENZIALI, CON GLI ERRORI CORRELATI
@@ -162,7 +163,6 @@ module.exports = {
       const { public_id, secure_url } = req.file;
       user.image = { public_id, secure_url };
     }
-
     await user.save();
     // rifacciamo il login perché nel caso in cui l'utente ha cambiato pwd o username la sessione non è più valida
     // usiamo il metodo promisify di util per creare una versione di un metodo req.login (CHE SUPPORTA SOLO LE CALLBACK E NON LE PROMESSE
@@ -171,8 +171,7 @@ module.exports = {
     // req e quindi si aspettava di averlo come valore di this
     const login = util.promisify(req.login.bind(req));
     await login(user);
-    req.session.success = "Your profile has been successfully updated!";
-    res.redirect("/profile");
+    if(req.xhr) return res.json(user);
   },
   // renderizza forgor.ejs
   getForgot(req, res, next) {
