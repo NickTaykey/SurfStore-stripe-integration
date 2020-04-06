@@ -44,11 +44,20 @@
       </script>
       <script src="/libs/popper.min.js"></script>
       <script src="/bootstrap4/js/bootstrap.min.js"></script>
-    
       <!-- carichiamo questo script solo se ci troviamo in index -->
-      <% if(title==="Surf Store - Index"){ %>
-      <script src="/javascripts/post-index.js"></script>
+      <% if(title==="Register" || title==="Surf Store - Index" || title==="Surf Store | my profile"){ %>
+        <script src="/javascripts/fileUploadValidation.js"></script>
       <% } %>
+      <% if(title==="Surf Store - Index"){ %>
+        <script src="/javascripts/post-index.js"></script>
+      <% } %>
+      <% if(title==="Register"){ %>
+        <script src="/javascripts/register.js"></script>
+      <% } %>
+      <% if(title==="Surf Store | my profile"){ %>
+        <script src="/javascripts/profile.js"></script>
+      <% } %>
+
     </div>
   </body>
 </html>

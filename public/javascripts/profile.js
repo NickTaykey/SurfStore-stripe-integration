@@ -6,7 +6,6 @@ const sumbitBtn = document.getElementById("update-profile"),
   form = document.getElementById("update-profile-form");
 
 function setMsg(msg, add, remove) {
-  // debugger;
   validationMsg.textContent = msg;
   validationMsg.classList.add(add);
   validationMsg.classList.remove(remove);
@@ -58,6 +57,13 @@ form.addEventListener("submit", function(e){
   if(!$("input[name=email]").val()){
     return raiseAlert("error", "Provide a valid E-mail to update");
   }
+
+  const fileInput = document.querySelector("input[type=file]");
+  const val = checkIfValidFile(fileInput);
+  if(!val && fileInput.files.length){
+    return raiseAlert("error", "File type not allowed");
+  }
+
   if($("input[type=file]").val()){
     $("#upload-image-spinner").removeClass("d-none");
     $("#upload-image-spinner").addClass("d-block");

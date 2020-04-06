@@ -89,19 +89,20 @@ $paginationBar.on("click", ".page-item", function(e){
   });
 });
 
-
-// reset form btn code
-resetNewFormBtn.addEventListener("click", function(e){
-  e.preventDefault();
-  const $form = $(this).parents("form");
-  if($form.find(".alert-danger").length) 
-    $form.find(".alert-danger").remove();
-  $($form).find("input[name='post[title]']").val("");
-  $($form).find("input[name=images]").val("");
-  $($form).find("input[name='post[price]']").val("");
-  $($form).find("input[name='post[description]']").val("");
-  $($form).find("input[name='post[location]']").val("");
-})
+if(resetNewFormBtn){
+  // reset form btn code
+  resetNewFormBtn.addEventListener("click", function(e){
+    e.preventDefault();
+    const $form = $(this).parents("form");
+    if($form.find(".alert-danger").length) 
+      $form.find(".alert-danger").remove();
+    $($form).find("input[name='post[title]']").val("");
+    $($form).find("input[name=images]").val("");
+    $($form).find("input[name='post[price]']").val("");
+    $($form).find("input[name='post[description]']").val("");
+    $($form).find("input[name='post[location]']").val("");
+  });
+}
 
 
 // search and filter feature AJAX refact
@@ -229,6 +230,13 @@ if(newPostForm){
     if(!$(this).find("input[name='post[title]']").val().length) return raiseAlertError("title");
     if(!$(this).find("input[name=images]")[0].files.length) return raiseAlertError("images");
     if($(this).find("input[name=images]")[0].files.length>4) return raiseAlertError(undefined, "You can upload at the most 4 images!")
+    
+    const fileInput = document.querySelector("input[type=file]");
+    const val = checkIfValidFile(fileInput);
+    if(!val && fileInput.files.length){
+      return raiseAlertError(undefined, "File type not allowed")
+    }
+    
     if(!$(this).find("input[name='post[price]']").val().length) return raiseAlertError("price");
     if(!$(this).find("input[name='post[description]']").val().length) return raiseAlertError("description");
     if(!$(this).find("input[name='post[location]']").val().length) return raiseAlertError("location");
