@@ -25,7 +25,7 @@ const favicon = require("serve-favicon");
 const User = require("./models/user");
 
 // CONNECT TO THE DATABASE
-mongoose.connect("mongodb://localhost:27017/surf-store-ajax", {
+mongoose.connect("mongodb://localhost:27017/surf-store-stripe", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
@@ -94,15 +94,12 @@ app.use((req, res, next) => {
   delete req.session.success;
 
   // settiamo un utente sempre loggato
-  /* req.user = {
-    _id: "5e84e82ec28034042096188d",
-    username: "nicky",
-    email: "asd@asd.com",
-    image : {
-      public_id : "surf-store/photo-1533873984035-25970ab0746168df2fd4ed75c881a6ee973cc00c91dc",
-      secure_url : "https://res.cloudinary.com/dmxuerbxv/image/upload/v1585768494/surf-store/photo-1533873984035-25970ab0746168df2fd4ed75c881a6ee973cc00c91dc.jpg"
-    }
-  }; */
+  req.user = {
+    _id: "5e8de232a889870867556a50",
+    username: "Nick",
+    image: { },
+    email: "nico.toccane@gmail.com",
+  };
   res.locals.currentUser = req.user;
 
   next();
