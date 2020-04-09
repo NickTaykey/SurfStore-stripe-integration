@@ -1,49 +1,72 @@
-if($(".dropdown-menu").find(".dropdown-item").length===1){
-    $("#empty-cart-label").show();
-} else {
-    $("#empty-cart-label").hide();
-}
-$(".dropdown-menu").on("click", ".btn-danger", function(e){
-    e.preventDefault();
-    const itemId = $(this).parents(".dropdown-item").attr("id");
-    $.ajax({
-        type: "DELETE",
-        url: `/cart/${ itemId }`,
-        itemId,
-        itemToRemove: $(this),
-        success: function(response){
-            $(this.itemToRemove)
-                .parents(".dropdown-item")
-                .remove();
-            const $addCartBtn = $("#add-cart-btn");
-            if($addCartBtn.length){
-               $addCartBtn.addClass("btn-primary");
-               $addCartBtn.removeClass("btn-success");
-               $addCartBtn.attr("disabled", false);
-               $addCartBtn.text("Add to Cart");
+if(currentUser){
+    if($(".dropdown-menu").find(".dropdown-item").length===1){
+        $("#empty-label").show();
+    } else {
+        $("#empty-label").hide();
+    }
+    $(".dropdown-menu").on("click", ".btn-danger", function(e){
+        e.preventDefault();
+        const itemId = $(this).parents(".dropdown-item").attr("id");
+        $.ajax({
+            type: "DELETE",
+            url: `/cart/${ itemId }`,
+            itemId,
+            itemToRemove: $(this),
+            success: function(response){
+                $(this.itemToRemove)
+                    .parents(".dropdown-item")
+                    .remove();
+                const $addCartBtn = $("#add-cart-btn");
+                if($addCartBtn.length){
+                   $addCartBtn.addClass("btn-primary");
+                   $addCartBtn.removeClass("btn-success");
+                   $addCartBtn.attr("disabled", false);
+                   $addCartBtn.text("Add to Cart");
+                }
+                if(!response.shoppingCart.length){
+                    $("#empty-label").show();
+                }
+                // troviamo il link del post
+                $(`.card-link[href='/posts/${ this.itemId }']`)
+                // risaliamo al badge e lo nascondiamo 
+                    .siblings(".badge-success")
+                    .hide();
+                if(!($(".dropdown-item").length-1)){
+                    $("#control-bar").hide();
+                }
+                // add success alert
+                let alert = document.querySelector(".alert");
+                if(alert) alert.remove();
+                alert = document.createElement("div");;
+                alert.classList.add("alert");
+                alert.setAttribute("role", "alert");
+                alert.classList.add("alert-success");
+                alert.classList.add("mt-5");
+                alert.textContent=`Item successfully removed from the cart!`;
+                if($("#main").prop("tagName")==="H2"){
+                    alert.classList.add("mb-0");
+                }
+                $("#main").before(alert);
             }
-            if(!response.shoppingCart.length){
-                $("#empty-cart-label").show();
+        })
+    });
+    
+    const resetCartBtn = document.getElementById("reset-cart-btn");
+    resetCartBtn.addEventListener("click", function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        $.ajax({
+            type: "DELETE",
+            url: "/cart/all",
+            $controlbar: $(this),
+            success: function(response){
+                this.$controlbar.parents("#control-bar").hide();
+                $("#empty-label").show();
+                $(".dropdown-item:not(#empty-label)").remove();
+                $(".badge-success").hide();
+                currentUser = response;
             }
-            // troviamo il link del post
-            $(`.card-link[href='/posts/${ this.itemId }']`)
-            // risaliamo al badge e lo nascondiamo 
-                .siblings(".badge-success")
-                .hide();
-
-            // add success alert
-            let alert = document.querySelector(".alert");
-            if(alert) alert.remove();
-            alert = document.createElement("div");;
-            alert.classList.add("alert");
-            alert.setAttribute("role", "alert");
-            alert.classList.add("alert-success");
-            alert.classList.add("mt-5");
-            alert.textContent=`Item successfully removed from the cart!`;
-            if($("#main").prop("tagName")==="H2"){
-                alert.classList.add("mb-0");
-            }
-            $("#main").before(alert);
-        }
+        })
     })
-});
+
+} 

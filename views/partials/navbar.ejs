@@ -35,11 +35,18 @@
                           <i class="fas fa-trash"></i>
                         </button>
                       </div>
-                    <% }) %> 
-                  <% } %>
-                  <div class="dropdown-item" id="empty-cart-label">
-                    Your Cart is Empty!
-                  </div>
+                    <% }) %>
+                    <% } %>
+                    <div class="dropdown-item" id="empty-label">
+                      Your Cart is Empty!
+                    </div>
+                    <span id="control-bar" style="<%= currentUser.shoppingCart.length ? 'display: block' : 'display: none;' %>">
+                      <hr>
+                      <span class="justify-content-center" style="display: flex!important;">
+                        <button class="btn-primary btn mr-1" type="button" id="buy-btn">Buy</button>
+                        <button class="btn-danger btn ml-1" type="button" id="reset-cart-btn">Reset</button>
+                      </span>
+                    </span>
                 </div>
               </div>
             </li>

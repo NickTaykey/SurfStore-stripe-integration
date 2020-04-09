@@ -284,16 +284,20 @@ module.exports = {
   },
   // rimuover un post dal carrello
   async deleteItemInTheCart(req, res, next){
-     let user = await User.findById(req.user._id);
-     let post = await Post.findById(req.params.id);
-     if(post){
-       const index = user.shoppingCart.indexOf(post._id);
-       user.shoppingCart.splice(index, 1);
-       await user.save();
-       res.json(user);
-     } else {
-      req.session.error = "Post not existing!";
-      res.redirect("/posts");
-    }
-  },
+    let user = await User.findById(req.user._id);
+    const { id } = req.params;
+    if(id==="all"){
+      user.shoppingCart = [];
+    } else {
+      let post = await Post.findById(id);
+      if(post){
+        const index = user.shoppingCart.indexOf(post._id);
+        user.shoppingCart.splice(index, 1);
+      } else {
+        res.json({ error : "Post not existing!" });
+      }
+      }
+      await user.save();
+      res.json(user);
+  }
 };

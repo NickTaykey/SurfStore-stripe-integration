@@ -419,8 +419,8 @@ if(currentUser){
       $("#add-cart-btn").addClass("btn-success");
       $("#add-cart-btn").attr("disabled", true);
       $("#add-cart-btn").text("Item in the cart");
-      $("#empty-cart-label").hide();
-      $(".dropdown-menu").append(`
+      $("#empty-label").hide();
+      $(".dropdown-menu").prepend(`
       <div class="dropdown-item" id="${ response._id }">
         <span class="d-inline-block cart-label">
           ${ response.title }
@@ -430,6 +430,7 @@ if(currentUser){
         </button>
       </div>
       `);
+      $("#control-bar").show();
       // add success alert
       let alert = document.querySelector(".alert");
       if(alert) alert.remove();

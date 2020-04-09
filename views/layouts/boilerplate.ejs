@@ -32,6 +32,17 @@
       integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
       crossorigin="anonymous">
     </script>
+    <% if(title==="Surf Store - Index"){ %>
+      <script>
+        mapboxgl.accessToken = "<%= mapBoxToken %>";
+        <% if(currentUser){ %>
+          var currentUser = <%- JSON.stringify(currentUser) %>
+        <% } else { %>
+          var currentUser = undefined;
+        <% } %>
+        var posts = { features: <%- JSON.stringify(posts.docs) %> }
+      </script>
+    <% } %>
   </head>
   <body>
     <% include ../partials/navbar %>
@@ -56,7 +67,6 @@
       <% if(title==="Surf Store | my profile"){ %>
         <script src="/javascripts/profile.js"></script>
       <% } %>
-
     </div>
   </body>
 </html>

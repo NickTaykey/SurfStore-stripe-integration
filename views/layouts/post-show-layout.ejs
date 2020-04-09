@@ -25,6 +25,14 @@
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
       crossorigin="anonymous"
     ></script>
+    <script>
+      var post = <%- JSON.stringify(post) %>;
+      <% if(currentUser){ %>
+        var currentUser = <%- JSON.stringify(currentUser) %>
+      <% } else { %>
+        var currentUser = undefined;
+      <% } %>
+    </script>
   </head>
   <body id="body-show">
     <% include ../partials/navbar %> <% include ../partials/flash-messages %>
@@ -41,14 +49,6 @@
     <script src="/libs/popper.min.js"></script>
     <script src="/bootstrap4/js/bootstrap.min.js"></script>
     <script src="/javascripts/fileUploadValidation.js"></script>
-    <script>
-      var post = <%- JSON.stringify(post) %>;
-      <% if(currentUser){ %>
-        var currentUser = <%- JSON.stringify(currentUser) %>
-      <% } else { %>
-        var currentUser = undefined;
-      <% } %>
-    </script>
     <script src="/javascripts/post-show.js"></script>
   </body>
 </html>

@@ -41,14 +41,4 @@
 </section>
 <% include ../partials/postPagination %>
 
-
-<script id="vars">
-  mapboxgl.accessToken = "<%= mapBoxToken %>";
-  <% if(currentUser){ %>
-    var currentUser = <%- JSON.stringify(currentUser) %>
-  <% } else { %>
-    var currentUser = undefined;
-  <% } %>
-  var posts = { features: <%- JSON.stringify(posts.docs) %> }
-</script>
 <script src="/javascripts/allPostsClusterMap.js"></script>
