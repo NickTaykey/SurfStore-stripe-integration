@@ -1,5 +1,5 @@
 <% layout("layouts/boilerplate") -%>
-<header class="mt-5 row">
+<header class="mt-5 row" id="main">
     <div id="custom-img-container" class="col-xs-12 col-lg-6"  style='<%= currentUser.image.secure_url ? "display: block!important;" : "display: none!important;" %>'>
       <img src="<%= currentUser.image.secure_url %>" alt="<%= currentUser.username %>'s profile image" class="w-100 rounded d-inline-block mr-4"/>
     </div>
@@ -19,7 +19,7 @@
       id="title" 
       class="display-4 text-center <%= currentUser.image.secure_url ? 'my-5' : 'my-3' %>"
     >
-      <%= currentUser.username %>'s profile
+      <%= currentUser.username %>
     </h1>
   </div>
 </header>

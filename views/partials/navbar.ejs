@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
   <div class="container">
   <a class="navbar-brand" href="#">
     <img class="d-inline-block mr-2" src="/favicon.ico" width="30" height="30" alt="">
@@ -19,6 +19,26 @@
     <ul class="navbar-nav ml-auto">
         <% if(currentUser){ %>
             <li class="nav-item"><a class="nav-link" href="/posts?showNewForm=true">New Post</a></li>
+            <li class="nav-item">
+              <div class="dropdown">
+                <span class="nav-link dropdown-toggle" id="cartMenuBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Shopping Cart
+                </span>
+                <div class="dropdown-menu" aria-labelledby="cartMenuBtn">
+                  <% if(currentUser.shoppingCart.length){ %>
+                    <% currentUser.shoppingCart.forEach(i=>{ %>
+                      <div class="dropdown-item" id="<%= i._id %>">
+                        <%= i.title %>
+                        <button class="btn btn-sm btn-danger ml-2" type="button">Remove</button>
+                      </div>
+                    <% }) %> 
+                  <% } %>
+                  <div class="dropdown-item" id="empty-cart-label">
+                    Your Cart is Empty!
+                  </div>
+                </div>
+              </div>
+            </li>
             <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
             <li class="nav-item active" id="username-label"><h5 class="nav-link">Welcome <%= currentUser.username %>!</h5></li>
@@ -31,3 +51,4 @@
   </div>
 </div>
 </nav>
+<script src="/javascripts/navbar.js"></script>

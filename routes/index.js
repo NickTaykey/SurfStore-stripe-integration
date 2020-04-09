@@ -15,7 +15,10 @@ const {
   getForgot,
   putForgot,
   getReset,
-  putReset
+  putReset,
+  addItemToTheCart,
+  updateItemInTheCart,
+  deleteItemInTheCart
 } = require("../controllers");
 
 // MIDDLEWARE
@@ -84,5 +87,14 @@ router.put(
   asyncErrorHandler(validatePasswordResetToken),
   asyncErrorHandler(putReset)
 );
+
+// E-COMMERCE ROUTES
+// add an item to the cart
+router.post("/cart/:id", isLoggedIn, asyncErrorHandler(addItemToTheCart));
+// delete item from the cart
+router.delete("/cart/:id", isLoggedIn, asyncErrorHandler(deleteItemInTheCart));
+
+
+
 
 module.exports = router;

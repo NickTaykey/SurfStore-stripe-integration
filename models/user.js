@@ -11,6 +11,13 @@ const UserSchema = new Schema({
     secure_url: { type: String },
     public_id: String
   },
+  // items che l'utente ha messo nel carrello per comprare
+  shoppingCart: [ 
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Post"
+    }
+  ], 
   // token (string casuale per resettare la password)
   resetPasswordToken: String,
   // data di scadenza del token dopo la quale non sarà più utilizzabile per cambiare la password

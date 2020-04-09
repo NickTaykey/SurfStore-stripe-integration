@@ -82,7 +82,7 @@ app.locals.moment = require("moment")
 
 /* TUTTI I MIDDLEWARE PRIMA DEL MONTAGGIO DELLE ROUTE VENGONO ESEGUITI PRIMA DEL CODICE DI OGNI ROUTE */
 // setta titolo di default per ogni view E IMPLEMENTA FLASH MESSAGES
-app.use((req, res, next) => {
+app.use(async(req, res, next) => {
   res.locals.title = "Surf Shop";
   // se ci sono messaggi di errore sulla sessione settiamo la variabile della view
   res.locals.error = req.session.error || "";
@@ -92,16 +92,20 @@ app.use((req, res, next) => {
   res.locals.success = req.session.success || "";
   // eliminiamo l'errore dalla sessione
   delete req.session.success;
-
+  /* let user = await User.findOne({ username: "Nick" })
+    .populate("shoppingCart")
+    .exec();
   // settiamo un utente sempre loggato
-  req.user = {
-    _id: "5e8de232a889870867556a50",
-    username: "Nick",
-    image: { },
-    email: "nico.toccane@gmail.com",
-  };
-  res.locals.currentUser = req.user;
-
+  req.user = user; */
+  if(req.isAuthenticated()){
+    let user = await User.findById(req.user._id)
+      .populate("shoppingCart")
+      .exec();
+    req.user = user;
+    res.locals.currentUser = user;
+  } else {
+    res.locals.currentUser = undefined;
+  }
   next();
 });
 

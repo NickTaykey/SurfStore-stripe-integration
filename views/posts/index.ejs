@@ -1,5 +1,5 @@
 <% layout("layouts/boilerplate") -%>
-<h2 class="my-5">
+<h2 class="my-5" id="main">
   <!-- Button trigger modal -->
   <% if(currentUser){ %>
     <button type="button" class="btn btn-primary btn-lg mr-2" id="new-post-form-trigger" data-toggle="modal" data-target="#exampleModal">
@@ -27,7 +27,8 @@
   <div class="card">
     <img src="<%= post.images.length ? post.images[0].url : '/images/default_board_img.jpeg' %>" class="card-img-top" alt="..." height="300px">
     <div class="card-body">
-      <h5 class="card-title"><%= post.title %></h5>
+      <h5 class="d-inline-block card-title"><%= post.title %></h5>
+      <span class="float-right badge badge-success">In the Cart</span>
       <h6 class="card-subtitle mb-3">Price: $<%= post.price %></h6>
       <h6 class="card-subtitle mb-3 text-muted"><%= post.location %></h6>
       <p class="card-text"><%= post.description.slice(0, 20) %> ... </p>
@@ -41,8 +42,13 @@
 <% include ../partials/postPagination %>
 
 
-<script>
+<script id="vars">
   mapboxgl.accessToken = "<%= mapBoxToken %>";
-  var posts = {features: <%- JSON.stringify(posts.docs) %>};
+  <% if(currentUser){ %>
+    var currentUser = <%- JSON.stringify(currentUser) %>
+  <% } else { %>
+    var currentUser = undefined;
+  <% } %>
+  var posts = { features: <%- JSON.stringify(posts.docs) %> }
 </script>
 <script src="/javascripts/allPostsClusterMap.js"></script>

@@ -1,5 +1,5 @@
 <% layout("layouts/post-show-layout") -%>
-<div class="row" id="main-row">
+<div class="row" id="main">
   <div class="col-xs-12 col-lg-4 my-4">
       <section id="info-box">
         <h1 id="post-title"><%= post.title %></h1>
@@ -21,14 +21,24 @@
         <div class="my-3 description"><%= post.description %></div>
         <div class="my-3 text-muted" id="date">Posted <%= moment(new Date(post._id.getTimestamp())).calendar() %> <% if(post.updated){ %><strong class='font-weight-bold' id='updated-label'>Updated</strong><% } %></div>
         <%# solo se l'utente è loggato ed è l'autore del post mostra i pulsanti edit, delete post %>
+        <% if(currentUser){ %> 
+          <button 
+            class="btn <%= isInCart ? "btn-success" : "btn-primary" %> w-100 mt-2 d-block"
+            id="add-cart-btn" 
+            <%= isInCart ? "disabled" : "" %>
+          >
+            <%= isInCart ? "Item in the cart" : "Add to Cart" %>
+          </button>
+        <% } else { %>
+          <a href="/login" class="btn btn-primary w-100 mt-2 d-block">Add to Cart</a>
+          <% } %>  
         <% if(currentUser && post.author.equals(currentUser._id)){ %>
-          <a class="btn btn-warning d-inline-block" href="/posts/<%= post._id %>/edit" id="edit-post-btn">
+          <a class="btn btn-warning w-100 mt-2 d-block" href="/posts/<%= post._id %>/edit" id="edit-post-btn">
             Edit
           </a>
-          <button type="button" class="btn btn-danger d-inline-block" data-toggle="modal" data-target="#exampleModal">
+          <button type="button" class="btn btn-danger w-100 mt-2 d-block" data-toggle="modal" data-target="#exampleModal">
             Delete
           </button>
-
           <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document" style="min-height: initial;">
               <div class="modal-content">

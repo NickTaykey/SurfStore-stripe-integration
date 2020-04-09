@@ -19,7 +19,24 @@ if(window.location.search==="?showNewForm=true"){
   $("#new-post-form-trigger").click();
 }
 
-
+const $badges = $(".badge-success");
+$badges.hide();
+if(currentUser){
+  $badges.each((index, badge)=>{
+    const cart = currentUser.shoppingCart;
+    for(let i = 0; i<cart.length; i++){
+      const badgeId = $(badge)
+        .siblings(".card-link")
+        .attr("href")
+        .split("/")[2]
+        if(cart[i]._id===badgeId){
+          // mostriamo il badge ed usciamo
+          $(badge).show();
+          break;
+      }
+    }
+  })
+}
 clearBtn.addEventListener("click", e => {
   // blocchiamo il comportamento di default del link, in questo modo evitiamo comportamenti anomali (che il link si apra)
   e.preventDefault();

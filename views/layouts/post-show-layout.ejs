@@ -18,14 +18,14 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/stylesheets/post-show.css" />
-    <script src="https://kit.fontawesome.com/41db850298.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/94372ff593.js" crossorigin="anonymous"></script>
     <script
       src="https://code.jquery.com/jquery-3.4.1.min.js"
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
       crossorigin="anonymous"
     ></script>
   </head>
-  <body>
+  <body id="body-show">
     <% include ../partials/navbar %> <% include ../partials/flash-messages %>
     <div class="container">
       <%- body -%>
@@ -41,7 +41,12 @@
     <script src="/bootstrap4/js/bootstrap.min.js"></script>
     <script src="/javascripts/fileUploadValidation.js"></script>
     <script>
-      const post = <%- JSON.stringify(post) %>;
+      var post = <%- JSON.stringify(post) %>;
+      <% if(currentUser){ %>
+        var currentUser = <%- JSON.stringify(currentUser) %>
+      <% } else { %>
+        var currentUser = undefined;
+      <% } %>
     </script>
     <script src="/javascripts/post-show.js"></script>
   </body>

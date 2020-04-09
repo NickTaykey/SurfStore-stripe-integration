@@ -44,7 +44,7 @@ const middlewares = {
   // controlla se l'utente è loggato
   isLoggedIn(req, res, next) {
     // se l'utente è loggato esegue next
-    if (req.xhr || req.isAuthenticated()) {
+    if (req.isAuthenticated()) {
       return next();
     }
     // se nn è loggato redirige a login con un errore e l'url originale nella sessione

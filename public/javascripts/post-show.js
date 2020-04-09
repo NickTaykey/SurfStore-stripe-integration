@@ -317,7 +317,7 @@ if(reviewForm){
           alert.classList.add("alert-success");
           alert.classList.add("mt-4");
           alert.textContent=`Review successfully added!`;
-          $("#main-row").before(alert);
+          $("#main").before(alert);
         }
       });
     });
@@ -348,7 +348,7 @@ $("#review-container").on("submit", ".delete-review-form", function(e){
         alert.classList.add("alert-success");
         alert.classList.add("mt-4");
         alert.textContent=`Review successfully deleted!`;
-        $("#main-row").before(alert);
+        $("#main").before(alert);
       }
     }
   });
@@ -401,7 +401,38 @@ $("#review-container").on("submit", ".edit-review-form", function(e) {
       alert.classList.add("alert-success");
       alert.classList.add("mt-4");
       alert.textContent=`Review successfully updated!`;
-      $("#main-row").before(alert);
+      $("#main").before(alert);
     }
   })
 });
+if(currentUser){
+  // E-COMMERCE FEATURES
+  const addCartBtn = document.getElementById("add-cart-btn");
+  addCartBtn.addEventListener("click", function(e){
+    e.preventDefault();
+    const postId = window.location.pathname.split("/")[2];
+    $.post(`/cart/${ postId }`, function(response){
+      $("#add-cart-btn").removeClass("btn-primary");
+      $("#add-cart-btn").addClass("btn-success");
+      $("#add-cart-btn").attr("disabled", true);
+      $("#add-cart-btn").text("Item in the cart");
+      $("#empty-cart-label").hide();
+      $(".dropdown-menu").append(`
+      <div class="dropdown-item" id=${ response._id }>
+        ${ response.title }
+        <button class="btn btn-sm btn-danger ml-2" type="button">Remove</button>
+      </div>
+      `);
+      // add success alert
+      let alert = document.querySelector(".alert");
+      if(alert) alert.remove();
+      alert = document.createElement("div");;
+      alert.classList.add("alert");
+      alert.setAttribute("role", "alert");
+      alert.classList.add("alert-success");
+      alert.classList.add("mt-4");
+      alert.textContent=`Item successfully added to the cart!`;
+      $("#main").before(alert);
+    });
+  });
+}

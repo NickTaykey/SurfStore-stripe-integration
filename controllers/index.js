@@ -263,5 +263,37 @@ module.exports = {
       req.session.error = "Passwords do not match!";
       return res.redirect(`/reset/${token}`);
     }
-  }
+  },
+  // E-COMMERCE FEATURE CONTROLLERS
+  async addItemToTheCart(req, res, next){
+    // trovo utente
+    let user = await User.findById(req.user._id);
+    // trovo post, controllo se esiste
+    let post = await Post.findById(req.params.id);
+    if(post){
+      // aggiungo post al carrello
+      user.shoppingCart.push(post);
+      // salvo modifiche
+      await user.save();
+      // ritorno JSON con il post da aggiungere al carrello
+      res.json(post);
+    } else {
+      req.session.error = "Post not found";
+      res.redirect("/posts");
+    }
+  },
+  // rimuover un post dal carrello
+  async deleteItemInTheCart(req, res, next){
+     let user = await User.findById(req.user._id);
+     let post = await Post.findById(req.params.id);
+     if(post){
+       const index = user.shoppingCart.indexOf(post._id);
+       user.shoppingCart.splice(index, 1);
+       await user.save();
+       res.json(user);
+     } else {
+      req.session.error = "Post not existing!";
+      res.redirect("/posts");
+    }
+  },
 };

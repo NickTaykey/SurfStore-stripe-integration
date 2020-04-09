@@ -137,10 +137,17 @@ module.exports = {
       avgRating allora associamo direttamente ad avgRating floorRating (in questo modo abbiamo già di
       default una valutazione media del post e possiamo subito testare i filtri relativi alle valutazioni) 
     */
+    let isInCart;
+    if(req.isAuthenticated()){
+      isInCart = req.user.shoppingCart.find(function(i) {
+        return i._id.equals(post._id);
+      })
+    }
     const floorRating = post.calculateAvgRating();
     res.render("posts/show", {
       post,
       floorRating,
+      isInCart,
       title: `Surf Store - Show ${post.title}`
     });
   },
