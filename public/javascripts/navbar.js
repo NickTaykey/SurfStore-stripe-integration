@@ -38,8 +38,11 @@ $(".dropdown-menu").on("click", ".btn-danger", function(e){
             alert.classList.add("alert");
             alert.setAttribute("role", "alert");
             alert.classList.add("alert-success");
-            alert.classList.add("mt-4");
+            alert.classList.add("mt-5");
             alert.textContent=`Item successfully removed from the cart!`;
+            if($("#main").prop("tagName")==="H2"){
+                alert.classList.add("mb-0");
+            }
             $("#main").before(alert);
         }
     })

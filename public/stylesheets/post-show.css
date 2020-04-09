@@ -12,6 +12,11 @@
   cursor: pointer;
 }
 
+body#body-show{
+  padding-top: 65px!important;
+  overflow-y: scroll!important;
+}
+
 .mapboxgl-popup {
   max-width: 200px;
 }
@@ -29,7 +34,7 @@
   display: block;
 }
 
-i.fas, i.far {
+.fa-star, .fa-star-half-alt {
   color: #f0ad4e;
 }
 .description{

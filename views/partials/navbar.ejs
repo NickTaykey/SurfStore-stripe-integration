@@ -28,8 +28,12 @@
                   <% if(currentUser.shoppingCart.length){ %>
                     <% currentUser.shoppingCart.forEach(i=>{ %>
                       <div class="dropdown-item" id="<%= i._id %>">
-                        <%= i.title %>
-                        <button class="btn btn-sm btn-danger ml-2" type="button">Remove</button>
+                        <span class="d-inline-block cart-label">
+                          <%= i.title %>
+                        </span>
+                        <button class="d-inline-block btn btn-sm btn-danger ml-2 cart-trash" type="button">
+                          <i class="fas fa-trash"></i>
+                        </button>
                       </div>
                     <% }) %> 
                   <% } %>

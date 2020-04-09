@@ -135,6 +135,8 @@ searchForm.addEventListener("submit", function(e){
     alert = document.createElement("div");;
     alert.classList.add("alert");
     alert.setAttribute("role", "alert");
+    alert.classList.add("mt-5");
+    alert.classList.add("mb-0");
     if(response.docs.length){
       alert.classList.add("alert-success");
       alert.textContent=`${response.total} posts found!`;
@@ -142,7 +144,7 @@ searchForm.addEventListener("submit", function(e){
       alert.classList.add("alert-danger");
       alert.textContent=`404 No posts found!`;
     }
-    $(h2).after(alert);
+    $("#main").before(alert);
     
     // add new posts to the index
     $("#post-container").html("");
@@ -233,14 +235,15 @@ if(newPostForm){
         if(alert) alert.remove();
         alert = document.createElement("div");;
         alert.classList.add("alert");
-        alert.classList.add("my-3");
+        alert.classList.add("mt-5");
+        alert.classList.add("mb-0");
         alert.setAttribute("role", "alert");
         alert.classList.add("alert-danger");
         let errorMessage;
         if(imgError) errorMessage = imgError;
         else errorMessage = `Error! Missing ${errName}`;
         alert.textContent=errorMessage;
-        $("#form-title").after(alert);
+        $("#main").before(alert);
         sendForm=false;
     }
 
@@ -298,8 +301,10 @@ if(newPostForm){
           alert.classList.add("alert");
           alert.setAttribute("role", "alert");
           alert.classList.add("alert-success");
+          alert.classList.add("mt-5");
+          alert.classList.add("mb-0");
           alert.textContent=`${response.title} successfully created!`;
-          $("h2").after(alert);
+          $("#main").before(alert);
           // update map
           map.remove();
           posts.features.push(response);

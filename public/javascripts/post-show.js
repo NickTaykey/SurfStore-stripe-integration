@@ -303,6 +303,9 @@ if(reviewForm){
           );
           // close form
           $(".new-review-form").hide();
+          $(".new-review-form")
+            .find(".alert-danger")
+            .remove();
           $(".new-review-form input[type=text]").val("");
           $(".clear-rating-btn").click();
           $("#reviewNewFormToogler + .alert").remove();
@@ -418,9 +421,13 @@ if(currentUser){
       $("#add-cart-btn").text("Item in the cart");
       $("#empty-cart-label").hide();
       $(".dropdown-menu").append(`
-      <div class="dropdown-item" id=${ response._id }>
-        ${ response.title }
-        <button class="btn btn-sm btn-danger ml-2" type="button">Remove</button>
+      <div class="dropdown-item" id="${ response._id }">
+        <span class="d-inline-block cart-label">
+          ${ response.title }
+        </span>
+        <button class="d-inline-block btn btn-sm btn-danger ml-2 cart-trash" type="button">
+          <i class="fas fa-trash"></i>
+        </button>
       </div>
       `);
       // add success alert
