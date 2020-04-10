@@ -93,14 +93,14 @@ app.use(async(req, res, next) => {
   // eliminiamo l'errore dalla sessione
   delete req.session.success;
 
-  let user = await User.findOne({ username: "Nick" })
+  /* let user = await User.findOne({ username: "Nick" })
     .populate("shoppingCart")
     .exec();
   // settiamo un utente sempre loggato
-  req.user = user;
+  req.user = user; */
   res.locals.currentUser = req.user;
   res.locals.stripePublicKey = process.env.STRIPE_PUBLIC;
-  /* if(req.isAuthenticated()){
+  if(req.isAuthenticated()){
     let user = await User.findById(req.user._id)
       .populate("shoppingCart")
       .exec();
@@ -108,7 +108,7 @@ app.use(async(req, res, next) => {
     res.locals.currentUser = user;
   } else {
     res.locals.currentUser = undefined;
-  } */
+  }
   next();
 });
 
