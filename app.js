@@ -25,12 +25,15 @@ const favicon = require("serve-favicon");
 const User = require("./models/user");
 
 // CONNECT TO THE DATABASE
-mongoose.connect(`mongodb+srv://mostrtor:${process.env.MONGOATLAS_PWD}@cluster0-h8mqp.mongodb.net/test?retryWrites=true&w=majority`, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false
-});
+mongoose.connect(
+  `mongodb+srv://mostrtor:${process.env.MONGOATLAS_PWD}@cluster0-h8mqp.mongodb.net/test?retryWrites=true&w=majority`, 
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false
+  }
+);
 
 // TEST THE CONNECTION
 // variabile che rappresenta la connessione con il DB
