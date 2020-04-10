@@ -24,14 +24,8 @@
       href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css"
       rel="stylesheet"
     />
-    <script src="https://kit.fontawesome.com/94372ff593.js" crossorigin="anonymous"></script>
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js"></script>
-    <script
-      src="https://code.jquery.com/jquery-3.1.1.min.js"
-      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-      crossorigin="anonymous">
-    </script>
     <% if(title==="Surf Store - Index"){ %>
       <script>
         mapboxgl.accessToken = "<%= mapBoxToken %>";
@@ -41,8 +35,16 @@
           var currentUser = undefined;
         <% } %>
         var posts = { features: <%- JSON.stringify(posts.docs) %> }
+        var stripePublicKey = "<%= stripePublicKey %>"
       </script>
     <% } %>
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script src="https://kit.fontawesome.com/94372ff593.js" crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous">
+    </script>
   </head>
   <body>
     <% include ../partials/navbar %>

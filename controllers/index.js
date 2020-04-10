@@ -12,6 +12,10 @@ const sgMail = require("@sendgrid/mail");
 // con il nostro account
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+// STRIPE CONFIGURATION
+const stripeSecret = process.env.STRIPE_SECRET;
+const stripe = require("stripe")(stripeSecret);
+
 module.exports = {
   // SHOW REGISTER FORM only if the user is not logged in
   getRegister(req, res, next) {
@@ -299,5 +303,35 @@ module.exports = {
       }
       await user.save();
       res.json(user);
+  },
+  // PAYMENT CONTROLLERS
+  async postPayment(req, res, next){
+    // check if the items exist
+    const { items, token, total } = req.body;
+    let amount = 0;
+    for(let i = 0; i<items.length; i++){
+      try{
+        let post = await Post.findById(items[i]);
+        amount+=post.price;
+      } catch(e){
+        if(e.name==="CastError"){
+          return res.json({ error: "Completing the purchase is impossible because the item does not exist" });
+        }
+      }
+    }
+    if(amount===total){
+      try {
+        await stripe.charges.create({
+          amount: total*100,
+          source: token.id, 
+          currency: 'usd'
+        })
+        return res.json({ message: "Payment successfully completed" });
+      } catch(e){
+        return res.json({ error: e.message });
+      }
+    } else {
+        return res.json({ error: "The payment cannot be completed because the price of the items is not correct" });
+    }
   }
 };

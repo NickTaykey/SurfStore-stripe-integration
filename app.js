@@ -99,7 +99,7 @@ app.use(async(req, res, next) => {
   // settiamo un utente sempre loggato
   req.user = user;
   res.locals.currentUser = req.user;
-  
+  res.locals.stripePublicKey = process.env.STRIPE_PUBLIC;
   /* if(req.isAuthenticated()){
     let user = await User.findById(req.user._id)
       .populate("shoppingCart")

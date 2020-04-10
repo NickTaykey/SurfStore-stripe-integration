@@ -34,9 +34,6 @@ const mapbox = require("@mapbox/mapbox-sdk/services/geocoding");
 // mapbox account config
 const geoCodeClient = mapbox({ accessToken: process.env.MAPBOX_TOKEN });
 const mapBoxToken = process.env.MAPBOX_TOKEN;
-// STRIPE CONFIGURATION
-const stripeSecret = process.env.STRIPE_SECRET;
-const stripe = require("stripe")(stripeSecret);
 
 module.exports = {
   // POST INDEX

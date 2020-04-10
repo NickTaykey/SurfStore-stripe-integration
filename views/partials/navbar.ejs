@@ -22,7 +22,7 @@
             <li class="nav-item">
               <div class="dropdown">
                 <span class="nav-link dropdown-toggle" id="cartMenuBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Shopping Cart
+                  <i class="fas fa-shopping-cart"></i> <span class="d-inline-block ml-1">Shopping Cart</span> 
                 </span>
                 <div class="dropdown-menu" aria-labelledby="cartMenuBtn">
                   <% if(currentUser.shoppingCart.length){ %>
@@ -30,6 +30,11 @@
                       <div class="dropdown-item" id="<%= i._id %>">
                         <span class="d-inline-block cart-label">
                           <%= i.title %>
+                          <span class="d-inline-block ml-2">
+                            $ <strong class="price-label">
+                              <%= i.price %>
+                            </strong>
+                          </span>
                         </span>
                         <button class="d-inline-block btn btn-sm btn-danger ml-2 cart-trash" type="button">
                           <i class="fas fa-trash"></i>
@@ -41,6 +46,9 @@
                       Your Cart is Empty!
                     </div>
                     <span id="control-bar" style="<%= currentUser.shoppingCart.length ? 'display: block' : 'display: none;' %>">
+                      <h4 class="text-center my-3">
+                        Total:<span class="d-inline-block ml-3" id="total-label"></span>
+                      </h4>
                       <hr>
                       <span class="justify-content-center" style="display: flex!important;">
                         <button class="btn-primary btn mr-1" type="button" id="buy-btn">Buy</button>
@@ -50,7 +58,12 @@
                 </div>
               </div>
             </li>
-            <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="/profile">
+                <i class="fas fa-user-circle" style="font-size: 20px;"></i>
+                <span class="d-inline-block ml-1">Profile</span>
+              </a>
+            </li>
             <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
             <li class="nav-item active" id="username-label"><h5 class="nav-link">Welcome <%= currentUser.username %>!</h5></li>
         <% } else { %>

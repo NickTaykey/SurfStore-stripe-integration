@@ -413,6 +413,7 @@ if(currentUser){
   const addCartBtn = document.getElementById("add-cart-btn");
   addCartBtn.addEventListener("click", function(e){
     e.preventDefault();
+    e.stopPropagation();
     const postId = window.location.pathname.split("/")[2];
     $.post(`/cart/${ postId }`, function(response){
       $("#add-cart-btn").removeClass("btn-primary");
@@ -424,12 +425,18 @@ if(currentUser){
       <div class="dropdown-item" id="${ response._id }">
         <span class="d-inline-block cart-label">
           ${ response.title }
+          <span class="d-inline-block ml-2">
+            $<strong class="price-label">
+              ${ response.price }
+            </strong>
+          </span>
         </span>
         <button class="d-inline-block btn btn-sm btn-danger ml-2 cart-trash" type="button">
           <i class="fas fa-trash"></i>
         </button>
       </div>
       `);
+      $("#total-label").text(`$ ${ total+=response.price }`)
       $("#control-bar").show();
       // add success alert
       let alert = document.querySelector(".alert");

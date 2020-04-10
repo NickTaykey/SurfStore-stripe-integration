@@ -13,6 +13,16 @@
     <link rel="stylesheet" href="/wrapkit/css/style.css">
     <link rel="stylesheet" href="/warpkit/css/animate.css">
     <link rel="stylesheet" href="/stylesheets/starbility-basic.min.css" />
+    <script>
+      var post = <%- JSON.stringify(post) %>;
+      <% if(currentUser){ %>
+        var currentUser = <%- JSON.stringify(currentUser) %>
+      <% } else { %>
+        var currentUser = undefined;
+      <% } %>
+        var stripePublicKey = "<%= stripePublicKey %>"
+    </script>
+    <script src="https://checkout.stripe.com/checkout.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js"></script>
     <link
       href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css"
@@ -25,14 +35,6 @@
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
       crossorigin="anonymous"
     ></script>
-    <script>
-      var post = <%- JSON.stringify(post) %>;
-      <% if(currentUser){ %>
-        var currentUser = <%- JSON.stringify(currentUser) %>
-      <% } else { %>
-        var currentUser = undefined;
-      <% } %>
-    </script>
   </head>
   <body id="body-show">
     <% include ../partials/navbar %> <% include ../partials/flash-messages %>

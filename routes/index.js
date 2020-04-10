@@ -17,8 +17,8 @@ const {
   getReset,
   putReset,
   addItemToTheCart,
-  updateItemInTheCart,
-  deleteItemInTheCart
+  deleteItemInTheCart,
+  postPayment
 } = require("../controllers");
 
 // MIDDLEWARE
@@ -89,11 +89,13 @@ router.put(
 );
 
 // E-COMMERCE ROUTES
+// CART ROUTES
 // add an item to the cart
 router.post("/cart/:id", isLoggedIn, asyncErrorHandler(addItemToTheCart));
 // delete item from the cart
 router.delete("/cart/:id", isLoggedIn, asyncErrorHandler(deleteItemInTheCart));
-
+// PAYMENT ROUTES
+router.post("/pay", isLoggedIn, asyncErrorHandler(postPayment));
 
 
 
