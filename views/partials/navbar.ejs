@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+<nav class="navbar navbar-expand-xl navbar-light bg-light fixed-top">
   <div class="container">
   <a class="navbar-brand" href="#">
     <img class="d-inline-block mr-2" src="/favicon.ico" width="30" height="30" alt="">
@@ -18,11 +18,26 @@
     </ul>
     <ul class="navbar-nav ml-auto">
         <% if(currentUser){ %>
-            <li class="nav-item"><a class="nav-link" href="/posts?showNewForm=true">New Post</a></li>
-            <li class="nav-item">
+            <li class="nav-item d-inline-block mr-xl-3">
+              <i class="fas fa-edit" style="font-size: 20px;"></i>
+              <span class="d-inline-block ml-1">
+                <a class="nav-link" href="/posts?showNewForm=true">New Post</a>
+              </span>
+            </li>
+            <li class="nav-item d-inline-block mr-xl-3">
               <div class="dropdown">
                 <span class="nav-link dropdown-toggle" id="cartMenuBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fas fa-shopping-cart"></i> <span class="d-inline-block ml-1">Shopping Cart</span> 
+                  <i class="fas fa-shopping-cart"></i> 
+                  <span class="d-inline-block ml-1">
+                    Shopping Cart  
+                    <strong 
+                      class="ml-1" 
+                      id="num-items-label"
+                      style="<%= currentUser.shoppingCart.length>0 ? 'display: inline-block;' : 'display: none;' %>"
+                      >
+                      (<%= currentUser.shoppingCart.length %>)
+                    </strong>
+                  </span> 
                 </span>
                 <div class="dropdown-menu" aria-labelledby="cartMenuBtn">
                   <% if(currentUser.shoppingCart.length){ %>
@@ -58,17 +73,32 @@
                 </div>
               </div>
             </li>
-            <li class="nav-item">
+            <li class="nav-item d-inline-block mr-xl-3">
               <a class="nav-link" href="/profile">
                 <i class="fas fa-user-circle" style="font-size: 20px;"></i>
                 <span class="d-inline-block ml-1">Profile</span>
               </a>
             </li>
-            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+            <li class="nav-item d-inline-block mr-xl-3">
+              <i class="fas fa-sign-out-alt" style="font-size: 20px;"></i>
+              <span class="d-inline-block ml-1">
+                <a class="nav-link" href="/logout">Logout</a>
+              </span> 
+            </li>
             <li class="nav-item active" id="username-label"><h5 class="nav-link">Welcome <%= currentUser.username %>!</h5></li>
         <% } else { %>
-            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+            <li class="nav-item d-inline-block mr-xl-3">
+              <i class="fas fa-sign-in-alt" style="font-size: 20px;"></i>
+              <span class="d-inline-block ml-1">
+                <a class="nav-link" href="/login">Login</a>
+              </span>
+            </li>
+            <li class="nav-item d-inline-block mr-xl-3">
+              <i class="fas fa-user-plus" style="font-size: 20px;"></i>
+              <span class="d-inline-block ml-1">
+                <a class="nav-link" href="/register">Register</a>
+              </span>
+            </li>
         <% } %>
         
     </ul>

@@ -66,6 +66,12 @@ if(currentUser){
             itemId,
             itemToRemove: $(this),
             success: function(response){
+                const price = $(this.itemToRemove)
+                    .parents(".dropdown-item")
+                    .find(".price-label")
+                    .text()
+                    .trim();
+                total -= Number(price);
                 $(this.itemToRemove)
                     .parents(".dropdown-item")
                     .remove();
@@ -87,6 +93,14 @@ if(currentUser){
                 if(!($(".dropdown-item").length-1)){
                     $("#control-bar").hide();
                 }
+                const $items = $(".dropdown-item:not(#empty-label)");
+                const numItems = $items.length;
+                if(numItems){
+                    $("#num-items-label").text(`(${numItems})`)
+                } else {
+                    $("#num-items-label").hide();
+                }
+                $("#total-label").text(total);
                 // add success alert
                 let alert = document.querySelector(".alert");
                 if(alert) alert.remove();
@@ -120,6 +134,7 @@ if(currentUser){
                 $("#add-cart-btn").removeClass("btn-success");
                 $("#add-cart-btn").addClass("btn-primary");
                 $("#add-cart-btn").attr("disabled", false);
+                $("#num-items-label").hide();
                 currentUser = response;
                 total = 0;
             }

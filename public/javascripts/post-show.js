@@ -438,6 +438,9 @@ if(currentUser){
       `);
       $("#total-label").text(`$ ${ total+=response.price }`)
       $("#control-bar").show();
+      $("#num-items-label").show();
+      const totItems = $(".dropdown-item:not(#empty-label)").length;
+      $("#num-items-label").text(`(${totItems})`);
       // add success alert
       let alert = document.querySelector(".alert");
       if(alert) alert.remove();
