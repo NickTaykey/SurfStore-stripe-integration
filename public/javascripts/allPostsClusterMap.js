@@ -176,12 +176,9 @@ function loadMap(){
     // quando il cursore esce da un punto che non è un cluster torna ad essere standard
     map.on("mouseleave", "unclustered-point", mouseLeaveCursor);
   });
-  const title = document.querySelector("title").textContent;
-  if(title!=="Surf Shop - Home"){
-    // disabilità lo zoom con lo scrooling del mouse
-    map.scrollZoom.disable();
-    // aggiungiamo i controller + e - per modificare lo zoom direttamente dalla mappa
-    map.addControl(new mapboxgl.NavigationControl());
-  }
+  // disabilità lo zoom con lo scrooling del mouse
+  map.scrollZoom.disable();
+  // aggiungiamo i controller + e - per modificare lo zoom direttamente dalla mappa
+  map.addControl(new mapboxgl.NavigationControl());
   return map;
 }
